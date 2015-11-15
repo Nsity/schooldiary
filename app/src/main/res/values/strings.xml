@@ -1,4 +1,29 @@
 <resources>
-    <string name="app_name">School Diary</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">Школьный дневник</string>
+    <string name="action_settings">Настройки</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="prompt_login">Логин</string>
+    <string name="action_sign_in">Войти</string>
+
+
+    <!-- <string name="base_url">http://schooldiary.azurewebsites.net/</string> -->
+    <string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>
+    <string name="api_login">auth/login/</string>
+
+
+    <string name="error_encode">Ошибка кодирования данных</string>
+    <string name="error_response">Ошибка получения данных</string>
+
+    <string name="error_field_required">Обязательное поле</string>
+
+
+    <string name="id">Ид</string>
+    <string name="class_id">КлассИд</string>
+    <string name="fio">ФИО</string>
+
+
+    <string name="error_tracker_timeout_error">Превышено время ожидания данных. Сервер не отвечает</string>
+    <string name="error_tracker_error">При получении данных произошла ошибка</string>
+    <string name="error_tracker_empty_content">В JSON отсутствуют данные</string>
+    <string name="error_tracker_exception_not_found">Не удалось получить текст ошибки</string>
 </resources>
