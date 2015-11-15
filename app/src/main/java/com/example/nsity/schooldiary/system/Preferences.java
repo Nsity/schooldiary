@@ -10,6 +10,7 @@ public class Preferences {
 
     public static final String NAME = "name";
     public static final String CLASSID = "class_id";
+    public static final String CLASSNAME = "class_name";
     public static final String PUPILID = "pupil_id";
     public static final String FIO = "fio";
 

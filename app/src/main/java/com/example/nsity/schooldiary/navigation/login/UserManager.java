@@ -1,10 +1,11 @@
-package com.example.nsity.schooldiary.navigation;
+package com.example.nsity.schooldiary.navigation.login;
 
 import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.system.ErrorTracker;
 import com.example.nsity.schooldiary.system.Preferences;
+import com.example.nsity.schooldiary.system.database.ADBWorker;
 import com.example.nsity.schooldiary.system.network.AsyncHttpResponse;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.ResponseObject;
@@ -50,6 +51,7 @@ public class UserManager {
                     Preferences.set(Preferences.PUPILID, response.getString(context.getString(R.string.id)), context);
                     Preferences.set(Preferences.CLASSID, response.getString(context.getString(R.string.class_id)), context);
                     Preferences.set(Preferences.FIO, response.getString(context.getString(R.string.fio)), context);
+                    Preferences.set(Preferences.CLASSNAME, response.getString(context.getString(R.string.class_name)), context);
 
                 } catch (JSONException e) {
                     callBack.onFail(context.getString(R.string.error_response));
@@ -63,5 +65,11 @@ public class UserManager {
                 callBack.onFail(ErrorTracker.getErrorDescription(context, object.getResponse().toString()));
             }
         });
+    }
+
+
+    public static void logoff(Context context) {
+        ADBWorker.deleteAllTables(context);//remove all tables in database
+        Preferences.clear(context);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.nsity.schooldiary.navigation;
+package com.example.nsity.schooldiary.navigation.login;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -10,12 +10,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.MainActivity;
 import com.example.nsity.schooldiary.system.network.CallBack;
 
 /**
@@ -27,6 +30,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private int mShortAnimationDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onSuccess() {
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
+                    overridePendingTransition(0, 0);
                     mLoginFormView.setVisibility(View.GONE);
                     showProgress(false);
                 }
