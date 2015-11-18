@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
-import com.example.nsity.schooldiary.system.database.tables.SubjectDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.MarkDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TimeDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TimetableDBInterface;
@@ -23,24 +23,22 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
-        database.execSQL(SubjectDBInterface.SUBJECT_TABLE_CREATE);
         database.execSQL(TimetableDBInterface.TIMETABLE_TABLE_CREATE);
         database.execSQL(LessonDBInterface.LESSON_TABLE_CREATE);
         database.execSQL(TimeDBInterface.TIME_TABLE_CREATE);
         database.execSQL(SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_CREATE);
-        //TODO
+        database.execSQL(MarkDBInterface.MARK_TABLE_CREATE);
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + SubjectDBInterface.SUBJECT_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TimetableDBInterface.TIMETABLE_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + LessonDBInterface.LESSON_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TimeDBInterface.TIME_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MarkDBInterface.MARK_TABLE_NAME);
 
-        //TODO
         onCreate(db);
     }
 

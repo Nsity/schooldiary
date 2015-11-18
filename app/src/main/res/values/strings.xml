@@ -13,9 +13,11 @@
 
     <string name="today">Сегодня</string>
 
-    <!-- <string name="base_url">http://schooldiary.azurewebsites.net/</string> -->
+    <!--<string name="base_url">http://schooldiary.azurewebsites.net/</string>-->
     <string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>
-    <string name="api_login">auth/login/</string>
+    <string name="call_method_api_login">auth/login/</string>
+    <string name="call_method_api_get_timetable">timetable/get/</string>
+    <string name="call_method_api_get_lesson">lesson/get/</string>
 
 
     <string name="error_encode">Ошибка кодирования данных</string>
@@ -30,6 +32,26 @@
     <string name="name">Наименование</string>
     <string name="class_name">КлассНаименование</string>
 
+    <string name="result">result</string>
+    <string name="time">Время</string>
+    <string name="time_id">ВремяИд</string>
+    <string name="subjects">Предметы</string>
+    <string name="subject_id">ПредметИд</string>
+    <string name="room_name">КабинетНаименование</string>
+    <string name="timetable">Расписание</string>
+
+    <string name="time_start">ВремяНачала</string>
+    <string name="time_end">ВремяОкончания</string>
+
+    <string-array name="days">
+        <item>Понедельник</item>
+        <item>Вторник</item>
+        <item>Среда</item>
+        <item>Четверг</item>
+        <item>Пятница</item>
+        <item>Суббота</item>
+    </string-array>
+
 
     <string name="error_tracker_timeout_error">Превышено время ожидания данных. Сервер не отвечает</string>
     <string name="error_tracker_error">При получении данных произошла ошибка</string>
@@ -39,5 +61,17 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
+    <string name="action_week_view">Календарь</string>
+
+    <string name="no_lessons_1">Сегодня занятий больше нет\nВсе ли задания выполнены?</string>
+    <string name="no_lessons_2">Свободный день\nПроведите его весело!</string>
+    <string name="no_lessons_3">Каникулы\nУдачного дня!</string>
+
+    <string name="internet_problem">Необходимо подключение к интернету</string>
+
+    <string name="action_load_timetable">Загружаю расписание… Подожите…</string>
+
 
 </resources>

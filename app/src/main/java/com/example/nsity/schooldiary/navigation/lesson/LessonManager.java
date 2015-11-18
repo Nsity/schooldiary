@@ -1,12 +1,10 @@
-package com.example.nsity.schooldiary.navigation.timetable;
+package com.example.nsity.schooldiary.navigation.lesson;
 
 import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.system.ErrorTracker;
-import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
-import com.example.nsity.schooldiary.system.database.tables.TimeDBInterface;
-import com.example.nsity.schooldiary.system.database.tables.TimetableDBInterface;
+import com.example.nsity.schooldiary.system.Preferences;
 import com.example.nsity.schooldiary.system.network.AsyncHttpResponse;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.ResponseObject;
@@ -15,18 +13,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 /**
- * Created by nsity on 15.11.15.
+ * Created by nsity on 18.11.15.
  */
-public class TimetableManager {
+public class LessonManager {
 
-    public static void getTimetable(final Context context, final String classId, final CallBack callBack) {
+    public static void getLesson(final Context context, final String pupilId, final String subjectId, final String day, final String timeId, final CallBack callBack) {
 
         String url = context.getString(R.string.base_url) +
-                context.getString(R.string.call_method_api_get_timetable) + classId;
+                context.getString(R.string.call_method_api_get_lesson) + pupilId + "/"
+                + subjectId + "/" + day + "/" + timeId;
 
         new AsyncHttpResponse(url, null, AsyncHttpResponse.CALL_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
             @Override
@@ -42,18 +38,9 @@ public class TimetableManager {
                     JSONObject result = response.getJSONObject(context.getString(R.string.result));
                     JSONArray timesArray = (JSONArray) result.get(context.getString(R.string.time));
 
-                    TimeDBInterface dbTime = new TimeDBInterface(context);
-                    dbTime.save(timesArray, true);
+                    /*TimeDBInterface dbTime = new TimeDBInterface(context);
+                    dbTime.save(timesArray, true);*/
 
-                    JSONArray subjectsArray = (JSONArray) result.get(context.getString(R.string.subjects));
-
-                    SubjectsClassDBInterface dbSubjects = new SubjectsClassDBInterface(context);
-                    dbSubjects.save(subjectsArray, true);
-
-                    JSONArray timetableArray = (JSONArray) result.get(context.getString(R.string.timetable));
-
-                    TimetableDBInterface dbTimetable = new TimetableDBInterface(context);
-                    dbTimetable.save(timetableArray, true);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

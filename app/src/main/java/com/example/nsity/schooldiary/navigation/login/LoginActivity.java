@@ -3,6 +3,7 @@ package com.example.nsity.schooldiary.navigation.login;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,8 +11,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,7 +18,10 @@ import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.MainActivity;
+import com.example.nsity.schooldiary.navigation.timetable.TimetableManager;
+import com.example.nsity.schooldiary.system.Preferences;
 import com.example.nsity.schooldiary.system.network.CallBack;
+import com.example.nsity.schooldiary.system.network.Server;
 
 /**
  * Created by nsity on 15.11.15.
@@ -30,8 +32,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-
-    private int mShortAnimationDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +56,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptLogin() {
+        if (!Server.isOnline(this)) {
+            Toast.makeText(this, getString(R.string.internet_problem), Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         mLoginView.setError(null);
         mPasswordView.setError(null);
@@ -86,15 +90,12 @@ public class LoginActivity extends AppCompatActivity {
             UserManager.login(getApplicationContext(), login, password, new CallBack() {
                 @Override
                 public void onSuccess() {
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    finish();
-                    overridePendingTransition(0, 0);
-                    mLoginFormView.setVisibility(View.GONE);
                     showProgress(false);
+                    sync();
                 }
-
                 @Override
                 public void onFail(String message) {
+
                     showProgress(false);
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 }
@@ -102,12 +103,35 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void sync() {
+        final ProgressDialog mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setMessage(getString(R.string.action_load_timetable));
+        mProgressDialog.setProgressNumberFormat(null);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.show();
+
+
+        TimetableManager.getTimetable(getApplicationContext(), Preferences.get(Preferences.CLASSID, getApplicationContext()), new CallBack() {
+            @Override
+            public void onSuccess() {
+                mProgressDialog.dismiss();
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finish();
+                overridePendingTransition(0, 0);
+            }
+
+            @Override
+            public void onFail(String message) {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                mProgressDialog.dismiss();
+            }
+        });
+    }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -129,8 +153,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }

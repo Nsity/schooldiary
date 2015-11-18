@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 
 import cz.msebera.android.httpclient.Header;
@@ -66,7 +67,7 @@ public class AsyncHttpResponse {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 errorResponse = (errorResponse == null) ? new JSONObject() : errorResponse;
 
-                if (throwable instanceof SocketTimeoutException) {
+                if (throwable instanceof SocketTimeoutException || throwable instanceof ConnectException) {
                     JSONObject error = new JSONObject();
                     try {
                         JSONObject exception = new JSONObject();
