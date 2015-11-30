@@ -55,8 +55,7 @@ public class SubjectsClassDBInterface extends ADBWorker {
 
                 subjectsClassValues.add(cv);
             }
-            int result = insert(SUBJECTS_CLASS_TABLE_NAME, ADBWorker.REPLACE, subjectsClassValues);
-            return result;
+            return insert(SUBJECTS_CLASS_TABLE_NAME, ADBWorker.REPLACE, subjectsClassValues);
         } catch(Exception e) {
             e.printStackTrace();
             return 0;

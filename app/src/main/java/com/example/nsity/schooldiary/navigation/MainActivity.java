@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.homework.HomeworkFragment;
 import com.example.nsity.schooldiary.navigation.login.LoginActivity;
 import com.example.nsity.schooldiary.navigation.login.ProfileFragment;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableFragment;

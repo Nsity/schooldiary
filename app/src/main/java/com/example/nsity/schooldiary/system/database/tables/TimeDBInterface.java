@@ -56,8 +56,7 @@ public class TimeDBInterface extends ADBWorker {
 
                 timesValues.add(cv);
             }
-            int result = insert(TIME_TABLE_NAME, ADBWorker.REPLACE, timesValues);
-            return result;
+            return insert(TIME_TABLE_NAME, ADBWorker.REPLACE, timesValues);
         } catch(Exception e) {
             e.printStackTrace();
             return 0;

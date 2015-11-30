@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.system.CommonFunctions;
 
 import java.util.ArrayList;
 
@@ -16,11 +17,13 @@ import java.util.ArrayList;
  * Created by nsity on 17.11.15.
  */
 public class TimetableAdapter extends BaseAdapter {
-    private ArrayList<Timetable> arrayList;
+    private ArrayList<TimetableItem> arrayList;
     private Context context;
+    private LayoutInflater layoutInflater;
 
-    public TimetableAdapter(Context context, ArrayList<Timetable> arrayList) {
+    public TimetableAdapter(Context context, ArrayList<TimetableItem> arrayList) {
         this.arrayList = arrayList;
+        this.layoutInflater = LayoutInflater.from(context);
         this.context = context;
     }
 
@@ -49,14 +52,12 @@ public class TimetableAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View customView = convertView;
-        final Timetable timetable = arrayList.get(position);
+        final TimetableItem timetable = arrayList.get(position);
         final ViewHolder holder;
 
         if (convertView == null) {
             holder = new ViewHolder();
-            LayoutInflater li = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            customView = li.inflate(R.layout.item_timetable, null);
+            customView = layoutInflater.inflate(R.layout.item_timetable, parent, false);
             holder.mTimeTextView = (TextView) customView.findViewById(R.id.time);
             holder.mSubjectTextView = (TextView) customView.findViewById(R.id.subject);
             holder.mRoomTextView = (TextView) customView.findViewById(R.id.room);
@@ -68,15 +69,9 @@ public class TimetableAdapter extends BaseAdapter {
 
         holder.mSubjectTextView.setText(timetable.getSubject());
         holder.mRoomTextView.setText(timetable.getRoom());
-        holder.mTimeTextView.setText(timetable.getTimeStart().substring(0, timetable.getTimeStart().length() - 3));
+        holder.mTimeTextView.setText(CommonFunctions.getTime(timetable.getTimeStart()));
 
-        int[] colors = context.getResources().getIntArray(R.array.colors);
-
-        if(timetable.getColor() < colors.length) {
-            holder.mDividerView.setBackgroundColor(colors[timetable.getColor()]);
-        } else {
-            holder.mDividerView.setBackgroundColor(colors[timetable.getColor() - colors.length]);
-        }
+        holder.mDividerView.setBackgroundColor(CommonFunctions.setColor(context, timetable.getColor()));
 
         return customView;
     }

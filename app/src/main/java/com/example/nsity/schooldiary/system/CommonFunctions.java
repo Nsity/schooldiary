@@ -4,11 +4,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.example.nsity.schooldiary.R;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -18,6 +21,9 @@ import java.util.Locale;
 public class CommonFunctions {
     public static final String FORMAT_DD_MM_YYYY = "dd.MM.yyyy";
     public static final String FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
+
+    public static final String FORMAT_LLLL_D_YYYY = "LLLL d, yyyy";
+    public static final String FORMAT_D_MMMM_YYYY = "d MMMM yyyy";
     public static final String FORMAT_HH_MM = "HH:mm";
 
     public static boolean StringIsNullOrEmpty(String string) {
@@ -55,8 +61,8 @@ public class CommonFunctions {
 
     public static String getDate(String date, String enterFormat, String endFormat) {
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat(enterFormat, Locale.ENGLISH);
-            SimpleDateFormat df = new SimpleDateFormat(endFormat, Locale.ENGLISH);
+            SimpleDateFormat sdf = new SimpleDateFormat(enterFormat, new Locale("ru"));
+            SimpleDateFormat df = new SimpleDateFormat(endFormat, new Locale("ru"));
 
             return df.format(sdf.parse(date));
         } catch (Exception e) {
@@ -67,7 +73,6 @@ public class CommonFunctions {
     public static String getDate(Date date, String endFormat) {
         try {
             SimpleDateFormat df = new SimpleDateFormat(endFormat, Locale.ENGLISH);
-
             return df.format(date);
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,13 +121,48 @@ public class CommonFunctions {
         }
     }
 
-    public static String deleteLastChar(String value, char lastChar) {
-        if (value.length() > 0 && value.charAt(value.length() - 1) == lastChar)
-            value = value.substring(0, value.length() - 1);
-        return value;
+
+    public static int setColor(Context context, int color) {
+        int[] colors = context.getResources().getIntArray(R.array.colors);
+
+        if(color < colors.length) {
+            return colors[color];
+        } else {
+            return colors[color - colors.length];
+        }
     }
 
-    public static ProgressDialog showProgressDialog(Context context, String message) {
-        return ProgressDialog.show(context, "", message, true);
+
+    public static String getTime(String time) {
+        return time.substring(0, time.length() - 3);
+    }
+
+    public static int getDayOfWeek(Date d) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(d);
+            int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+            switch (dayOfWeek) {
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                    dayOfWeek--;
+                    break;
+                case 1:
+                    dayOfWeek = 7;
+                    break;
+            }
+            //cal.add(Calendar.DATE, -dayOfWeek + 1);
+           // Date d = cal.getTime();
+            return dayOfWeek;
+    }
+
+    public static String removeLastChar(String s) {
+        if (s == null || s.length() == 0) {
+            return s;
+        }
+        return s.substring(0, s.length()-1);
     }
 }

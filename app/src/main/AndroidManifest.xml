@@ -37,8 +37,8 @@
 
         <activity
             android:name=".navigation.timetable.CalendarActivity"
-            android:screenOrientation="landscape"
-            android:label="@string/action_week_view">
+            android:label="@string/action_week_view"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity

@@ -5,6 +5,7 @@
     <color name="colorPrimaryLight">#7986CB</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="divider">#1F000000</color>
 
     <color name="red">#F44336</color>
     <color name="pink">#E91E63</color>

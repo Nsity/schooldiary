@@ -68,29 +68,48 @@ public class TimetableDBInterface extends ADBWorker {
                     subjectsValues.add(cv);
                 }
             }
-            int result = insert(TIMETABLE_TABLE_NAME, ADBWorker.REPLACE, subjectsValues);
-            return result;
+            return insert(TIMETABLE_TABLE_NAME, ADBWorker.REPLACE, subjectsValues);
         } catch(Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
 
-    public ArrayList<Timetable> getTimetable(int dayOfWeek) {
+    /*public Cursor getTimetable(int dayOfWeek) {
         String selectQuery = "SELECT * FROM " + TIMETABLE_TABLE_NAME + " t JOIN " + SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME
                 + " s ON t." + TIMETABLE_COLUMN_SUBJECTS_CLASS_ID + " = s." + SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID +
                 " JOIN " + TimeDBInterface.TIME_TABLE_NAME + " time ON t." + TIMETABLE_COLUMN_TIME_ID + " = time." +
                 TimeDBInterface.TIME_COLUMN_ID + " WHERE " + TIMETABLE_COLUMN_DAY_OF_WEEK + " =? ORDER BY " + TimeDBInterface.TIME_COLUMN_START;
-        Cursor cursor = getCursor(selectQuery, new String[]{String.valueOf(dayOfWeek)});
-        ArrayList<Timetable> arrayList = new ArrayList<>();
+       return getCursor(selectQuery, new String[]{String.valueOf(dayOfWeek)});
+    }*/
+
+    public Cursor getTimetable() {
+        String selectQuery = "SELECT * FROM " + TIMETABLE_TABLE_NAME + " t JOIN " + SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME
+                + " s ON t." + TIMETABLE_COLUMN_SUBJECTS_CLASS_ID + " = s." + SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID +
+                " JOIN " + TimeDBInterface.TIME_TABLE_NAME + " time ON t." + TIMETABLE_COLUMN_TIME_ID + " = time." +
+                TimeDBInterface.TIME_COLUMN_ID + " ORDER BY " + TIMETABLE_COLUMN_DAY_OF_WEEK + ", " +  TimeDBInterface.TIME_COLUMN_START;
+        return getCursor(selectQuery, new String[]{});
+    }
+
+
+   /* public Timetable getTimetableById(int id) {
+
+        Timetable timetable = new Timetable();
+
+        String selectQuery = "SELECT * FROM " + TIMETABLE_TABLE_NAME + " t JOIN " + SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME
+                + " s ON t." + TIMETABLE_COLUMN_SUBJECTS_CLASS_ID + " = s." + SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID +
+                " JOIN " + TimeDBInterface.TIME_TABLE_NAME + " time ON t." + TIMETABLE_COLUMN_TIME_ID + " = time." +
+                TimeDBInterface.TIME_COLUMN_ID + " WHERE " + TIMETABLE_COLUMN_ID + " =? ";
+
+        Cursor cursor = getCursor(selectQuery, new String[]{String.valueOf(id)});
+
 
         if(cursor.getCount() == 0) {
-            return arrayList;
+            return null;
         }
 
         if (cursor.moveToFirst()) {
             do {
-                Timetable timetable = new Timetable();
                 timetable.setId(cursor.getInt(cursor.getColumnIndex(TIMETABLE_COLUMN_ID)));
                 timetable.setRoom(cursor.getString(cursor.getColumnIndex(TIMETABLE_COLUMN_ROOM)));
                 timetable.setSubjectId(cursor.getString(cursor.getColumnIndex(TIMETABLE_COLUMN_SUBJECTS_CLASS_ID)));
@@ -99,17 +118,16 @@ public class TimetableDBInterface extends ADBWorker {
                 timetable.setTimeStart(cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_START)));
                 timetable.setTimeEnd(cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_END)));
                 timetable.setTimeId(cursor.getInt(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_ID)));
-                arrayList.add(timetable);
+                timetable.setDay(cursor.getInt(cursor.getColumnIndex(TimetableDBInterface.TIMETABLE_COLUMN_DAY_OF_WEEK)));
             }
             while (cursor.moveToNext());
         } else
-            return arrayList;
+            return null;
 
         cursor.close();
 
-        return arrayList;
-    }
-
+        return timetable;
+    }*/
 
     public TimetableDBInterface(Context context) {
         super(context);

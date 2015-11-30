@@ -21,22 +21,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alamkanak.weekview.DateTimeInterpreter;
-import com.alamkanak.weekview.WeekView;
-import com.alamkanak.weekview.WeekViewEvent;
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.MainActivity;
 import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
+import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Preferences;
-import com.example.nsity.schooldiary.system.database.tables.TimetableDBInterface;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -45,7 +39,7 @@ import java.util.Random;
  */
 public class TimetableFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private ListView mTodayView;
-    private ArrayList<Timetable> timetableArrayList;
+    private ArrayList<TimetableItem> timetableItemArrayList;
     private TextView mTextView;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -77,6 +71,7 @@ public class TimetableFragment extends Fragment implements SwipeRefreshLayout.On
         switch (item.getItemId()) {
             case R.id.action_week_view:
                 startActivity(new Intent(getActivity(), CalendarActivity.class));
+                getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                 return false;
         }
         return super.onOptionsItemSelected(item);
@@ -88,12 +83,13 @@ public class TimetableFragment extends Fragment implements SwipeRefreshLayout.On
         setView();
     }
 
+    public void setView() {
+        int dayOfWeek = CommonFunctions.getDayOfWeek(Calendar.getInstance().getTime());
 
-    public void setView () {
-        int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        Timetable timetable = new Timetable(getActivity());
+        timetableItemArrayList = timetable.getTimetableOfDay(dayOfWeek);
 
-        timetableArrayList = new TimetableDBInterface(getActivity()).getTimetable(dayOfWeek);
-        if(timetableArrayList.size() == 0) {
+        if(timetableItemArrayList == null) {
 
             mTodayView.setVisibility(View.INVISIBLE);
             mTextView.setVisibility(View.VISIBLE);
@@ -118,22 +114,23 @@ public class TimetableFragment extends Fragment implements SwipeRefreshLayout.On
             mTodayView.setVisibility(View.VISIBLE);
             mTextView.setVisibility(View.INVISIBLE);
 
-            mTodayView.setAdapter(new TimetableAdapter(getActivity(), timetableArrayList));
+            mTodayView.setAdapter(new TimetableAdapter(getActivity(), timetableItemArrayList));
             mTodayView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
                                         long id) {
-                    Timetable timetable = timetableArrayList.get(position);
-                    Intent intent = new Intent(getActivity(), LessonActivity.class);
-                    intent.putExtra("subjectId", timetable.getSubjectId());
-                    intent.putExtra("subjectName", timetable.getSubject());
-                    intent.putExtra("timeId", timetable.getTimeId());
+                    TimetableItem timetableItem = timetableItemArrayList.get(position);
 
                     Calendar cal = Calendar.getInstance();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     String currentDate = sdf.format(cal.getTime());
 
+                   // String currentDate = "2015-11-30";
+
+                    Intent intent = new Intent(getActivity(), LessonActivity.class);
+                    intent.putExtra("timetableItem", timetableItem);
                     intent.putExtra("day", currentDate);
+
                     startActivity(intent);
                     getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 }

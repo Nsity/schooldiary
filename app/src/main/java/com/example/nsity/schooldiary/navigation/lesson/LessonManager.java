@@ -5,6 +5,8 @@ import android.content.Context;
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.system.ErrorTracker;
 import com.example.nsity.schooldiary.system.Preferences;
+import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.MarkDBInterface;
 import com.example.nsity.schooldiary.system.network.AsyncHttpResponse;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.ResponseObject;
@@ -18,11 +20,16 @@ import org.json.JSONObject;
  */
 public class LessonManager {
 
-    public static void getLesson(final Context context, final String pupilId, final String subjectId, final String day, final String timeId, final CallBack callBack) {
-
+    public static void getLesson(final Context context, final int lessonId, final String pupilId, final String subjectId, final String day,
+                                 final String timeId, final CallBack callBack) {
         String url = context.getString(R.string.base_url) +
                 context.getString(R.string.call_method_api_get_lesson) + pupilId + "/"
                 + subjectId + "/" + day + "/" + timeId;
+
+        LessonDBInterface db = new LessonDBInterface(context);
+        db.deleteLesson(lessonId);
+
+        db.closeDB();
 
         new AsyncHttpResponse(url, null, AsyncHttpResponse.CALL_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
             @Override
@@ -32,23 +39,26 @@ public class LessonManager {
                     return;
                 }
 
-                JSONObject response = (JSONObject) object.getResponse();
+                JSONObject response = (JSONObject)object.getResponse();
                 try {
 
-                    JSONObject result = response.getJSONObject(context.getString(R.string.result));
-                    JSONArray timesArray = (JSONArray) result.get(context.getString(R.string.time));
+                    JSONArray result = response.getJSONArray(context.getString(R.string.result));
 
-                    /*TimeDBInterface dbTime = new TimeDBInterface(context);
-                    dbTime.save(timesArray, true);*/
+                    LessonDBInterface dbLesson = new LessonDBInterface(context);
+                    dbLesson.save(result, false);
+                    dbLesson.closeDB();
 
+                    MarkDBInterface dbMark = new MarkDBInterface(context);
 
+                    result = result.getJSONObject(0).getJSONArray(context.getString(R.string.marks));
+                    int marks = dbMark.save(result, false);
+                    dbMark.closeDB();
+
+                    callBack.onSuccess();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     callBack.onFail(context.getString(R.string.error_response));
-                    return;
                 }
-
-                callBack.onSuccess();
             }
 
             @Override

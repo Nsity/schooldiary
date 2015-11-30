@@ -13,8 +13,8 @@
 
     <string name="today">Сегодня</string>
 
-    <!--<string name="base_url">http://schooldiary.azurewebsites.net/</string>-->
-    <string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>
+    <string name="base_url">http://schooldiary.azurewebsites.net/</string>
+    <!--<string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>-->
     <string name="call_method_api_login">auth/login/</string>
     <string name="call_method_api_get_timetable">timetable/get/</string>
     <string name="call_method_api_get_lesson">lesson/get/</string>
@@ -42,6 +42,33 @@
 
     <string name="time_start">ВремяНачала</string>
     <string name="time_end">ВремяОкончания</string>
+    <string name="status">Статус</string>
+    <string name="homework">ДомашнееЗадание</string>
+    <string name="homework_single">Домашнее задание</string>
+    <string name="pass">Пропуск</string>
+    <string name="marks">Оценки</string>
+    <string name="note">Замечание</string>
+    <string name="theme">Тема</string>
+    <string name="date">Дата</string>
+
+    <string name="type">Тип</string>
+    <string name="lessonId">УрокИд</string>
+    <string name="mark">Оценка</string>
+
+    <string name="missing">Отсутсвует</string>
+
+    <string name="text_copied">Текст скопирован в буфер</string>
+    <string name="no_data">Нет данных</string>
+
+    <string name="ill">по болезни</string>
+    <string name="good_reason">по уважительной причине</string>
+    <string name="bad_reason">по неуважительной причине</string>
+
+    <string name="ill_short">б</string>
+    <string name="good_reason_short">у</string>
+    <string name="bad_reason_short">н</string>
+
+    <string name="year">года</string>
 
     <string-array name="days">
         <item>Понедельник</item>

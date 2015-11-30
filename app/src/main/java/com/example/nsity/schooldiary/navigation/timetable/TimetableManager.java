@@ -45,15 +45,21 @@ public class TimetableManager {
                     TimeDBInterface dbTime = new TimeDBInterface(context);
                     dbTime.save(timesArray, true);
 
+                    dbTime.closeDB();
+
                     JSONArray subjectsArray = (JSONArray) result.get(context.getString(R.string.subjects));
 
                     SubjectsClassDBInterface dbSubjects = new SubjectsClassDBInterface(context);
                     dbSubjects.save(subjectsArray, true);
 
+                    dbSubjects.closeDB();
+
                     JSONArray timetableArray = (JSONArray) result.get(context.getString(R.string.timetable));
 
                     TimetableDBInterface dbTimetable = new TimetableDBInterface(context);
                     dbTimetable.save(timetableArray, true);
+
+                    dbTimetable.closeDB();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
