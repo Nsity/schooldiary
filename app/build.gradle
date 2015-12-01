@@ -31,4 +31,5 @@ dependencies {
     compile 'com.github.sundeepk:compact-calendar-view:1.7.9'
     compile 'com.prolificinteractive:material-calendarview:1.1.0'
     compile 'com.ms-square:expandableTextView:0.1.4'
+    compile 'me.nlmartian.silkcal:library:0.1.1'
 }

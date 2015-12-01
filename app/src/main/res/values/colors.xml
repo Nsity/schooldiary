@@ -30,7 +30,6 @@
         <item>@color/pink</item>
         <item>@color/purple</item>
         <item>@color/deep_purple</item>
-        <item>@color/indigo</item>
         <item>@color/blue</item>
         <item>@color/cyan</item>
         <item>@color/teal</item>
@@ -41,4 +40,8 @@
         <item>@color/deep_orange</item>
         <item>@color/blue_grey</item>
     </array>
+
+
+    <color name="current_day_background">@color/colorPrimaryLight</color>
+    <color name="weekends_day">@android:color/white</color>
 </resources>

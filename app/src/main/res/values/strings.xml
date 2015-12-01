@@ -80,6 +80,18 @@
     </string-array>
 
 
+    <string-array name="timetable_days">
+        <item>Расписание на понедельник</item>
+        <item>Расписание на вторник</item>
+        <item>Расписание на среду</item>
+        <item>Расписание на четверг</item>
+        <item>Расписание на пятницу</item>
+        <item>Расписание на субботу</item>
+        <item>Расписание на воскресенье</item>
+    </string-array>
+
+
+
     <string name="error_tracker_timeout_error">Превышено время ожидания данных. Сервер не отвечает</string>
     <string name="error_tracker_error">При получении данных произошла ошибка</string>
     <string name="error_tracker_empty_content">В JSON отсутствуют данные</string>

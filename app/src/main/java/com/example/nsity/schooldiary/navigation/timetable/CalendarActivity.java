@@ -1,19 +1,44 @@
 package com.example.nsity.schooldiary.navigation.timetable;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
+import com.example.nsity.schooldiary.system.CommonFunctions;
+
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import me.nlmartian.silkcal.DatePickerController;
+import me.nlmartian.silkcal.DayPickerView;
+import me.nlmartian.silkcal.SimpleMonthAdapter;
 
 /**
  * Created by nsity on 17.11.15.
  */
-public class CalendarActivity extends AppCompatActivity {
+public class CalendarActivity extends AppCompatActivity implements DatePickerController {
 
+    private ListView mTodayView;
+    private ArrayList<TimetableItem> timetableItemArrayList;
+    private DayPickerView calendarView;
+
+    private View header;
+
+    private Timetable timetable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +58,87 @@ public class CalendarActivity extends AppCompatActivity {
         });
 
 
-        /*mWeekView = (WeekView) findViewById(R.id.weekView);
-        mWeekView.setOnEventClickListener(this);
-        mWeekView.setMonthChangeListener(this);
+        mTodayView = (ListView) findViewById(R.id.timetable);
 
-        setupDateTimeInterpreter(false);
+        header = createHeader("");
+        mTodayView.addHeaderView(header);
 
-        goToMondayOfCurrentWeek();*/
+        calendarView = (DayPickerView) findViewById(R.id.calendar_view);
+        calendarView.setController(this);
+
+
+       // textView = (TextView) findViewById(R.id.textView);
+        timetable = new Timetable(this);
+        setView(Calendar.getInstance().getTime());
+
     }
+
+
+    @Override
+    public int getMaxYear() {
+        return 2045;
+    }
+
+    @Override
+    public void onDayOfMonthSelected(int year, int month, int day) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.YEAR, year);
+
+
+        setView(cal.getTime());
+
+
+        //Log.e("Day Selected", day + " / " + month + " / " + year);
+    }
+
+    View createHeader(String text) {
+        View v = getLayoutInflater().inflate(R.layout.header, null);
+        ((TextView)v.findViewById(R.id.title)).setText(text);
+        return v;
+    }
+
+
+    public void setView(final Date date) {
+
+        String[] timetableDays = getResources().getStringArray(R.array.timetable_days);
+        int dayOfWeek = CommonFunctions.getDayOfWeek(date);
+        timetableItemArrayList = timetable.getTimetableOfDay(dayOfWeek);
+
+        ((TextView)header.findViewById(R.id.title)).setText(timetableDays[dayOfWeek - 1]);
+
+        if(timetableItemArrayList == null) {
+            mTodayView.setAdapter(null);
+        } else {
+            mTodayView.setAdapter(new TimetableAdapter(this, timetableItemArrayList));
+        }
+
+
+        mTodayView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
+                                    long id) {
+                TimetableItem timetableItem = timetableItemArrayList.get(position);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                String currentDate = sdf.format(date);
+
+                Intent intent = new Intent(CalendarActivity.this, LessonActivity.class);
+                intent.putExtra("timetableItem", timetableItem);
+                intent.putExtra("day", currentDate);
+
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+    }
+
+    @Override
+    public void onDateRangeSelected(SimpleMonthAdapter.SelectedDays<SimpleMonthAdapter.CalendarDay> selectedDays) {
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -55,7 +153,7 @@ public class CalendarActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.action_week_view:
-               // goToMondayOfCurrentWeek();
+                calendarView.scrollToToday();
                 return true;
         }
         return super.onOptionsItemSelected(item);

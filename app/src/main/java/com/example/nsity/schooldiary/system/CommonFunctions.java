@@ -125,11 +125,13 @@ public class CommonFunctions {
     public static int setColor(Context context, int color) {
         int[] colors = context.getResources().getIntArray(R.array.colors);
 
-        if(color < colors.length) {
+        return colors[color % colors.length];
+
+        /*if(color < colors.length) {
             return colors[color];
         } else {
             return colors[color - colors.length];
-        }
+        }*/
     }
 
 
