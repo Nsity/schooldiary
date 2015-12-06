@@ -3,11 +3,10 @@ package com.example.nsity.schooldiary.navigation.lesson;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.example.nsity.schooldiary.navigation.MarksFragment;
+import com.example.nsity.schooldiary.navigation.Subject;
+import com.example.nsity.schooldiary.navigation.Time;
 import com.example.nsity.schooldiary.navigation.marks.Mark;
-import com.example.nsity.schooldiary.navigation.timetable.Timetable;
 import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
-import com.example.nsity.schooldiary.system.database.tables.MarkDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TimeDBInterface;
 
@@ -18,19 +17,19 @@ import java.util.ArrayList;
  */
 public class Lesson {
 
-    private Context context;
-
     private int id;
-    private String subjectName;
     private String date;
-    private String timeStart;
-    private String timeEnd;
     private String theme;
     private String homework;
     private String note;
     private String pass;
 
-    private ArrayList<Mark> marksArrayList = null;
+    private Time time;
+    private Subject subject;
+
+    private ArrayList<Mark> marksArrayList;
+
+    private LessonDBInterface db;
 
     private int color;
 
@@ -74,27 +73,25 @@ public class Lesson {
         this.date = date;
     }
 
-    public String getSubjectName() {
-        return subjectName;
-    }
-
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
-    }
-
     public Lesson(Context context, int lessonId) {
         this.id = lessonId;
-        this.context = context;
-        loadFromDB();
+        this.db = new LessonDBInterface(context);
+        //loadFromDB();
+    }
+
+    public Lesson(Context context) {
+        this.db = new LessonDBInterface(context);
+    }
+
+    public Lesson() {
     }
 
     public Lesson(Context context, String date, int timeId, int subjectId) {
-        this.context = context;
+        this.db = new LessonDBInterface(context);
         getLesson(date, timeId, subjectId);
     }
 
-    private void loadFromDB() {
-        LessonDBInterface db = new LessonDBInterface(context);
+    /*private void loadFromDB() {
         Cursor cursor = db.getLesson(String.valueOf(id));
 
         if(cursor == null) {
@@ -112,79 +109,30 @@ public class Lesson {
         db.closeDB();
 
         marksArrayList = getMarksOfLesson();
-    }
+    }*/
 
     public void getLesson(String date, int timeId, int subjectId) {
-        LessonDBInterface db = new LessonDBInterface(context);
+        Lesson lesson = db.getLesson(date, timeId, subjectId);
 
-        Cursor cursor = db.getLesson(date, timeId, subjectId);
-
-        if(cursor == null) {
+        if(lesson == null) {
             setId(-1);
             return;
         }
 
-        if (cursor.moveToFirst()) {
-            do {
-                setValues(cursor);
-            }
-            while (cursor.moveToNext());
-        } else {
-            setId(-1);
-        }
+        this.id = lesson.getId();
+        this.date = lesson.getDate();
+        this.homework = lesson.getHomework();
+        this.time = lesson.getTime();
+        this.pass = lesson.getPass();
+        this.theme = lesson.getTheme();
+        this.subject = lesson.getSubject();
+        this.note = lesson.getNote();
 
-        cursor.close();
-        db.closeDB();
-
-        marksArrayList = getMarksOfLesson();
+        getMarksOfLesson();
     }
 
-    private void setValues(Cursor cursor) {
-        setId(cursor.getInt(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_ID)));
-        setDate(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_DATE)));
-        setHomework(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_HOMEWORK)));
-        setTheme(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_THEME)));
-        setColor(cursor.getInt(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_COLOR)));
-        setSubjectName(cursor.getString(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_SUBJECT_NAME)));
-        setNote(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_NOTE)));
-        setPass(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_PASS)));
-        setTimeStart(cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_START)));
-        setTimeEnd(cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_END)));
-    }
-
-    private ArrayList<Mark> getMarksOfLesson() {
-        if(id == -1) {
-            return null;
-        }
-
-        MarkDBInterface db = new MarkDBInterface(context);
-
-        Cursor cursor = db.getMarks(id);
-        if(cursor == null) {
-            return null;
-        }
-
-        ArrayList<Mark> marks = new ArrayList<>();
-        if (cursor.moveToFirst()) {
-            do {
-                Mark mark = new Mark();
-                mark.setId(cursor.getInt(cursor.getColumnIndex(MarkDBInterface.MARK_COLUMN_ID)));
-                mark.setType(cursor.getString(cursor.getColumnIndex(MarkDBInterface.MARK_COLUMN_TYPE)));
-                mark.setValue(cursor.getInt(cursor.getColumnIndex(MarkDBInterface.MARK_COLUMN_VALUE)));
-
-                marks.add(mark);
-            }
-            while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.closeDB();
-
-        if(marks.size() == 0) {
-            return null;
-        } else {
-            return marks;
-        }
+    public void getMarksOfLesson() {
+        marksArrayList = db.getMarks(id);
     }
 
     public int getColor() {
@@ -203,23 +151,24 @@ public class Lesson {
         this.pass = pass;
     }
 
-    public String getTimeStart() {
-        return timeStart;
-    }
-
-    public void setTimeStart(String timeStart) {
-        this.timeStart = timeStart;
-    }
-
-    public String getTimeEnd() {
-        return timeEnd;
-    }
-
-    public void setTimeEnd(String timeEnd) {
-        this.timeEnd = timeEnd;
-    }
-
     public ArrayList<Mark> getMarks() {
         return marksArrayList;
     }
+
+    public Time getTime() {
+        return time;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+
 }

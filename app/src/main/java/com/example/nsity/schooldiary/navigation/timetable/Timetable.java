@@ -15,53 +15,24 @@ import java.util.ArrayList;
  */
 public class Timetable {
 
-    private ArrayList<TimetableItem> timetableArrayList = null;
-    private Context context;
+    private ArrayList<TimetableItem> timetableArrayList;
+
+    TimetableDBInterface db;
 
     public Timetable(Context context) {
-        this.context = context;
+        this.db = new TimetableDBInterface(context);
         timetableArrayList = loadFromDB();
     }
 
     private ArrayList<TimetableItem> loadFromDB() {
-        TimetableDBInterface db = new TimetableDBInterface(context);
-
-        Cursor cursor = db.getTimetable();
-        ArrayList<TimetableItem> timetable = new ArrayList<>();
-
-        if(cursor == null) {
-            return null;
-        }
-
-        if (cursor.moveToFirst()) {
-            do {
-                TimetableItem timetableItem = new TimetableItem();
-                timetableItem.setId(cursor.getInt(cursor.getColumnIndex(TimetableDBInterface.TIMETABLE_COLUMN_ID)));
-                timetableItem.setRoom(cursor.getString(cursor.getColumnIndex(TimetableDBInterface.TIMETABLE_COLUMN_ROOM)));
-                timetableItem.setSubjectId(cursor.getInt(cursor.getColumnIndex(TimetableDBInterface.TIMETABLE_COLUMN_SUBJECTS_CLASS_ID)));
-                timetableItem.setSubject(cursor.getString(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_SUBJECT_NAME)));
-                timetableItem.setColor(cursor.getInt(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_COLOR)));
-                timetableItem.setTimeStart(cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_START)));
-                timetableItem.setTimeEnd(cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_END)));
-                timetableItem.setTimeId(cursor.getInt(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_ID)));
-                timetableItem.setDay(cursor.getInt(cursor.getColumnIndex(TimetableDBInterface.TIMETABLE_COLUMN_DAY_OF_WEEK)));
-
-                timetable.add(timetableItem);
-            }
-            while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.closeDB();
-
-        if(timetable.size() == 0) {
-            return null;
-        } else {
-            return timetable;
-        }
+        return db.getTimetable();
     }
 
     public ArrayList<TimetableItem> getTimetableOfDay(int dayOfWeek) {
+        if(timetableArrayList == null) {
+            return null;
+        }
+
         ArrayList<TimetableItem> timetableOfDay = new ArrayList<>();
 
         for (TimetableItem timetableItem: timetableArrayList) {
@@ -74,5 +45,10 @@ public class Timetable {
             return null;
         } else
             return timetableOfDay;
+    }
+
+
+    public TimetableItem getItem(int position) {
+        return timetableArrayList.get(position);
     }
 }

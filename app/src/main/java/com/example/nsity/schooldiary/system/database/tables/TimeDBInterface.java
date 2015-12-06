@@ -32,12 +32,12 @@ public class TimeDBInterface extends ADBWorker {
 
 
     @Override
-    public int save(JSONArray clients, boolean dropAllData) {
+    public int save(JSONArray times, boolean dropAllData) {
         if (dropAllData) {
             delete(TIME_TABLE_NAME, null, null);
         }
 
-        return addTimesData(clients);
+        return addTimesData(times);
     }
 
 

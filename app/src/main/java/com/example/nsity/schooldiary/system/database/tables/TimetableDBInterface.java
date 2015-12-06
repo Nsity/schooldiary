@@ -3,10 +3,11 @@ package com.example.nsity.schooldiary.system.database.tables;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.text.format.Time;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.timetable.Timetable;
+import com.example.nsity.schooldiary.navigation.Subject;
+import com.example.nsity.schooldiary.navigation.Time;
+import com.example.nsity.schooldiary.navigation.timetable.TimetableItem;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.database.ADBWorker;
 
@@ -59,11 +60,10 @@ public class TimetableDBInterface extends ADBWorker {
                     JSONObject subject = subjects.getJSONObject(j);
                     ContentValues cv = new ContentValues();
                     cv.put(TIMETABLE_COLUMN_ID, CommonFunctions.getFieldInt(subject, context.getString(R.string.id)));
-                    cv.put(TIMETABLE_COLUMN_ROOM, CommonFunctions.getFieldString(subject, context.getString(R.string.room_name)).equals("null") ? "" :
-                            CommonFunctions.getFieldString(subject, context.getString(R.string.room_name)));
+                    cv.put(TIMETABLE_COLUMN_ROOM, CommonFunctions.getFieldString(subject, context.getString(R.string.room_name)));
                     cv.put(TIMETABLE_COLUMN_SUBJECTS_CLASS_ID, CommonFunctions.getFieldInt(subject, context.getString(R.string.subject_id)));
                     cv.put(TIMETABLE_COLUMN_TIME_ID, CommonFunctions.getFieldInt(subject, context.getString(R.string.time_id)));
-                    cv.put(TIMETABLE_COLUMN_DAY_OF_WEEK, i + 1);
+                    cv.put(TIMETABLE_COLUMN_DAY_OF_WEEK, CommonFunctions.getFieldInt(subject, context.getString(R.string.day_id)));
 
                     subjectsValues.add(cv);
                 }
@@ -75,59 +75,49 @@ public class TimetableDBInterface extends ADBWorker {
         }
     }
 
-    /*public Cursor getTimetable(int dayOfWeek) {
-        String selectQuery = "SELECT * FROM " + TIMETABLE_TABLE_NAME + " t JOIN " + SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME
-                + " s ON t." + TIMETABLE_COLUMN_SUBJECTS_CLASS_ID + " = s." + SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID +
-                " JOIN " + TimeDBInterface.TIME_TABLE_NAME + " time ON t." + TIMETABLE_COLUMN_TIME_ID + " = time." +
-                TimeDBInterface.TIME_COLUMN_ID + " WHERE " + TIMETABLE_COLUMN_DAY_OF_WEEK + " =? ORDER BY " + TimeDBInterface.TIME_COLUMN_START;
-       return getCursor(selectQuery, new String[]{String.valueOf(dayOfWeek)});
-    }*/
-
-    public Cursor getTimetable() {
+    public ArrayList<TimetableItem> getTimetable() {
         String selectQuery = "SELECT * FROM " + TIMETABLE_TABLE_NAME + " t JOIN " + SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME
                 + " s ON t." + TIMETABLE_COLUMN_SUBJECTS_CLASS_ID + " = s." + SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID +
                 " JOIN " + TimeDBInterface.TIME_TABLE_NAME + " time ON t." + TIMETABLE_COLUMN_TIME_ID + " = time." +
                 TimeDBInterface.TIME_COLUMN_ID + " ORDER BY " + TIMETABLE_COLUMN_DAY_OF_WEEK + ", " +  TimeDBInterface.TIME_COLUMN_START;
-        return getCursor(selectQuery, new String[]{});
-    }
 
 
-   /* public Timetable getTimetableById(int id) {
-
-        Timetable timetable = new Timetable();
-
-        String selectQuery = "SELECT * FROM " + TIMETABLE_TABLE_NAME + " t JOIN " + SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME
-                + " s ON t." + TIMETABLE_COLUMN_SUBJECTS_CLASS_ID + " = s." + SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID +
-                " JOIN " + TimeDBInterface.TIME_TABLE_NAME + " time ON t." + TIMETABLE_COLUMN_TIME_ID + " = time." +
-                TimeDBInterface.TIME_COLUMN_ID + " WHERE " + TIMETABLE_COLUMN_ID + " =? ";
-
-        Cursor cursor = getCursor(selectQuery, new String[]{String.valueOf(id)});
-
-
-        if(cursor.getCount() == 0) {
+        Cursor cursor = getCursor(selectQuery, new String[]{});
+        if(cursor == null) {
             return null;
         }
 
+        ArrayList<TimetableItem> timetable = new ArrayList<>();
+
         if (cursor.moveToFirst()) {
             do {
-                timetable.setId(cursor.getInt(cursor.getColumnIndex(TIMETABLE_COLUMN_ID)));
-                timetable.setRoom(cursor.getString(cursor.getColumnIndex(TIMETABLE_COLUMN_ROOM)));
-                timetable.setSubjectId(cursor.getString(cursor.getColumnIndex(TIMETABLE_COLUMN_SUBJECTS_CLASS_ID)));
-                timetable.setSubject(cursor.getString(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_SUBJECT_NAME)));
-                timetable.setColor(cursor.getInt(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_COLOR)));
-                timetable.setTimeStart(cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_START)));
-                timetable.setTimeEnd(cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_END)));
-                timetable.setTimeId(cursor.getInt(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_ID)));
-                timetable.setDay(cursor.getInt(cursor.getColumnIndex(TimetableDBInterface.TIMETABLE_COLUMN_DAY_OF_WEEK)));
+                TimetableItem timetableItem = new TimetableItem();
+                timetableItem.setId(cursor.getInt(cursor.getColumnIndex(TIMETABLE_COLUMN_ID)));
+                timetableItem.setRoom(cursor.getString(cursor.getColumnIndex(TIMETABLE_COLUMN_ROOM)));
+                timetableItem.setDay(cursor.getInt(cursor.getColumnIndex(TIMETABLE_COLUMN_DAY_OF_WEEK)));
+
+                timetableItem.setSubject(new Subject(cursor.getInt(cursor.getColumnIndex(TIMETABLE_COLUMN_SUBJECTS_CLASS_ID)),
+                        cursor.getString(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_SUBJECT_NAME)),
+                        cursor.getInt(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_COLOR))));
+
+
+                timetableItem.setTime(new Time(cursor.getInt(cursor.getColumnIndex(TIMETABLE_COLUMN_TIME_ID)),
+                        cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_START)),
+                        cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_END))));
+
+                timetable.add(timetableItem);
             }
             while (cursor.moveToNext());
-        } else
-            return null;
+        }
 
         cursor.close();
 
-        return timetable;
-    }*/
+        if(timetable.size() == 0) {
+            return null;
+        } else {
+            return timetable;
+        }
+    }
 
     public TimetableDBInterface(Context context) {
         super(context);

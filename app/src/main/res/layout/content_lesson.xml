@@ -195,73 +195,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="72dp"
-                        android:id="@+id/homework_layout">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/image_homework"
-                            android:layout_marginTop="24dp"
-                            android:layout_marginLeft="16dp"
-                            android:foregroundGravity="center"
-                            android:background="@mipmap/ic_work_black_24dp"
-                            android:contentDescription="@string/homework" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/homework_name"
-                            android:text="@string/homework_single"
-                            android:layout_marginTop="@dimen/activity_vertical_margin"
-                            android:layout_marginLeft="72dp"
-                            android:textSize="16sp"
-                            android:layout_marginRight="16dp"
-                            android:textColor="@android:color/primary_text_light"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentStart="true" />
-
-
-                        <com.ms.square.android.expandabletextview.ExpandableTextView
-                            xmlns:android="http://schemas.android.com/apk/res/android"
-                            xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
-                            android:id="@+id/homework"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            expandableTextView:maxCollapsedLines="2"
-                            expandableTextView:animDuration="200"
-                            android:layout_marginLeft="72dp"
-                            android:layout_marginRight="16dp"
-                            android:paddingBottom="16dp"
-                            android:layout_below="@+id/homework_name">
-                            <TextView
-                                android:id="@id/expandable_text"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textColor="@android:color/secondary_text_light"
-                                android:textSize="14sp" />
-                            <ImageButton
-                                android:id="@id/expand_collapse"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right|bottom"
-                                android:layout_marginTop="8dp"
-                                android:background="@android:color/transparent"/>
-                        </com.ms.square.android.expandabletextview.ExpandableTextView>
-
-                        <View
-                            android:id="@+id/view4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="1dp"
-                            android:layout_marginLeft="72dp"
-                            android:background="@color/divider"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentStart="true" />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="72dp"
                         android:id="@+id/marks_layout">
 
                         <ImageView
@@ -407,6 +340,59 @@
 
                         <View
                             android:id="@+id/view7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="72dp"
+                            android:background="@color/divider"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentStart="true" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="72dp"
+                        android:id="@+id/homework_layout">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/image_homework"
+                            android:layout_marginTop="24dp"
+                            android:layout_marginLeft="16dp"
+                            android:foregroundGravity="center"
+                            android:background="@mipmap/ic_work_black_24dp"
+                            android:contentDescription="@string/homework" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/homework_name"
+                            android:text="@string/homework_single"
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:layout_marginLeft="72dp"
+                            android:textSize="16sp"
+                            android:layout_marginRight="16dp"
+                            android:textColor="@android:color/primary_text_light"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentStart="true" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/homework"
+                            android:textColor="@android:color/secondary_text_light"
+                            android:layout_marginLeft="72dp"
+                            android:textSize="14sp"
+                            android:paddingBottom="16dp"
+                            android:layout_below="@+id/homework_name"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginRight="16dp"
+                            android:layout_alignParentStart="true" />
+
+                        <View
+                            android:id="@+id/view4"
                             android:layout_width="wrap_content"
                             android:layout_height="1dp"
                             android:layout_marginLeft="72dp"

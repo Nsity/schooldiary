@@ -21,14 +21,17 @@
         app:colorSelectedDayBackground="@color/colorAccent"
         app:colorMonthName="@android:color/white"
         calendar:drawRoundRect="false"/>
-
-    <ListView
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/timetable"
-        android:divider="@null"
         android:background="@android:color/white"
-        android:layout_gravity="center_vertical"
-        android:layout_weight=".5" />
-
+        android:layout_height="match_parent">
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/timetable"
+            android:divider="@null"
+            android:background="@android:color/white"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight=".5" />
+    </RelativeLayout>
 </LinearLayout>

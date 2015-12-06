@@ -18,8 +18,8 @@ import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.MainActivity;
-import com.example.nsity.schooldiary.navigation.timetable.TimetableManager;
 import com.example.nsity.schooldiary.system.Preferences;
+import com.example.nsity.schooldiary.system.SyncManager;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
 
@@ -106,14 +106,13 @@ public class LoginActivity extends AppCompatActivity {
     private void sync() {
         final ProgressDialog mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setMessage(getString(R.string.action_load_timetable));
+        mProgressDialog.setMessage(getString(R.string.action_load));
         mProgressDialog.setProgressNumberFormat(null);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setIndeterminate(false);
         mProgressDialog.show();
 
-
-        TimetableManager.getTimetable(getApplicationContext(), Preferences.get(Preferences.CLASSID, getApplicationContext()), new CallBack() {
+        SyncManager.sync(getApplicationContext(), Preferences.get(Preferences.CLASSID, getApplicationContext()), new CallBack() {
             @Override
             public void onSuccess() {
                 mProgressDialog.dismiss();

@@ -49,7 +49,7 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
     private TextView mPassTextView;
     private TextView mMarksTextView;
 
-    private ExpandableTextView mHomeWorkTextView;
+    private TextView mHomeworkTextView;
 
     private ClipboardManager myClipboard;
     private ClipData myClip;
@@ -65,8 +65,8 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
 
         timetableItem = (TimetableItem) getIntent().getSerializableExtra("timetableItem");
         if(timetableItem != null) {
-            toolbar.setTitle(timetableItem.getSubject());
-            toolbar.setBackgroundColor(CommonFunctions.setColor(this, timetableItem.getColor()));
+            toolbar.setTitle(timetableItem.getSubject().getName());
+            toolbar.setBackgroundColor(CommonFunctions.setColor(this, timetableItem.getSubject().getColor()));
         }
 
         setSupportActionBar(toolbar);
@@ -92,16 +92,14 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
         mPassTextView = (TextView) findViewById(R.id.pass);
         mMarksTextView = (TextView) findViewById(R.id.marks);
         mNoteTextView = (TextView) findViewById(R.id.note);
-        mHomeWorkTextView = (ExpandableTextView) findViewById(R.id.homework);
+        mHomeworkTextView = (TextView) findViewById(R.id.homework);
 
         myClipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
-        final TextView mHomeworkText = (TextView) findViewById(R.id.expandable_text);
-
-        mHomeworkText.setOnClickListener(new View.OnClickListener() {
+        mHomeworkTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text = mHomeworkText.getText().toString();
+                String text = mHomeworkTextView.getText().toString();
                 myClip = ClipData.newPlainText("text", text);
                 myClipboard.setPrimaryClip(myClip);
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_copied),
@@ -110,37 +108,19 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
         });
 
         setView();
-
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.menu_scrolling, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 
     private void setView() {
         if(timetableItem == null) {
             return;
         }
 
-        lesson = new Lesson(this, getIntent().getStringExtra("day"), timetableItem.getTimeId(), timetableItem.getSubjectId());
+        lesson = new Lesson(this, getIntent().getStringExtra("day"), timetableItem.getTime().getId(), timetableItem.getSubject().getId());
         if(lesson.getId() == -1) {
             showProgress(true);
 
-            LessonManager.getLesson(this, lesson.getId(), Preferences.get(Preferences.PUPILID, this), String.valueOf(timetableItem.getSubjectId()),
-                    getIntent().getStringExtra("day"), String.valueOf(timetableItem.getTimeId()), new CallBack() {
+            LessonManager.getLesson(this, lesson.getId(), Preferences.get(Preferences.PUPILID, this), String.valueOf(timetableItem.getSubject().getId()),
+                    getIntent().getStringExtra("day"), String.valueOf(timetableItem.getTime().getId()), new CallBack() {
                         @Override
                         public void onSuccess() {
                             showProgress(false);
@@ -161,14 +141,12 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
                     " " + getResources().getString(R.string.year);
             mDateTextView.setText(date);
 
-            String time = CommonFunctions.getTime(lesson.getTimeStart()) + " - " + CommonFunctions.getTime(lesson.getTimeEnd());
+            String time = CommonFunctions.getTime(lesson.getTime().getTimeStart()) + " - " + CommonFunctions.getTime(lesson.getTime().getTimeEnd());
             mTimeTextView.setText(time);
 
             mThemeTextView.setText(lesson.getTheme());
 
-            mHomeWorkTextView = null;
-            mHomeWorkTextView = (ExpandableTextView) findViewById(R.id.homework);
-            mHomeWorkTextView.setText(lesson.getHomework().equals("") ? getResources().getString(R.string.missing) : lesson.getHomework());
+            mHomeworkTextView.setText(lesson.getHomework().equals("") ? getResources().getString(R.string.missing) : lesson.getHomework());
 
             if(lesson.getNote().equals("")) {
                 RelativeLayout mNoteLayout = (RelativeLayout) findViewById(R.id.note_layout);
@@ -228,8 +206,8 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
             return;
         }
 
-        LessonManager.getLesson(this, lesson.getId(), Preferences.get(Preferences.PUPILID, this), String.valueOf(timetableItem.getSubjectId()),
-                getIntent().getStringExtra("day"), String.valueOf(timetableItem.getTimeId()), new CallBack() {
+        LessonManager.getLesson(this, lesson.getId(), Preferences.get(Preferences.PUPILID, this), String.valueOf(timetableItem.getSubject().getId()),
+                getIntent().getStringExtra("day"), String.valueOf(timetableItem.getTime().getId()), new CallBack() {
                     @Override
                     public void onSuccess() {
                         mSwipeRefreshLayout.setRefreshing(false);
@@ -250,13 +228,6 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.s_in, R.anim.s_out);
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setView();
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)

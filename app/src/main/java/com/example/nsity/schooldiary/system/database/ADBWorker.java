@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
-import com.example.nsity.schooldiary.system.database.tables.MarkDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.PeriodDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.ProgressDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TimeDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TimetableDBInterface;
@@ -243,12 +244,13 @@ public abstract class ADBWorker{
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-
         db.delete(TimetableDBInterface.TIMETABLE_TABLE_NAME, null, null);
         db.delete(LessonDBInterface.LESSON_TABLE_NAME, null, null);
         db.delete(TimeDBInterface.TIME_TABLE_NAME, null, null);
         db.delete(SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME, null, null);
-        db.delete(MarkDBInterface.MARK_TABLE_NAME, null, null);
+        db.delete(LessonDBInterface.MARK_TABLE_NAME, null, null);
+        db.delete(ProgressDBInterface.PROGRESS_TABLE_NAME, null, null);
+        db.delete(PeriodDBInterface.PERIOD_TABLE_NAME, null, null);
 
         db.close();
     }

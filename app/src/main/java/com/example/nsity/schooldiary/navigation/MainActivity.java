@@ -1,6 +1,7 @@
 package com.example.nsity.schooldiary.navigation;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -13,11 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.homework.HomeworkFragment;
 import com.example.nsity.schooldiary.navigation.login.LoginActivity;
 import com.example.nsity.schooldiary.navigation.login.ProfileFragment;
+import com.example.nsity.schooldiary.navigation.marks.MarksFragment;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableFragment;
 import com.example.nsity.schooldiary.system.Preferences;
 
@@ -127,6 +130,6 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-
     }
+
 }

@@ -42,6 +42,14 @@
     </array>
 
 
+    <array name="mark_colors">
+        <item>@color/green</item>
+        <item>@color/amber</item>
+        <item>@color/blue</item>
+        <item>@color/red</item>
+    </array>
+
+
     <color name="current_day_background">@color/colorPrimaryLight</color>
     <color name="weekends_day">@android:color/white</color>
 </resources>

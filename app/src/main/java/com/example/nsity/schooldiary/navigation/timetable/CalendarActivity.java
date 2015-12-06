@@ -61,16 +61,13 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerCon
         mTodayView = (ListView) findViewById(R.id.timetable);
 
         header = createHeader("");
-        mTodayView.addHeaderView(header);
+        mTodayView.addHeaderView(header, null, false);
 
         calendarView = (DayPickerView) findViewById(R.id.calendar_view);
         calendarView.setController(this);
 
-
-       // textView = (TextView) findViewById(R.id.textView);
         timetable = new Timetable(this);
         setView(Calendar.getInstance().getTime());
-
     }
 
 
@@ -88,9 +85,6 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerCon
 
 
         setView(cal.getTime());
-
-
-        //Log.e("Day Selected", day + " / " + month + " / " + year);
     }
 
     View createHeader(String text) {
@@ -119,9 +113,9 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerCon
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
                                     long id) {
-                TimetableItem timetableItem = timetableItemArrayList.get(position);
+                TimetableItem timetableItem = timetableItemArrayList.get(position - 1);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                SimpleDateFormat sdf = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD, Locale.getDefault());
                 String currentDate = sdf.format(date);
 
                 Intent intent = new Intent(CalendarActivity.this, LessonActivity.class);

@@ -2,14 +2,9 @@ package com.example.nsity.schooldiary.navigation.timetable;
 
 
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.database.Cursor;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.format.Time;
-import android.util.Log;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,14 +14,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
 import com.example.nsity.schooldiary.system.CommonFunctions;
-import com.example.nsity.schooldiary.system.Preferences;
-import com.example.nsity.schooldiary.system.network.CallBack;
-import com.example.nsity.schooldiary.system.network.Server;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,23 +28,23 @@ import java.util.Random;
 /**
  * Created by nsity on 15.11.15.
  */
-public class TimetableFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class TimetableFragment extends Fragment {
     private ListView mTodayView;
     private ArrayList<TimetableItem> timetableItemArrayList;
     private TextView mTextView;
-
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private CardView mCardView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_timetable, container, false);
         mTodayView = (ListView) rootView.findViewById(R.id.timetable);
-        mTextView = (TextView) rootView.findViewById(R.id.text);
+        mCardView = (CardView) rootView.findViewById(R.id.card_view);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mTextView = (TextView) rootView.findViewById(R.id.text);
 
         setView();
         return rootView;
@@ -91,7 +82,7 @@ public class TimetableFragment extends Fragment implements SwipeRefreshLayout.On
 
         if(timetableItemArrayList == null) {
 
-            mTodayView.setVisibility(View.INVISIBLE);
+            mCardView.setVisibility(View.INVISIBLE);
             mTextView.setVisibility(View.VISIBLE);
 
             Random rnd = new Random();
@@ -111,7 +102,7 @@ public class TimetableFragment extends Fragment implements SwipeRefreshLayout.On
                     break;
             }
         } else {
-            mTodayView.setVisibility(View.VISIBLE);
+            mCardView.setVisibility(View.VISIBLE);
             mTextView.setVisibility(View.INVISIBLE);
 
             mTodayView.setAdapter(new TimetableAdapter(getActivity(), timetableItemArrayList));
@@ -121,9 +112,8 @@ public class TimetableFragment extends Fragment implements SwipeRefreshLayout.On
                                         long id) {
                     TimetableItem timetableItem = timetableItemArrayList.get(position);
 
-                    Calendar cal = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                    String currentDate = sdf.format(cal.getTime());
+
+                    String currentDate = CommonFunctions.getCurrentDateyyyyMMdd();
 
                    // String currentDate = "2015-11-30";
 
@@ -136,30 +126,5 @@ public class TimetableFragment extends Fragment implements SwipeRefreshLayout.On
                 }
             });
         }
-    }
-
-    @Override
-    public void onRefresh() {
-        mSwipeRefreshLayout.setRefreshing(true);
-
-        if (!Server.isOnline(getActivity())) {
-            Toast.makeText(getActivity(), getActivity().getString(R.string.internet_problem), Toast.LENGTH_SHORT).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-            return;
-        }
-
-         TimetableManager.getTimetable(getActivity(), Preferences.get(Preferences.CLASSID, getActivity()), new CallBack() {
-             @Override
-             public void onSuccess() {
-                 setView();
-                 mSwipeRefreshLayout.setRefreshing(false);
-             }
-
-             @Override
-             public void onFail(String message) {
-                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                 mSwipeRefreshLayout.setRefreshing(false);
-             }
-         });
     }
 }

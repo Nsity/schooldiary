@@ -2,8 +2,10 @@ package com.example.nsity.schooldiary.system.database.tables;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.Subject;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.database.ADBWorker;
 
@@ -64,5 +66,35 @@ public class SubjectsClassDBInterface extends ADBWorker {
 
     public SubjectsClassDBInterface(Context context) {
         super(context);
+    }
+
+
+    public ArrayList<Subject> getSubjects() {
+        String selectQuery = "SELECT * FROM " + SUBJECTS_CLASS_TABLE_NAME + " ORDER BY " + SUBJECTS_CLASS_COLUMN_SUBJECT_NAME;
+
+        Cursor cursor = getCursor(selectQuery, new String[]{});
+
+        if(cursor == null)
+            return null;
+
+        ArrayList<Subject> subjects = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                Subject subject = new Subject(cursor.getInt(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID)),
+                        cursor.getString(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_SUBJECT_NAME)),
+                        cursor.getInt(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_COLOR)));
+                subjects.add(subject);
+            }
+            while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        if(subjects.size() == 0) {
+            return null;
+        } else {
+            return subjects;
+        }
     }
 }

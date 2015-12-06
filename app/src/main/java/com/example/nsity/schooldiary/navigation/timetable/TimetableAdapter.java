@@ -1,6 +1,7 @@
 package com.example.nsity.schooldiary.navigation.timetable;
 
 import android.content.Context;
+import android.text.Html;
 import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +29,6 @@ public class TimetableAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
-        TextView mTimeTextView;
         TextView mSubjectTextView;
         TextView mRoomTextView;
         View mDividerView;
@@ -58,7 +58,6 @@ public class TimetableAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
             customView = layoutInflater.inflate(R.layout.item_timetable, parent, false);
-            holder.mTimeTextView = (TextView) customView.findViewById(R.id.time);
             holder.mSubjectTextView = (TextView) customView.findViewById(R.id.subject);
             holder.mRoomTextView = (TextView) customView.findViewById(R.id.room);
             holder.mDividerView = customView.findViewById(R.id.divider);
@@ -67,11 +66,13 @@ public class TimetableAdapter extends BaseAdapter {
             holder = (ViewHolder) customView.getTag();
         }
 
-        holder.mSubjectTextView.setText(timetable.getSubject());
-        holder.mRoomTextView.setText(timetable.getRoom());
-        holder.mTimeTextView.setText(CommonFunctions.getTime(timetable.getTimeStart()));
+        String s = "<b>" + timetable.getSubject().getName() + "</b>" + (timetable.getRoom().equals("") ? "" : " - " + "<i> каб. " + timetable.getRoom() + "</i>");
+        holder.mSubjectTextView.setText(Html.fromHtml(s));
 
-        holder.mDividerView.setBackgroundColor(CommonFunctions.setColor(context, timetable.getColor()));
+        String time = CommonFunctions.getTime(timetable.getTime().getTimeStart()) + " - " + CommonFunctions.getTime(timetable.getTime().getTimeEnd());
+        holder.mRoomTextView.setText(time);
+
+        holder.mDividerView.setBackgroundColor(CommonFunctions.setColor(context, timetable.getSubject().getColor()));
 
         return customView;
     }

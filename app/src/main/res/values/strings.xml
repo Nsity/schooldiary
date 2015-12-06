@@ -13,11 +13,13 @@
 
     <string name="today">Сегодня</string>
 
-    <string name="base_url">http://schooldiary.azurewebsites.net/</string>
-    <!--<string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>-->
+    <!--<string name="base_url">http://schooldiary.azurewebsites.net/</string>-->
+    <string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>
     <string name="call_method_api_login">auth/login/</string>
     <string name="call_method_api_get_timetable">timetable/get/</string>
     <string name="call_method_api_get_lesson">lesson/get/</string>
+    <string name="call_method_api_get_progress">progress/get/</string>
+    <string name="call_method_api_get_subject_marks">subject/getmarks/</string>
 
 
     <string name="error_encode">Ошибка кодирования данных</string>
@@ -34,13 +36,16 @@
 
     <string name="result">result</string>
     <string name="time">Время</string>
+    <string name="periods">Периоды</string>
     <string name="time_id">ВремяИд</string>
     <string name="subjects">Предметы</string>
     <string name="subject_id">ПредметИд</string>
     <string name="room_name">КабинетНаименование</string>
     <string name="timetable">Расписание</string>
+    <string name="progress_marks">ИтоговыеОценки</string>
 
     <string name="time_start">ВремяНачала</string>
+    <string name="day_id">ДеньИд</string>
     <string name="time_end">ВремяОкончания</string>
     <string name="status">Статус</string>
     <string name="homework">ДомашнееЗадание</string>
@@ -54,6 +59,7 @@
     <string name="type">Тип</string>
     <string name="lessonId">УрокИд</string>
     <string name="mark">Оценка</string>
+    <string name="period_id">ПериодИд</string>
 
     <string name="missing">Отсутсвует</string>
 
@@ -110,7 +116,19 @@
 
     <string name="internet_problem">Необходимо подключение к интернету</string>
 
-    <string name="action_load_timetable">Загружаю расписание… Подожите…</string>
+    <string name="action_load">Загружаю данные… Подожите…</string>
 
+    <string name="recent">Последние</string>
+    <string name="progress">Итоговые оценки</string>
 
+    <string name="next">Далее</string>
+
+    <string name="first_period">I четверть</string>
+    <string name="second_period">II четверть</string>
+    <string name="third_period">III четверть</string>
+    <string name="forth_period">IV четверть</string>
+    <string name="all_period">Год</string>
+    <string name="year_period">Итоговая</string>
+
+    <string name="action_refresh">Обновить</string>
 </resources>

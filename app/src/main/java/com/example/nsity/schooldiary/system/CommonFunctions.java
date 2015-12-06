@@ -1,8 +1,6 @@
 package com.example.nsity.schooldiary.system;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
 
@@ -126,14 +124,24 @@ public class CommonFunctions {
         int[] colors = context.getResources().getIntArray(R.array.colors);
 
         return colors[color % colors.length];
-
-        /*if(color < colors.length) {
-            return colors[color];
-        } else {
-            return colors[color - colors.length];
-        }*/
     }
 
+    public static int setMarkColor(Context context, int value) {
+        int[] colors = context.getResources().getIntArray(R.array.mark_colors);
+
+        switch (value) {
+            case 5:
+                return colors[0];
+            case 4:
+                return colors[1];
+            case 3:
+                return colors[2];
+            case 2:
+                return colors[3];
+            default:
+                return -1;
+        }
+    }
 
     public static String getTime(String time) {
         return time.substring(0, time.length() - 3);

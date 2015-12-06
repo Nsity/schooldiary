@@ -1,0 +1,36 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".SubjectMarksActivity">
+    <item android:id="@+id/action_refresh"
+        android:title="@string/action_refresh"
+        android:icon="@mipmap/ic_refresh_white_24dp"
+        android:orderInCategory="1"
+        app:showAsAction="always"/>
+    <item android:id="@+id/action_filter_periods"
+        android:title="@string/periods"
+        android:icon="@mipmap/ic_filter_list_white_24dp"
+        android:orderInCategory="1"
+        app:showAsAction="always">
+        <menu>
+            <group
+                android:id="@+id/filter"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/first_period"
+                    android:title="@string/first_period" />
+                <item
+                    android:id="@+id/second_period"
+                    android:title="@string/second_period" />
+                <items
+                    android:id="@+id/third_period"
+                    android:title="@string/third_period" />
+                <item
+                    android:id="@+id/forth_period"
+                    android:title="@string/forth_period" />
+                <item
+                    android:id="@+id/all_period"
+                    android:title="@string/all_period" />
+            </group>
+        </menu>
+    </item>
+</menu>

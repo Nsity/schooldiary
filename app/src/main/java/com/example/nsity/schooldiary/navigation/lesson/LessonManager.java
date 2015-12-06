@@ -4,9 +4,7 @@ import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.system.ErrorTracker;
-import com.example.nsity.schooldiary.system.Preferences;
 import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
-import com.example.nsity.schooldiary.system.database.tables.MarkDBInterface;
 import com.example.nsity.schooldiary.system.network.AsyncHttpResponse;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.ResponseObject;
@@ -42,17 +40,14 @@ public class LessonManager {
                 JSONObject response = (JSONObject)object.getResponse();
                 try {
 
-                    JSONArray result = response.getJSONArray(context.getString(R.string.result));
+                    response = response.getJSONObject(context.getString(R.string.result));
+
+                    JSONArray result = new JSONArray();
+                    result.put(response);
 
                     LessonDBInterface dbLesson = new LessonDBInterface(context);
                     dbLesson.save(result, false);
                     dbLesson.closeDB();
-
-                    MarkDBInterface dbMark = new MarkDBInterface(context);
-
-                    result = result.getJSONObject(0).getJSONArray(context.getString(R.string.marks));
-                    int marks = dbMark.save(result, false);
-                    dbMark.closeDB();
 
                     callBack.onSuccess();
                 } catch (JSONException e) {
