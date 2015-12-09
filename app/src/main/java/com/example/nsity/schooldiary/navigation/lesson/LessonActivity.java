@@ -21,6 +21,7 @@ import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.marks.Mark;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableItem;
 import com.example.nsity.schooldiary.system.CommonFunctions;
+import com.example.nsity.schooldiary.system.CommonManager;
 import com.example.nsity.schooldiary.system.Preferences;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
@@ -119,8 +120,8 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
         if(lesson.getId() == -1) {
             showProgress(true);
 
-            LessonManager.getLesson(this, lesson.getId(), Preferences.get(Preferences.PUPILID, this), String.valueOf(timetableItem.getSubject().getId()),
-                    getIntent().getStringExtra("day"), String.valueOf(timetableItem.getTime().getId()), new CallBack() {
+            CommonManager.getLesson(this, lesson.getId(), timetableItem.getSubject().getId(),
+                    getIntent().getStringExtra("day"), timetableItem.getTime().getId(), new CallBack() {
                         @Override
                         public void onSuccess() {
                             showProgress(false);
@@ -130,7 +131,6 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
                         @Override
                         public void onFail(String message) {
                             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-
                             mProgressView.setVisibility(View.GONE);
                             mLessonFormView.setVisibility(View.GONE);
                         }
@@ -206,8 +206,8 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
             return;
         }
 
-        LessonManager.getLesson(this, lesson.getId(), Preferences.get(Preferences.PUPILID, this), String.valueOf(timetableItem.getSubject().getId()),
-                getIntent().getStringExtra("day"), String.valueOf(timetableItem.getTime().getId()), new CallBack() {
+        CommonManager.getLesson(this, lesson.getId(), timetableItem.getSubject().getId(),
+                getIntent().getStringExtra("day"), timetableItem.getTime().getId(), new CallBack() {
                     @Override
                     public void onSuccess() {
                         mSwipeRefreshLayout.setRefreshing(false);

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="16dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/subject"
+        android:textColor="@android:color/primary_text_light"
+        android:gravity="center_vertical"
+        android:layout_alignParentStart="true"
+        android:layout_alignBottom="@+id/image_view4"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/image_view4" />
+
+    <ImageView android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:id="@+id/image_view"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+    <ImageView android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:id="@+id/image_view1"
+        android:layout_marginRight="8dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/image_view" />
+    <ImageView android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:id="@+id/image_view2"
+        android:layout_marginRight="8dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/image_view1" />
+    <ImageView android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:id="@+id/image_view3"
+        android:layout_marginRight="8dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/image_view2" />
+    <ImageView android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:id="@+id/image_view4"
+        android:layout_marginRight="8dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/image_view3" />
+</RelativeLayout>

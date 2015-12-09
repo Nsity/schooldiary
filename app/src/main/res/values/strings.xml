@@ -13,8 +13,8 @@
 
     <string name="today">Сегодня</string>
 
-    <!--<string name="base_url">http://schooldiary.azurewebsites.net/</string>-->
-    <string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>
+    <string name="base_url">http://schooldiary.azurewebsites.net/</string>
+    <!--<string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>-->
     <string name="call_method_api_login">auth/login/</string>
     <string name="call_method_api_get_timetable">timetable/get/</string>
     <string name="call_method_api_get_lesson">lesson/get/</string>

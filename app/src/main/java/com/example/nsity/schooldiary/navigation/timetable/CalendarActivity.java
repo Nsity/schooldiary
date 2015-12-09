@@ -1,10 +1,10 @@
 package com.example.nsity.schooldiary.navigation.timetable;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +16,6 @@ import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,6 +42,15 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerCon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        String languageToLoad  = "ru";
+        Locale locale = new Locale(languageToLoad);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,
+                getBaseContext().getResources().getDisplayMetrics());
+
         setContentView(R.layout.activity_calendar);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

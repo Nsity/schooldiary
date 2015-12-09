@@ -3,12 +3,16 @@ package com.example.nsity.schooldiary.navigation.lesson;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.Subject;
 import com.example.nsity.schooldiary.navigation.Time;
 import com.example.nsity.schooldiary.navigation.marks.Mark;
+import com.example.nsity.schooldiary.system.CommonManager;
 import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TimeDBInterface;
+import com.example.nsity.schooldiary.system.network.CallBack;
+import com.example.nsity.schooldiary.system.network.Server;
 
 import java.util.ArrayList;
 
@@ -23,15 +27,12 @@ public class Lesson {
     private String homework;
     private String note;
     private String pass;
-
     private Time time;
     private Subject subject;
 
     private ArrayList<Mark> marksArrayList;
 
     private LessonDBInterface db;
-
-    private int color;
 
     public int getId() {
         return id;
@@ -73,15 +74,6 @@ public class Lesson {
         this.date = date;
     }
 
-    public Lesson(Context context, int lessonId) {
-        this.id = lessonId;
-        this.db = new LessonDBInterface(context);
-        //loadFromDB();
-    }
-
-    public Lesson(Context context) {
-        this.db = new LessonDBInterface(context);
-    }
 
     public Lesson() {
     }
@@ -131,16 +123,30 @@ public class Lesson {
         getMarksOfLesson();
     }
 
+
+    public void load(Context context, final int lessonId, final int subjectId, final String day,
+                     final int timeId, final CallBack callBack) {
+        if (!Server.isOnline(context)) {
+            callBack.onFail(context.getString(R.string.internet_problem));
+            return;
+        }
+
+        CommonManager.getLesson(context, lessonId, subjectId, day, timeId, new CallBack() {
+            @Override
+            public void onSuccess() {
+                getLesson(day, timeId, subjectId);
+                callBack.onSuccess();
+            }
+
+            @Override
+            public void onFail(String error) {
+                callBack.onFail(error);
+            }
+        });
+    }
+
     public void getMarksOfLesson() {
         marksArrayList = db.getMarks(id);
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 
     public String getPass() {

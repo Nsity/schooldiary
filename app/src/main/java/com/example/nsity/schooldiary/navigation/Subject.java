@@ -3,9 +3,8 @@ package com.example.nsity.schooldiary.navigation;
 import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.marks.Mark;
-import com.example.nsity.schooldiary.navigation.marks.subjects.SubjectManager;
 import com.example.nsity.schooldiary.navigation.marks.subjects.SubjectMark;
+import com.example.nsity.schooldiary.system.CommonManager;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
 
@@ -58,7 +57,7 @@ public class Subject implements Serializable {
             return;
         }
 
-        SubjectManager.getMarks(context, id, periodId, new CallBack<ArrayList<SubjectMark>>() {
+        CommonManager.getMarks(context, id, periodId, new CallBack<ArrayList<SubjectMark>>() {
             @Override
             public void onSuccess(ArrayList<SubjectMark> marksArrayList) {
                 callBack.onSuccess(marksArrayList);

@@ -12,7 +12,6 @@ public class ProgressItem implements Serializable {
 
     private int id;
     private int value;
-    private Subject subject;
     private Period period;
 
     public int getId() {
@@ -31,14 +30,6 @@ public class ProgressItem implements Serializable {
         this.value = value;
     }
 
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
-
     public Period getPeriod() {
         return period;
     }
@@ -46,6 +37,5 @@ public class ProgressItem implements Serializable {
     public void setPeriod(Period period) {
         this.period = period;
     }
-
 
 }

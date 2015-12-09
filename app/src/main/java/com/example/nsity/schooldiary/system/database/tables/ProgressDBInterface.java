@@ -3,12 +3,11 @@ package com.example.nsity.schooldiary.system.database.tables;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.renderscript.Sampler;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.Period;
-import com.example.nsity.schooldiary.navigation.Periods;
 import com.example.nsity.schooldiary.navigation.Subject;
-import com.example.nsity.schooldiary.navigation.marks.progress.Progress;
 import com.example.nsity.schooldiary.navigation.marks.progress.ProgressItem;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.database.ADBWorker;
@@ -102,9 +101,45 @@ public class ProgressDBInterface extends ADBWorker {
                 progressItem.setId(cursor.getInt(cursor.getColumnIndex(PROGRESS_COLUMN_ID)));
                 progressItem.setValue(cursor.getInt(cursor.getColumnIndex(PROGRESS_COLUMN_MARK)));
 
-                progressItem.setSubject(new Subject(cursor.getInt(cursor.getColumnIndex(PROGRESS_COLUMN_SUBJECTS_CLASS_ID)),
-                        cursor.getString(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_SUBJECT_NAME)),
-                        cursor.getInt(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_COLOR))));
+                progressItem.setPeriod(new Period(cursor.getInt(cursor.getColumnIndex(PROGRESS_COLUMN_PERIOD_ID)),
+                        cursor.getString(cursor.getColumnIndex(PeriodDBInterface.PERIOD_COLUMN_START)),
+                        cursor.getString(cursor.getColumnIndex(PeriodDBInterface.PERIOD_COLUMN_END)),
+                        cursor.getString(cursor.getColumnIndex(PeriodDBInterface.PERIOD_COLUMN_NAME))));
+
+                progress.add(progressItem);
+            }
+            while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        if(progress.size() == 0) {
+            return null;
+        } else {
+            return progress;
+        }
+    }
+
+
+    public ArrayList<ProgressItem> getSubjectProgress(int subjectId) {
+        String selectQuery = "SELECT * FROM " + PROGRESS_TABLE_NAME + " p JOIN " + PeriodDBInterface.PERIOD_TABLE_NAME +
+                " pr ON p." + PROGRESS_COLUMN_PERIOD_ID + " = pr." + PeriodDBInterface.PERIOD_COLUMN_ID +
+                " WHERE " + PROGRESS_COLUMN_SUBJECTS_CLASS_ID + " =? " +
+                " ORDER BY " + PeriodDBInterface.PERIOD_COLUMN_NAME;
+
+        Cursor cursor = getCursor(selectQuery, new String[]{String.valueOf(subjectId)});
+
+        if(cursor == null)
+            return null;
+
+        ArrayList<ProgressItem> progress = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                ProgressItem progressItem = new ProgressItem();
+
+                progressItem.setId(cursor.getInt(cursor.getColumnIndex(PROGRESS_COLUMN_ID)));
+                progressItem.setValue(cursor.getInt(cursor.getColumnIndex(PROGRESS_COLUMN_MARK)));
 
                 progressItem.setPeriod(new Period(cursor.getInt(cursor.getColumnIndex(PROGRESS_COLUMN_PERIOD_ID)),
                         cursor.getString(cursor.getColumnIndex(PeriodDBInterface.PERIOD_COLUMN_START)),
