@@ -159,4 +159,18 @@ public class ProgressDBInterface extends ADBWorker {
             return progress;
         }
     }
+
+    public Boolean existProgress() {
+        String selectQuery = "SELECT * FROM " + PROGRESS_TABLE_NAME;
+
+        Cursor cursor = getCursor(selectQuery, new String[]{});
+
+        if(cursor == null)
+            return null;
+
+        int count = cursor.getCount();
+        cursor.close();
+
+        return count != 0;
+    }
 }

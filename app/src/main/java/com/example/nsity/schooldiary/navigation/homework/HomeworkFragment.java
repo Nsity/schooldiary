@@ -1,76 +1,80 @@
 package com.example.nsity.schooldiary.navigation.homework;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.homework.favorites.FavoriteHomeworkFragment;
+import com.example.nsity.schooldiary.navigation.homework.recent.RecentHomeworkFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nsity on 15.11.15.
  */
-public class HomeworkFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class HomeworkFragment extends Fragment{
 
-    private ListView mHomeworkListView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //setHasOptionsMenu(true);
-        View rootView = inflater.inflate(R.layout.activity_calendar, container, false);
+        super.onCreate(savedInstanceState);
 
-        /*mHomeworkListView = (ListView) rootView.findViewById(R.id.homework_list);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
+        setHasOptionsMenu(true);
+        View rootView = inflater.inflate(R.layout.fragment_marks, container, false);
 
-        setView();*/
+        viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
 
-
-/*
-        CompactCalendarView compactCalendarView = (CompactCalendarView) rootView.findViewById(R.id.compactcalendar_view);
-        compactCalendarView.drawSmallIndicatorForEvents(true);
-        compactCalendarView.setLocale(new Locale("ru"));
-        compactCalendarView.setUseThreeLetterAbbreviation(true);*/
+        tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
         return rootView;
     }
 
-
-    private void setView() {
-
-        /*ArrayList<Homework> homeworkArrayList = new ArrayList<>();
-
-        homeworkArrayList .add(new Homework(1, "sdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwet", "sdgsdgsdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwet"));
-        homeworkArrayList .add(new Homework(1, "sdgds", "sdgsdgsd"));
-        homeworkArrayList .add(new Homework(1, "sdgds", "sdgsdgsd"));
-
-        homeworkArrayList .add(new Homework(1, "sdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwet", "sdgsdsdgsdgsdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwgsd"));
-        homeworkArrayList .add(new Homework(1, "sdgdssdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwet", "sdgsdsdgsdgsdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwgsdgsdgsdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwsdgsdgsdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwsd"));
-        homeworkArrayList .add(new Homework(1, "sdgdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwets", "sdgsdgsd"));
-        homeworkArrayList .add(new Homework(1, "sdgsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetds", "sdgsdgsd"));
-        homeworkArrayList .add(new Homework(1, "sdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetgds", "sdgsdgssdgsdgsdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwsdgsdgsdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwd"));
-        homeworkArrayList .add(new Homework(1, "sdgds", "sdgsdgsdgsdgsdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwsd"));
-        homeworkArrayList .add(new Homework(1, "sdgds", "sdgsdgsd"));
-        homeworkArrayList .add(new Homework(1, "sdgds", "sdgsdgsd"));
-        homeworkArrayList .add(new Homework(1, "sdgds", "sdgssdgsdgsdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwdgsd"));
-        homeworkArrayList .add(new Homework(1, "sdgds", "sdgsdgsd"));
-        homeworkArrayList .add(new Homework(1, "sdgds", "sdgsdsdgsdgsdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwsdgsdgsdsdfsdgsdgwetwtwtwetwtwetwtwtwtwetewtwetwetsdfsdgsdgwetwtwgsd"));
-        homeworkArrayList .add(new Homework(1, "sdgds", "sdgsdgsd"));
-
-        HomeworkAdapter homeworkAdapter = new HomeworkAdapter(getActivity(), homeworkArrayList);
-
-        mHomeworkListView.setAdapter(homeworkAdapter);*/
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
+        adapter.addFragment(new RecentHomeworkFragment(), getResources().getString(R.string.recent).toUpperCase());
+        adapter.addFragment(new FavoriteHomeworkFragment(), getResources().getString(R.string.favorites).toUpperCase());
+        viewPager.setAdapter(adapter);
     }
 
-    @Override
-    public void onRefresh() {
-        mSwipeRefreshLayout.setRefreshing(true);
-        mSwipeRefreshLayout.setRefreshing(false);
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 }

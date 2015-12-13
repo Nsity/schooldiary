@@ -2,9 +2,7 @@ package com.example.nsity.schooldiary.navigation.marks.progress;
 
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +24,9 @@ public class ProgressAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<Subject> subjects;
-    private ArrayList<ArrayList<ProgressItem>> arrayList;
     private LayoutInflater layoutInflater;
 
-    public ProgressAdapter(Context context, ArrayList<Subject> subjects, ArrayList<ArrayList<ProgressItem>> arrayList) {
-        this.arrayList = arrayList;
+    public ProgressAdapter(Context context, ArrayList<Subject> subjects) {
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
         this.subjects = subjects;
@@ -64,7 +60,8 @@ public class ProgressAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View customView = convertView;
         final Subject subject = subjects.get(position);
-        final ArrayList<ProgressItem> progress = arrayList.get(position);
+
+        ArrayList<ProgressItem> progress = subject.loadProgressFromDB(context);
 
         final ViewHolder holder;
 
@@ -84,8 +81,13 @@ public class ProgressAdapter extends BaseAdapter {
 
         holder.mSubjectTextView.setText(subject.getName());
 
+        holder.mFirstView.setImageDrawable(null);
+        holder.mSecondView.setImageDrawable(null);
+        holder.mThirdView.setImageDrawable(null);
+        holder.mForthView.setImageDrawable(null);
+        holder.mYearView.setImageDrawable(null);
 
-        TextDrawable drawable = null;
+        TextDrawable drawable;
 
         if(progress == null)
             return  customView;
@@ -100,10 +102,9 @@ public class ProgressAdapter extends BaseAdapter {
                         .endConfig()
                         .buildRoundRect(String.valueOf(item.getValue()), CommonFunctions.setMarkColor(context, item.getValue()), 8);
                 holder.mFirstView.setImageDrawable(drawable);
-                Log.i("TAG", subject.getName());
             }
 
-            if(item.getPeriod().getName().equals(context.getString(R.string.second_period))) {
+           if(item.getPeriod().getName().equals(context.getString(R.string.second_period))) {
                 drawable = TextDrawable.builder()
                         .beginConfig()
                         .bold()

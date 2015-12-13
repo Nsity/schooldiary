@@ -70,6 +70,8 @@ public class MarksAdapter extends BaseAdapter {
             holder = (ViewHolder) customView.getTag();
         }
 
+        holder.mMarkView.setImageDrawable(null);
+
         TextDrawable drawable = TextDrawable.builder()
                 .beginConfig()
                 .bold()

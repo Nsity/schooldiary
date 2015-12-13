@@ -20,6 +20,7 @@
     <string name="call_method_api_get_lesson">lesson/get/</string>
     <string name="call_method_api_get_progress">progress/get/</string>
     <string name="call_method_api_get_subject_marks">subject/getmarks/</string>
+    <string name="call_method_api_get_homework">lesson/gethomework/</string>
 
 
     <string name="error_encode">Ошибка кодирования данных</string>
@@ -60,6 +61,7 @@
     <string name="lessonId">УрокИд</string>
     <string name="mark">Оценка</string>
     <string name="period_id">ПериодИд</string>
+    <string name="lessons">Уроки</string>
 
     <string name="missing">Отсутсвует</string>
 
@@ -75,6 +77,8 @@
     <string name="bad_reason_short">н</string>
 
     <string name="year">года</string>
+    <string name="holidays">Каникулы</string>
+    <string name="weekend">Выходной</string>
 
     <string-array name="days">
         <item>Понедельник</item>
@@ -83,6 +87,14 @@
         <item>Четверг</item>
         <item>Пятница</item>
         <item>Суббота</item>
+    </string-array>
+
+    <string-array name="periods_short">
+        <item>I</item>
+        <item>II</item>
+        <item>III</item>
+        <item>IV</item>
+        <item>Г</item>
     </string-array>
 
 
@@ -131,4 +143,5 @@
     <string name="year_period">Итоговая</string>
 
     <string name="action_refresh">Обновить</string>
+    <string name="favorites">Избранное</string>
 </resources>

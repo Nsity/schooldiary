@@ -101,7 +101,7 @@ public class SubjectMarksActivity extends AppCompatActivity {
             public void onSuccess(ArrayList<SubjectMark> marks) {
 
                 showProgress(false);
-                setRefreshActionButtonState(false);
+                CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
 
                 if (marks.size() == 0) {
                     textView.setVisibility(View.VISIBLE);
@@ -118,7 +118,7 @@ public class SubjectMarksActivity extends AppCompatActivity {
             public void onFail(String error) {
                 mProgressView.setVisibility(View.GONE);
                 mSubjectFormView.setVisibility(View.GONE);
-                setRefreshActionButtonState(false);
+                CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
                 Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
             }
         });
@@ -169,7 +169,7 @@ public class SubjectMarksActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.action_refresh:
-                setRefreshActionButtonState(true);
+                CommonFunctions.setRefreshActionButtonState(true, optionsMenu);
                 setView(checkedItem.getTitle().toString());
                 return true;
             case R.id.first_period:
@@ -233,19 +233,5 @@ public class SubjectMarksActivity extends AppCompatActivity {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mSubjectFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
-    }
-
-    public void setRefreshActionButtonState(final boolean refreshing) {
-        if (optionsMenu == null)
-            return;
-
-        final MenuItem refreshItem = optionsMenu.findItem(R.id.action_refresh);
-        if (refreshItem == null)
-            return;
-
-        if (refreshing)
-            refreshItem.setActionView(R.layout.actionbar);
-        else
-            refreshItem.setActionView(null);
     }
 }

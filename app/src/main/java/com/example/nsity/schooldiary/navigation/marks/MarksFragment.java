@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by nsity on 15.11.15.
  */
-public class MarksFragment extends Fragment{
+public class MarksFragment extends Fragment {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;

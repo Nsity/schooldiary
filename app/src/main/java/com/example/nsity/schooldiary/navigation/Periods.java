@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -30,7 +31,6 @@ public class Periods {
         return db.getPeriods();
     }
 
-
     public Period getCurrentPeriod(Context context) {
         DateFormat format = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD, new Locale("ru"));
         try {
@@ -38,6 +38,11 @@ public class Periods {
             for(Period period: periodsArrayList) {
                 Date dateStart = format.parse(period.getPeriodStart());
                 Date dateEnd = format.parse(period.getPeriodEnd());
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(dateEnd);
+                cal.add(Calendar.DATE, 1);
+                dateEnd = cal.getTime();
 
                 if(date.after(dateStart) && date.before(dateEnd) && !period.getName().equals(context.getResources().getString(R.string.year_period))) {
                     return period;
@@ -58,5 +63,9 @@ public class Periods {
             }
         }
         return null;
+    }
+
+    public ArrayList<Period> getPeriods() {
+        return periodsArrayList;
     }
 }

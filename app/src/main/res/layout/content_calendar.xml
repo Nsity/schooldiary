@@ -7,17 +7,6 @@
     android:background="@color/colorPrimary"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_calendar" tools:context=".CalendarActivity">
-
-    <ListView
-        android:id="@+id/timetable" android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:divider="@null"
-        android:background="@android:color/white"
-        android:layout_below="@+id/calendar_view">
-    </ListView>
-
     <me.nlmartian.silkcal.DayPickerView
         xmlns:calendar="http://schemas.android.com/apk/res-auto"
         android:id="@+id/calendar_view"
@@ -28,5 +17,40 @@
         app:colorSelectedDayBackground="@color/colorAccent"
         app:colorMonthName="@android:color/white"
         calendar:drawRoundRect="false"/>
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/calendar_view"
+        android:background="@android:color/white">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/timetable_layout"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/title"
+                android:padding="16dp"
+                android:background="@android:color/white"
+                android:textColor="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:textSize="16sp"
+                android:layout_height="wrap_content">
+            </TextView>
+            <View
+                android:id="@+id/view1"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
+            <ListView
+                android:id="@+id/timetable" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null">
+            </ListView>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/text" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_centerInParent="true"
+            android:visibility="invisible"
+            android:gravity="center" android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
 </RelativeLayout>

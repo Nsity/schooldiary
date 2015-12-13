@@ -1,40 +1,19 @@
 package com.example.nsity.schooldiary.navigation.homework;
 
+import com.example.nsity.schooldiary.navigation.Subject;
+
 /**
- * Created by fedorova on 25.11.2015.
+ * Created by nsity on 13.12.15.
  */
 public class Homework {
-    private int id;
-    private String subjectName;
+
+    private Subject subject;
     private String task;
-    private int lessonId;
     private String date;
+    private String theme;
 
     public Homework() {
 
-    }
-
-    public Homework(int id, String task, String subjectName) {
-        this.id = id;
-        this.subjectName = subjectName;
-        this.task = task;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-
-    public String getSubjectName() {
-        return subjectName;
-    }
-
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
     }
 
     public String getTask() {
@@ -53,11 +32,19 @@ public class Homework {
         this.date = date;
     }
 
-    public int getLessonId() {
-        return lessonId;
+    public Subject getSubject() {
+        return subject;
     }
 
-    public void setLessonId(int lessonId) {
-        this.lessonId = lessonId;
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 }

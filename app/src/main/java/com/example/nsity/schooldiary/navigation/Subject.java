@@ -3,8 +3,10 @@ package com.example.nsity.schooldiary.navigation;
 import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.marks.progress.ProgressItem;
 import com.example.nsity.schooldiary.navigation.marks.subjects.SubjectMark;
 import com.example.nsity.schooldiary.system.CommonManager;
+import com.example.nsity.schooldiary.system.database.tables.ProgressDBInterface;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
 
@@ -68,5 +70,16 @@ public class Subject implements Serializable {
                 callBack.onFail(error);
             }
         });
+    }
+
+
+    public ArrayList<ProgressItem> loadProgressFromDB(Context context) {
+        ProgressDBInterface dbProgress = new ProgressDBInterface(context);
+
+        ArrayList<ProgressItem> progress = dbProgress.getSubjectProgress(id);
+
+        dbProgress.closeDB();
+
+        return progress;
     }
 }

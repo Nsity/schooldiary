@@ -19,12 +19,10 @@ import java.util.ArrayList;
 public class Subjects {
     ArrayList<Subject> subjectsArrayList;
     private SubjectsClassDBInterface db;
-    private Context context;
 
     public Subjects(Context context) {
         this.db = new SubjectsClassDBInterface(context);
         subjectsArrayList = loadFromDB();
-        this.context = context;
     }
 
     public ArrayList<Subject> loadFromDB() {
@@ -40,7 +38,7 @@ public class Subjects {
     }
 
 
-    public void loadProgress(final CallBack callBack) {
+    public void loadProgress(Context context, final CallBack callBack) {
         if (!Server.isOnline(context)) {
             callBack.onFail(context.getString(R.string.internet_problem));
             return;
@@ -49,7 +47,7 @@ public class Subjects {
         CommonManager.getProgress(context, new CallBack() {
             @Override
             public void onSuccess() {
-                callBack.onSuccess(loadProgressFromDB());
+                callBack.onSuccess();
             }
 
             @Override
@@ -60,31 +58,22 @@ public class Subjects {
         });
     }
 
-    public ArrayList<ArrayList<ProgressItem>> loadProgressFromDB() {
+    public Boolean existProgress(Context context) {
+        ProgressDBInterface dbProgress = new ProgressDBInterface(context);
+        return dbProgress.existProgress();
+    }
+
+
+    public Subject findSubjectById(int id) {
         if(subjectsArrayList == null) {
             return null;
         }
-
-        ArrayList<ArrayList<ProgressItem>> progress = new ArrayList<>();
-
-        ProgressDBInterface dbProgress = new ProgressDBInterface(context);
-        for (Subject subject: subjectsArrayList) {
-            ArrayList<ProgressItem> progressArrayList = dbProgress.getSubjectProgress(subject.getId());
-            progress.add(progressArrayList);
-        }
-
-        Boolean flag = false;
-        for(ArrayList<ProgressItem> item: progress) {
-            if(item != null) {
-                flag = true;
+        for(Subject subject: subjectsArrayList) {
+            if(subject.getId() == id) {
+                return subject;
             }
         }
-
-        if(!flag) {
-            return null;
-        } else {
-            return progress;
-        }
+        return null;
     }
 
 }

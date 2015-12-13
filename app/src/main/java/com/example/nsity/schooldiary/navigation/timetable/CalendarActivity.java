@@ -9,13 +9,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.Period;
+import com.example.nsity.schooldiary.navigation.Periods;
 import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 
+import org.w3c.dom.Text;
+
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,8 +41,8 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerCon
     private ListView mTodayView;
     private ArrayList<TimetableItem> timetableItemArrayList;
     private DayPickerView calendarView;
-
-    private View header;
+    private LinearLayout mTimetableLinearLayout;
+    private TextView mTextView;
 
     private Timetable timetable;
 
@@ -68,8 +75,8 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerCon
 
         mTodayView = (ListView) findViewById(R.id.timetable);
 
-        header = createHeader("");
-        mTodayView.addHeaderView(header, null, false);
+        mTimetableLinearLayout = (LinearLayout) findViewById(R.id.timetable_layout);
+        mTextView = (TextView) findViewById(R.id.text);
 
         calendarView = (DayPickerView) findViewById(R.id.calendar_view);
         calendarView.setController(this);
@@ -91,49 +98,72 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerCon
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.YEAR, year);
 
-
         setView(cal.getTime());
-    }
-
-    View createHeader(String text) {
-        View v = getLayoutInflater().inflate(R.layout.header, null);
-        ((TextView)v.findViewById(R.id.title)).setText(text);
-        return v;
     }
 
 
     public void setView(final Date date) {
-
-        String[] timetableDays = getResources().getStringArray(R.array.timetable_days);
         int dayOfWeek = CommonFunctions.getDayOfWeek(date);
-        timetableItemArrayList = timetable.getTimetableOfDay(dayOfWeek);
+        String[] timetableDays = getResources().getStringArray(R.array.timetable_days);
+        ((TextView)findViewById(R.id.title)).setText(timetableDays[dayOfWeek - 1]);
 
-        ((TextView)header.findViewById(R.id.title)).setText(timetableDays[dayOfWeek - 1]);
+        ArrayList<Period> periods = new Periods(this).getPeriods();
+        DateFormat format = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD, new Locale("ru"));
+        try {
+            for(Period period: periods) {
+                Date dateStart = format.parse(period.getPeriodStart());
+                Date dateEnd = format.parse(period.getPeriodEnd());
 
-        if(timetableItemArrayList == null) {
-            mTodayView.setAdapter(null);
-        } else {
-            mTodayView.setAdapter(new TimetableAdapter(this, timetableItemArrayList));
-        }
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(dateEnd);
+                cal.add(Calendar.DATE, 1);
+                dateEnd = cal.getTime();
 
+                if(date.after(dateStart) && date.before(dateEnd) &&
+                        !period.getName().equals(this.getResources().getString(R.string.year_period))) {
 
-        mTodayView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
-                                    long id) {
-                TimetableItem timetableItem = timetableItemArrayList.get(position - 1);
+                    mTimetableLinearLayout.setVisibility(View.VISIBLE);
+                    mTextView.setVisibility(View.GONE);
 
-                SimpleDateFormat sdf = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD, Locale.getDefault());
-                String currentDate = sdf.format(date);
+                    timetableItemArrayList = timetable.getTimetableOfDay(dayOfWeek);
 
-                Intent intent = new Intent(CalendarActivity.this, LessonActivity.class);
-                intent.putExtra("timetableItem", timetableItem);
-                intent.putExtra("day", currentDate);
+                    if(timetableItemArrayList == null) {
+                        mTimetableLinearLayout.setVisibility(View.GONE);
+                        mTextView.setVisibility(View.VISIBLE);
+                        mTextView.setText(getResources().getString(R.string.weekend));
+                        mTodayView.setAdapter(null);
+                    } else {
+                        mTodayView.setAdapter(new TimetableAdapter(this, timetableItemArrayList));
+                    }
 
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    mTodayView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
+                                                long id) {
+                            TimetableItem timetableItem = timetableItemArrayList.get(position);
+
+                            SimpleDateFormat sdf = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD, Locale.getDefault());
+                            String currentDate = sdf.format(date);
+
+                            Intent intent = new Intent(CalendarActivity.this, LessonActivity.class);
+                            intent.putExtra("timetableItem", timetableItem);
+                            intent.putExtra("day", currentDate);
+
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                        }
+                    });
+                    return;
+                } else {
+                    mTimetableLinearLayout.setVisibility(View.GONE);
+                    mTextView.setVisibility(View.VISIBLE);
+                    mTextView.setText(getResources().getString(R.string.holidays));
+                    mTodayView.setAdapter(null);
+                }
             }
-        });
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

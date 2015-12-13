@@ -1,6 +1,8 @@
 package com.example.nsity.schooldiary.system;
 
 import android.content.Context;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.nsity.schooldiary.R;
 
@@ -26,17 +28,6 @@ public class CommonFunctions {
 
     public static boolean StringIsNullOrEmpty(String string) {
         return (string == null) || (string.isEmpty());
-    }
-
-
-    public static String getCurrentDateAndTime() {
-        SimpleDateFormat simple = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-        return simple.format(new Date());
-    }
-
-    public static String getCurrentMonthAndYear() {
-        SimpleDateFormat simple = new SimpleDateFormat("MM.yyyy", Locale.ENGLISH);
-        return simple.format(new Date());
     }
 
     public static long getDifferentBeetweenDates(String start, String end) {
@@ -68,27 +59,9 @@ public class CommonFunctions {
         }
     }
 
-    public static String getDate(Date date, String endFormat) {
-        try {
-            SimpleDateFormat df = new SimpleDateFormat(endFormat, Locale.ENGLISH);
-            return df.format(date);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
 
     public static String getFieldString(JSONObject jsonObject, String field) {
         try {
-            return jsonObject.getString(field);
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    public static String getStringFromJSONArray(JSONArray jsonArray, String field) {
-        try {
-            JSONObject jsonObject = (JSONObject) jsonArray.get(0);
             return jsonObject.getString(field);
         } catch (Exception e) {
             return "";
@@ -164,8 +137,6 @@ public class CommonFunctions {
                     dayOfWeek = 7;
                     break;
             }
-            //cal.add(Calendar.DATE, -dayOfWeek + 1);
-           // Date d = cal.getTime();
             return dayOfWeek;
     }
 
@@ -174,5 +145,20 @@ public class CommonFunctions {
             return s;
         }
         return s.substring(0, s.length()-1);
+    }
+
+
+    public static void setRefreshActionButtonState(final boolean refreshing, final Menu optionsMenu) {
+        if (optionsMenu == null)
+            return;
+
+        final MenuItem refreshItem = optionsMenu.findItem(R.id.action_refresh);
+        if (refreshItem == null)
+            return;
+
+        if (refreshing)
+            refreshItem.setActionView(R.layout.actionbar);
+        else
+            refreshItem.setActionView(null);
     }
 }

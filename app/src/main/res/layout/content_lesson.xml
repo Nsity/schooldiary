@@ -14,15 +14,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/swipe_refresh"
-            android:layout_width="match_parent"
-            android:paddingBottom="16dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:layout_height="match_parent">
-
             <android.support.v4.widget.NestedScrollView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
@@ -220,7 +211,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentStart="true" />
 
-                        <TextView
+                        <!--<TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/marks"
@@ -231,7 +222,20 @@
                             android:layout_below="@+id/marks_name"
                             android:layout_alignParentEnd="true"
                             android:layout_marginRight="16dp"
-                            android:layout_alignParentStart="true" />
+                            android:layout_alignParentStart="true" />-->
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_marginLeft="72dp"
+                            android:paddingBottom="16dp"
+                            android:id="@+id/marks"
+                            android:layout_below="@+id/marks_name"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginRight="16dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_height="wrap_content" android:orientation="horizontal">
+
+                        </LinearLayout>
 
 
                         <View
@@ -352,6 +356,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="72dp"
+                        android:layout_marginBottom="16dp"
                         android:id="@+id/homework_layout">
 
                         <ImageView
@@ -362,7 +367,7 @@
                             android:layout_marginLeft="16dp"
                             android:foregroundGravity="center"
                             android:background="@mipmap/ic_work_black_24dp"
-                            android:contentDescription="@string/homework" />
+                            android:contentDescription="@string/homework_single" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -405,8 +410,6 @@
 
 
             </android.support.v4.widget.NestedScrollView>
-
-        </android.support.v4.widget.SwipeRefreshLayout>
     </RelativeLayout>
 </RelativeLayout>
 

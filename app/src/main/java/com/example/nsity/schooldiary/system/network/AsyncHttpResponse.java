@@ -27,8 +27,6 @@ public class AsyncHttpResponse {
     private static final String MESSAGE_TAG = "Message";
     public static final String MESSAGE = "timeout";
 
-    public AsyncHttpResponse(){}
-
     public AsyncHttpResponse(String url, RequestParams params, int callMethod, CallBack<ResponseObject> callBack){
         this.callBack = callBack;
 

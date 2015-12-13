@@ -3,7 +3,12 @@ package com.example.nsity.schooldiary.system;
 import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.Subject;
+import com.example.nsity.schooldiary.navigation.Time;
+import com.example.nsity.schooldiary.navigation.homework.Homework;
+import com.example.nsity.schooldiary.navigation.lesson.Lesson;
 import com.example.nsity.schooldiary.navigation.marks.subjects.SubjectMark;
+import com.example.nsity.schooldiary.navigation.marks.subjects.Subjects;
 import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.ProgressDBInterface;
 import com.example.nsity.schooldiary.system.network.AsyncHttpResponse;
@@ -145,6 +150,65 @@ public class CommonManager {
                     }
 
                     callBack.onSuccess(marksArrayList);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    callBack.onFail(context.getString(R.string.error_response));
+                }
+            }
+
+            @Override
+            public void onFailure(ResponseObject object){
+                callBack.onFail(ErrorTracker.getErrorDescription(context, object.getResponse().toString()));
+            }
+        });
+    }
+
+
+
+    public static void getHomework(final Context context, final int offset, final CallBack callBack) {
+        String url = context.getString(R.string.base_url) +
+                context.getString(R.string.call_method_api_get_homework) + Preferences.get(Preferences.CLASSID, context) + "/" +
+                offset;
+
+        new AsyncHttpResponse(url, null, AsyncHttpResponse.CALL_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
+            @Override
+            public void onSuccess(ResponseObject object){
+                if (!(object.getResponse() instanceof JSONObject)) {
+                    callBack.onFail(context.getString(R.string.error_response));
+                    return;
+                }
+
+                JSONObject response = (JSONObject)object.getResponse();
+
+                JSONObject result;
+                try {
+                    result = response.getJSONObject(context.getString(R.string.result));
+
+                    JSONArray lessons = (JSONArray) result.get(context.getString(R.string.lessons));
+
+                    if (CommonFunctions.StringIsNullOrEmpty(lessons.toString())) {
+                        callBack.onFail(context.getString(R.string.error_response));
+                        return;
+                    }
+
+                    ArrayList<Homework> homeworkArrayList = new ArrayList<>();
+
+                    for (int i = 0; i < lessons.length(); i++) {
+                        JSONObject lesson = lessons.getJSONObject(i);
+
+                        Homework homework = new Homework();
+
+                        homework.setDate(CommonFunctions.getFieldString(lesson, context.getString(R.string.date)));
+                        homework.setTask(CommonFunctions.getFieldString(lesson, context.getString(R.string.homework)));
+                        homework.setTheme(CommonFunctions.getFieldString(lesson, context.getString(R.string.theme)));
+
+                        Subject subject = new Subjects(context).findSubjectById(CommonFunctions.getFieldInt(lesson, context.getString(R.string.subject_id)));
+                        homework.setSubject(subject);
+
+                        homeworkArrayList.add(homework);
+                    }
+
+                    callBack.onSuccess(homeworkArrayList);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     callBack.onFail(context.getString(R.string.error_response));

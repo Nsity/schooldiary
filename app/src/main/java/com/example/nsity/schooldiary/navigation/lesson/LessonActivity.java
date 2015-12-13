@@ -5,18 +5,24 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.marks.Mark;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableItem;
@@ -35,9 +41,8 @@ import java.util.ArrayList;
 /**
  * Created by nsity on 18.11.15.
  */
-public class LessonActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class LessonActivity extends AppCompatActivity {
 
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private TimetableItem timetableItem;
 
     private View mProgressView;
@@ -48,7 +53,6 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
     private TextView mThemeTextView;
     private TextView mNoteTextView;
     private TextView mPassTextView;
-    private TextView mMarksTextView;
 
     private TextView mHomeworkTextView;
 
@@ -57,6 +61,7 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
 
     private Lesson lesson;
 
+    private Menu optionsMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +71,14 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
 
         timetableItem = (TimetableItem) getIntent().getSerializableExtra("timetableItem");
         if(timetableItem != null) {
+            int color = CommonFunctions.setColor(this, timetableItem.getSubject().getColor());
+
             toolbar.setTitle(timetableItem.getSubject().getName());
-            toolbar.setBackgroundColor(CommonFunctions.setColor(this, timetableItem.getSubject().getColor()));
+            toolbar.setBackgroundColor(color);
+
+            CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+            collapsingToolbarLayout.setBackgroundColor(color);
+            collapsingToolbarLayout.setContentScrimColor(color);
         }
 
         setSupportActionBar(toolbar);
@@ -80,10 +91,6 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
             }
         });
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-
-
         mProgressView = findViewById(R.id.progress);
         mLessonFormView = findViewById(R.id.lesson_form);
 
@@ -91,7 +98,7 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
         mTimeTextView = (TextView) findViewById(R.id.time);
         mThemeTextView = (TextView) findViewById(R.id.theme);
         mPassTextView = (TextView) findViewById(R.id.pass);
-        mMarksTextView = (TextView) findViewById(R.id.marks);
+
         mNoteTextView = (TextView) findViewById(R.id.note);
         mHomeworkTextView = (TextView) findViewById(R.id.homework);
 
@@ -108,19 +115,58 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
             }
         });
 
+        lesson = new Lesson(this, getIntent().getStringExtra("day"), timetableItem.getTime().getId(), timetableItem.getSubject().getId());
+
         setView();
     }
 
-    private void setView() {
-        if(timetableItem == null) {
-            return;
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.refresh_menu, menu);
+        this.optionsMenu = menu;
+        return true;
+    }
 
-        lesson = new Lesson(this, getIntent().getStringExtra("day"), timetableItem.getTime().getId(), timetableItem.getSubject().getId());
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                CommonFunctions.setRefreshActionButtonState(true, optionsMenu);
+
+                lesson.load(this, timetableItem.getSubject().getId(),
+                        getIntent().getStringExtra("day"), timetableItem.getTime().getId(), new CallBack() {
+                            @Override
+                            public void onSuccess() {
+                                CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
+
+                                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+                                mLessonFormView.setVisibility(View.INVISIBLE);
+                                mLessonFormView.animate().setDuration(shortAnimTime).alpha(1).setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        mLessonFormView.setVisibility(View.VISIBLE);
+                                    }
+                                });
+
+                                setView();
+                            }
+
+                            @Override
+                            public void onFail(String message) {
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                                CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
+                            }
+                        });
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setView() {
         if(lesson.getId() == -1) {
             showProgress(true);
 
-            CommonManager.getLesson(this, lesson.getId(), timetableItem.getSubject().getId(),
+            lesson.load(this, timetableItem.getSubject().getId(),
                     getIntent().getStringExtra("day"), timetableItem.getTime().getId(), new CallBack() {
                         @Override
                         public void onSuccess() {
@@ -186,42 +232,43 @@ public class LessonActivity extends AppCompatActivity implements SwipeRefreshLay
                 RelativeLayout mMarksLayout = (RelativeLayout) findViewById(R.id.marks_layout);
                 mMarksLayout.setVisibility(View.VISIBLE);
 
-                String markStr = "";
+                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.marks);
+                linearLayout.removeAllViews();
+
                 ArrayList<Mark> marks = lesson.getMarks();
-                for(Mark mark: marks) {
-                    markStr += mark.getValue() + ", ";
+                for(final Mark mark: marks) {
+                    ImageView image = new ImageView(this);
+
+                    TextDrawable drawable = TextDrawable.builder()
+                            .beginConfig()
+                            .width(40)
+                            .height(40)
+                            .bold()
+                            .useFont(Typeface.DEFAULT)
+                            .fontSize(30)
+                            .endConfig()
+                            .buildRoundRect(String.valueOf(mark.getValue()), CommonFunctions.setMarkColor(this, mark.getValue()), 8);
+
+                    image.setImageDrawable(drawable);
+
+                    image.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(getApplicationContext(), mark.getType(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
+                    //left, top, right, bottom
+                    lp.setMargins(0, 8, 8, 8);
+                    image.setLayoutParams(lp);
+
+                    linearLayout.addView(image);
                 }
-
-                mMarksTextView.setText(CommonFunctions.removeLastChar(CommonFunctions.removeLastChar(markStr)));
             }
-
         }
-    }
-
-    @Override
-    public void onRefresh() {
-        if (!Server.isOnline(this)) {
-            Toast.makeText(this, getString(R.string.internet_problem), Toast.LENGTH_SHORT).show();
-            mSwipeRefreshLayout.setRefreshing(false);
-            return;
-        }
-
-        CommonManager.getLesson(this, lesson.getId(), timetableItem.getSubject().getId(),
-                getIntent().getStringExtra("day"), timetableItem.getTime().getId(), new CallBack() {
-                    @Override
-                    public void onSuccess() {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        mLessonFormView.setVisibility(View.VISIBLE);
-                        setView();
-                    }
-
-                    @Override
-                    public void onFail(String message) {
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        mLessonFormView.setVisibility(View.GONE);
-                    }
-                });
     }
 
     @Override

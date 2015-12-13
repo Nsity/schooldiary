@@ -33,6 +33,7 @@
 
         <activity
             android:name=".navigation.login.LoginActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name">
         </activity>
 
@@ -44,6 +45,7 @@
 
         <activity
             android:name=".navigation.lesson.LessonActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
 

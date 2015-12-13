@@ -74,40 +74,19 @@ public class Lesson {
         this.date = date;
     }
 
-
     public Lesson() {
     }
 
     public Lesson(Context context, String date, int timeId, int subjectId) {
         this.db = new LessonDBInterface(context);
-        getLesson(date, timeId, subjectId);
+        loadFromDB(date, timeId, subjectId);
     }
 
-    /*private void loadFromDB() {
-        Cursor cursor = db.getLesson(String.valueOf(id));
-
-        if(cursor == null) {
-            return;
-        }
-
-        if (cursor.moveToFirst()) {
-            do {
-                setValues(cursor);
-            }
-            while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.closeDB();
-
-        marksArrayList = getMarksOfLesson();
-    }*/
-
-    public void getLesson(String date, int timeId, int subjectId) {
+    public void loadFromDB(String date, int timeId, int subjectId) {
         Lesson lesson = db.getLesson(date, timeId, subjectId);
 
         if(lesson == null) {
-            setId(-1);
+            this.id = -1;
             return;
         }
 
@@ -120,21 +99,20 @@ public class Lesson {
         this.subject = lesson.getSubject();
         this.note = lesson.getNote();
 
-        getMarksOfLesson();
+        marksArrayList = loadMarks();
     }
 
-
-    public void load(Context context, final int lessonId, final int subjectId, final String day,
+    public void load(Context context, final int subjectId, final String day,
                      final int timeId, final CallBack callBack) {
         if (!Server.isOnline(context)) {
             callBack.onFail(context.getString(R.string.internet_problem));
             return;
         }
 
-        CommonManager.getLesson(context, lessonId, subjectId, day, timeId, new CallBack() {
+        CommonManager.getLesson(context, id, subjectId, day, timeId, new CallBack() {
             @Override
             public void onSuccess() {
-                getLesson(day, timeId, subjectId);
+                loadFromDB(day, timeId, subjectId);
                 callBack.onSuccess();
             }
 
@@ -145,8 +123,8 @@ public class Lesson {
         });
     }
 
-    public void getMarksOfLesson() {
-        marksArrayList = db.getMarks(id);
+    public ArrayList<Mark> loadMarks() {
+        return db.getMarks(id);
     }
 
     public String getPass() {

@@ -1,57 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<com.andexert.library.RippleView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ripple="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    ripple:rv_centered="true"
-    ripple:rv_color="@color/colorPrimary"
-    ripple:rv_type="rectangle">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
-        android:padding="@dimen/activity_horizontal_margin">
+    android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <ImageView android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/image_view"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/homework_subject"
-            android:textSize="18sp"
-            android:layout_marginTop="-8dp"
-            android:text="sdfsdgsdgsdfdsfsgsdgsdgsdgsdgsgsdgsgdsgsdg"
-            android:gravity="fill"
-            android:paddingLeft="@dimen/text_margin"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:layout_alignStart="@+id/homework_task"
-            android:layout_toStartOf="@+id/homework_date"
-            android:layout_alignParentTop="true" />
+    <View
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/circle"
+        android:id="@+id/circle"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/homework_task"
-            android:text="sdegsdgsdgsdgsgdsgsdgsdgsdgdssdgsdgsdgsdgds88888888888888888888675u54u56uh654h465h4456h"
-            android:lines="2"
-            android:ellipsize="end"
-            android:paddingLeft="@dimen/text_margin"
-            android:layout_toEndOf="@+id/image_view"
-            android:layout_below="@+id/homework_subject" />
+    </View>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="21.12.2015"
-            android:id="@+id/homework_date"
-            android:textSize="12sp"
-            android:layout_marginLeft="4dp"
-            android:layout_alignParentEnd="true"
-            android:layout_above="@+id/homework_task"
-            android:layout_alignParentTop="true" />
-    </RelativeLayout>
-</com.andexert.library.RippleView>
+    <View
+        android:id="@+id/view1"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/divider"
+        android:layout_below="@+id/homework"
+        android:layout_alignStart="@+id/homework" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/subject"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="16sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:gravity="top"
+        android:layout_alignTop="@+id/date"
+        android:layout_toEndOf="@+id/circle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:textSize="12sp"
+        android:layout_marginRight="16dp"
+        android:id="@+id/date"
+        android:layout_marginTop="16dp"
+        android:gravity=""
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/homework"
+        android:textSize="14sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:layout_marginBottom="16dp"
+        android:textColor="@android:color/secondary_text_light"
+        android:layout_below="@+id/subject"
+        android:layout_alignStart="@+id/subject"
+        android:layout_toStartOf="@+id/imageView3" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView3"
+        android:background="@mipmap/ic_star_rate_black_18dp"
+        android:layout_below="@+id/circle"
+        android:layout_alignEnd="@+id/date" />
+
+</RelativeLayout>
