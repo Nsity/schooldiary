@@ -6,10 +6,21 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_lesson" tools:context=".LessonActivity">
 
-    <ProgressBar android:id="@+id/progress" style="?android:attr/progressBarStyleLarge"
+
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/progress"
+        android:visibility="gone"
+        style="@style/Widget.MaterialProgressBar.ProgressBar" />
+
+    <!--<ProgressBar android:id="@+id/progress" style="@style/Base.Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="8dp" android:visibility="gone" />
+        android:layout_marginBottom="8dp" android:visibility="gone" />-->
 
     <RelativeLayout
         android:layout_width="match_parent"

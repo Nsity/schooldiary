@@ -95,7 +95,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onFail(String message) {
-
                     showProgress(false);
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 }

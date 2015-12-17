@@ -3,11 +3,14 @@ package com.example.nsity.schooldiary.navigation.homework.recent;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+
+import com.example.nsity.schooldiary.R;
 
 /**
  * Created by nsity on 13.12.15.
@@ -53,12 +56,14 @@ public class EndlessListView extends ListView {
         mIsLoading = false;
 
         progressBar = new ProgressBar(getContext(), null,
-                android.R.attr.progressBarStyleLarge);
+                R.style.Widget_MaterialProgressBar_ProgressBar);
+
+        progressBar = (ProgressBar) LayoutInflater.from(getContext()).inflate(R.layout.progressbar, null);
         LinearLayout.LayoutParams progressBarParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         progressBar.setLayoutParams(progressBarParams);
-        progressBar.setPadding(8, 8, 8, 8);
+        progressBar.setPadding(16, 16, 16, 16);
         progressBar.setVisibility(View.GONE);
 
         LinearLayout footerLinearLayout = new LinearLayout(getContext());

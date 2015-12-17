@@ -65,6 +65,7 @@ public class HomeworkAdapter extends BaseAdapter {
         TextView mTaskTextView;
         TextView mDateTextView;
         View mCircleView;
+        ImageView mFavoriteImageView;
     }
 
     @Override
@@ -91,6 +92,8 @@ public class HomeworkAdapter extends BaseAdapter {
             holder.mDateTextView = (TextView) customView.findViewById(R.id.date);
 
             holder.mCircleView = customView.findViewById(R.id.circle);
+
+           // holder.mFavoriteImageView = (ImageView) customView.findViewById(R.id.homework);
 
             customView.setTag(holder);
         } else {

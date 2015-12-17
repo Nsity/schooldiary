@@ -50,6 +50,12 @@
         </activity>
 
         <activity
+            android:name=".navigation.homework.recent.HomeworkActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+
+        <activity
             android:name=".navigation.marks.subjects.SubjectMarksActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >

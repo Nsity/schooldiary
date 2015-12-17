@@ -9,13 +9,11 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,14 +25,7 @@ import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.marks.Mark;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableItem;
 import com.example.nsity.schooldiary.system.CommonFunctions;
-import com.example.nsity.schooldiary.system.CommonManager;
-import com.example.nsity.schooldiary.system.Preferences;
 import com.example.nsity.schooldiary.system.network.CallBack;
-import com.example.nsity.schooldiary.system.network.Server;
-import com.ms.square.android.expandabletextview.ExpandableTextView;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 

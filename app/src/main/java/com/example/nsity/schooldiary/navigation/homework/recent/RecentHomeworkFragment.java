@@ -3,6 +3,7 @@ package com.example.nsity.schooldiary.navigation.homework.recent;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.AdapterView;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.homework.Homework;
@@ -22,6 +23,7 @@ import com.example.nsity.schooldiary.system.network.CallBack;
 
 import java.util.ArrayList;
 
+
 /**
  * Created by nsity on 13.12.15.
  */
@@ -29,6 +31,8 @@ public class RecentHomeworkFragment extends Fragment {
 
     private HomeworkAdapter homeworkAdapter;
     private EndlessListView endlessListView;
+
+    private ArrayList<Homework> arrayList;
 
     private View mProgressView;
 
@@ -49,7 +53,21 @@ public class RecentHomeworkFragment extends Fragment {
         endlessListView = (EndlessListView) rootView.findViewById(R.id.homework);
         mProgressView = rootView.findViewById(R.id.progress);
 
+        arrayList = new ArrayList<>();
         setView(1);
+
+
+        endlessListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
+                                    long id) {
+                Intent intent = new Intent(getActivity(), HomeworkActivity.class);
+                intent.putExtra("homework", arrayList.get(position));
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+
 
         return rootView;
     }
@@ -67,10 +85,7 @@ public class RecentHomeworkFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 CommonFunctions.setRefreshActionButtonState(true, optionsMenu);
-
                 setView(1);
-
-
                 return false;
         }
         return super.onOptionsItemSelected(item);
@@ -81,6 +96,8 @@ public class RecentHomeworkFragment extends Fragment {
         mCount = count;
         showProgress(true);
 
+        arrayList = new ArrayList<>();
+
         CommonManager.getHomework(getActivity(), mCount, new CallBack<ArrayList<Homework>>() {
             @Override
             public void onSuccess(ArrayList<Homework> homeworkArrayList) {
@@ -89,6 +106,9 @@ public class RecentHomeworkFragment extends Fragment {
                 endlessListView.setAdapter(homeworkAdapter);
                 endlessListView.setOnLoadMoreListener(loadMoreListener);
                 mHaveMoreDataToLoad = true;
+
+                arrayList.addAll(homeworkArrayList);
+
                 CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
             }
 
@@ -107,10 +127,15 @@ public class RecentHomeworkFragment extends Fragment {
             @Override
             public void onSuccess(ArrayList<Homework> homeworkArrayList) {
                 homeworkAdapter.addItems(homeworkArrayList);
+
+                arrayList.addAll(homeworkArrayList);
                 endlessListView.loadMoreComplete();
+
                 if(homeworkArrayList.size() == 0) {
-                    mHaveMoreDataToLoad = false;
+                    //mHaveMoreDataToLoad = false;
+                    mCount--;
                 }
+
             }
 
             @Override

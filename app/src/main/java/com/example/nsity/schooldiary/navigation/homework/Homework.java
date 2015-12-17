@@ -2,10 +2,12 @@ package com.example.nsity.schooldiary.navigation.homework;
 
 import com.example.nsity.schooldiary.navigation.Subject;
 
+import java.io.Serializable;
+
 /**
  * Created by nsity on 13.12.15.
  */
-public class Homework {
+public class Homework implements Serializable {
 
     private Subject subject;
     private String task;

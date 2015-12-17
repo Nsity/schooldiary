@@ -4,7 +4,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
 android:layout_height="match_parent" android:fitsSystemWindows="true"
-tools:context=".ScrollingActivity">
+tools:context=".LessonActivity">
 
 <android.support.design.widget.AppBarLayout android:id="@+id/app_bar"
     android:fitsSystemWindows="true" android:layout_height="@dimen/app_bar_height"
@@ -22,6 +22,6 @@ tools:context=".ScrollingActivity">
     </android.support.design.widget.CollapsingToolbarLayout>
 </android.support.design.widget.AppBarLayout>
 
-<include layout="@layout/content_lesson" />
+    <include layout="@layout/content_lesson" />
 
 </android.support.design.widget.CoordinatorLayout>
