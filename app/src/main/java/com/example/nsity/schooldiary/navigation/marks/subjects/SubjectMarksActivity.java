@@ -70,7 +70,6 @@ public class SubjectMarksActivity extends AppCompatActivity {
 
         marksListView = (ListView) findViewById(R.id.marks);
 
-
         mProgressView = findViewById(R.id.progress);
         mSubjectFormView = findViewById(R.id.subject_form);
 
@@ -78,7 +77,7 @@ public class SubjectMarksActivity extends AppCompatActivity {
         mPeriodTextView = (TextView) findViewById(R.id.period);
 
         periods = new Periods(getApplicationContext());
-        setView(periods.getCurrentPeriod(getApplicationContext()).getName());
+        setView(periods.getCurrentPeriod().getName());
     }
 
 
@@ -135,7 +134,7 @@ public class SubjectMarksActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        Period period = periods.getCurrentPeriod(getApplicationContext());
+        Period period = periods.getCurrentPeriod();
 
         MenuItem menuItem;
 
