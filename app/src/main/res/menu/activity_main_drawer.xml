@@ -6,8 +6,12 @@
             android:title="@string/nav_timetable" />
         <item android:id="@+id/nav_marks" android:icon="@mipmap/ic_stars_black_24dp"
             android:title="@string/nav_marks" />
-        <item android:id="@+id/nav_homeworks" android:icon="@mipmap/ic_work_black_24dp"
-            android:title="@string/nav_homeworks" />
+        <item android:id="@+id/nav_homework" android:icon="@mipmap/ic_work_black_24dp"
+            android:title="@string/nav_homework"/>
+        <item android:id="@+id/nav_progress" android:icon="@mipmap/ic_bookmark_black_24dp"
+            android:title="@string/nav_progress" />
+        <item android:id="@+id/nav_statistics" android:icon="@mipmap/ic_insert_chart_black_24dp"
+            android:title="@string/nav_statistics" />
         <item android:id="@+id/nav_profile" android:icon="@mipmap/ic_face_black_24dp"
             android:title="@string/nav_profile" />
     </group>

@@ -18,6 +18,7 @@ import java.util.ArrayList;
  * Created by nsity on 17.11.15.
  */
 public class TimetableAdapter extends BaseAdapter {
+
     private ArrayList<TimetableItem> arrayList;
     private Context context;
     private LayoutInflater layoutInflater;

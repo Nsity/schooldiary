@@ -1,13 +1,12 @@
-package com.example.nsity.schooldiary.navigation;
+package com.example.nsity.schooldiary.navigation.timetable;
 
-import java.io.Serializable;
+import com.example.nsity.schooldiary.system.BaseEntity;
 
 /**
  * Created by nsity on 06.12.15.
  */
-public class Period implements Serializable {
+public class Period extends BaseEntity {
 
-    private int id;
     private String periodStart;
     private String periodEnd;
     private String name;
@@ -43,11 +42,4 @@ public class Period implements Serializable {
         this.periodStart = periodStart;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 }

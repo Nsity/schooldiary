@@ -2,10 +2,8 @@ package com.example.nsity.schooldiary.navigation.timetable;
 
 
 import android.content.Context;
-import android.database.Cursor;
 
-import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
-import com.example.nsity.schooldiary.system.database.tables.TimeDBInterface;
+import com.example.nsity.schooldiary.system.ListBaseEntity;
 import com.example.nsity.schooldiary.system.database.tables.TimetableDBInterface;
 
 import java.util.ArrayList;
@@ -13,26 +11,25 @@ import java.util.ArrayList;
 /**
  * Created by nsity on 16.11.15.
  */
-public class Timetable {
+public class Timetable extends ListBaseEntity {
 
     private ArrayList<TimetableItem> timetableArrayList;
-
-    TimetableDBInterface db;
+    private TimetableDBInterface db;
 
     public Timetable(Context context) {
+        super(context);
         this.db = new TimetableDBInterface(context);
-        timetableArrayList = loadFromDB();
+        this.timetableArrayList = new ArrayList<>();
+        loadFromDB();
     }
 
-    private ArrayList<TimetableItem> loadFromDB() {
-        return db.getTimetable();
+    @Override
+    protected void loadFromDB() {
+        timetableArrayList.clear();
+        timetableArrayList = db.getTimetable();
     }
 
     public ArrayList<TimetableItem> getTimetableOfDay(int dayOfWeek) {
-        if(timetableArrayList == null) {
-            return null;
-        }
-
         ArrayList<TimetableItem> timetableOfDay = new ArrayList<>();
 
         for (TimetableItem timetableItem: timetableArrayList) {
@@ -41,12 +38,8 @@ public class Timetable {
             }
         }
 
-        if(timetableOfDay.size() == 0) {
-            return null;
-        } else
-            return timetableOfDay;
+        return timetableOfDay.size() == 0 ? null : timetableOfDay;
     }
-
 
     public TimetableItem getItem(int position) {
         return timetableArrayList.get(position);

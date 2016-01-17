@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.Subject;
+import com.example.nsity.schooldiary.navigation.marks.Subject;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 
 import java.util.ArrayList;
@@ -90,7 +90,7 @@ public class ProgressAdapter extends BaseAdapter {
         TextDrawable drawable;
 
         if(progress == null)
-            return  customView;
+            return customView;
 
         for (ProgressItem item: progress) {
             if(item.getPeriod().getName().equals(context.getString(R.string.first_period))) {

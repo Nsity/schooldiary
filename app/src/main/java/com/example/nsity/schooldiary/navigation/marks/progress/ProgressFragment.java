@@ -29,6 +29,7 @@ import com.example.nsity.schooldiary.system.CommonManager;
 import com.example.nsity.schooldiary.system.network.CallBack;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by nsity on 06.12.15.
@@ -86,11 +87,11 @@ public class ProgressFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 CommonFunctions.setRefreshActionButtonState(true, optionsMenu);
-                subjects.loadProgress(getActivity(), new CallBack() {
+                subjects.loadProgress(new CallBack() {
                     @Override
                     public void onSuccess() {
-                        listView.setAdapter(new ProgressAdapter(getActivity(), subjects.getSubjects()));
                         CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
+                        listView.setAdapter(new ProgressAdapter(getActivity(), subjects.getSubjects()));
 
                         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
                         listView.setVisibility(View.INVISIBLE);
@@ -104,8 +105,10 @@ public class ProgressFragment extends Fragment {
 
                     @Override
                     public void onFail(String error) {
-                        Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-                        CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
+                        if (isAdded() && getActivity() != null) {
+                            Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                            CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
+                        }
                     }
                 });
                 return false;
@@ -127,26 +130,28 @@ public class ProgressFragment extends Fragment {
 
     private void setView() {
         subjects = new Subjects(getActivity());
-        if(!subjects.existProgress(getActivity())) {
-            showProgress(true);
-            subjects.loadProgress(getActivity(), new CallBack() {
+        if(!subjects.existProgress()) {
+            CommonFunctions.showProgress(true, getActivity(), mProgressFormView, mProgressView);
+            subjects.loadProgress(new CallBack() {
                 @Override
                 public void onSuccess() {
-                    showProgress(false);
-                    listView.setAdapter(new ProgressAdapter(getActivity(), subjects.getSubjects()));
+                    if (isAdded() && getActivity() != null) {
+                        CommonFunctions.showProgress(false, getActivity(), mProgressFormView, mProgressView);
+                        listView.setAdapter(new ProgressAdapter(getActivity(), subjects.getSubjects()));
+                    }
                 }
-
                 @Override
                 public void onFail(String error) {
-                    showProgress(false);
-                    Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                    if (isAdded() && getActivity() != null) {
+                        CommonFunctions.showProgress(false, getActivity(), mProgressFormView, mProgressView);
+                        Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         } else {
             listView.setAdapter(new ProgressAdapter(getActivity(), subjects.getSubjects()));
         }
     }
-
 
     @Override
     public void onResume() {
@@ -155,31 +160,4 @@ public class ProgressFragment extends Fragment {
     }
 
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mProgressFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mProgressFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
 }

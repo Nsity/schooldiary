@@ -11,7 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.Subject;
+import com.example.nsity.schooldiary.navigation.marks.Subject;
 
 /**
  * Created by nsity on 04.12.15.

@@ -1,8 +1,6 @@
 package com.example.nsity.schooldiary.navigation;
 
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -12,29 +10,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.homework.HomeworkFragment;
 import com.example.nsity.schooldiary.navigation.login.LoginActivity;
 import com.example.nsity.schooldiary.navigation.login.ProfileFragment;
-import com.example.nsity.schooldiary.navigation.marks.MarksFragment;
+import com.example.nsity.schooldiary.navigation.marks.progress.ProgressFragment;
+import com.example.nsity.schooldiary.navigation.marks.subjects.SubjectsFragment;
+import com.example.nsity.schooldiary.navigation.statistics.StatisticsFragment;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableFragment;
 import com.example.nsity.schooldiary.system.Preferences;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-
-    private boolean viewIsAtHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +55,9 @@ public class MainActivity extends AppCompatActivity
             navigationView.getMenu().getItem(0).setChecked(true);
 
             View header = navigationView.inflateHeaderView(R.layout.nav_header_main);
-            TextView text = (TextView) header.findViewById(R.id.nav_profile_pupil);
-            text.setText(Preferences.get(Preferences.FIO, this) + " (" + Preferences.get(Preferences.CLASSNAME, this) +")");
 
-            text = (TextView) header.findViewById(R.id.nav_profile_date);
-            text.setText(new SimpleDateFormat("LLLL d, yyyy", new Locale("ru")).format(new Date()));
+            TextView text = (TextView) header.findViewById(R.id.nav_app_name);
+            text.setText(getResources().getString(R.string.app_name));
         }
     }
 
@@ -76,11 +66,8 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        if (!viewIsAtHome) { //if the current view is not the News fragment
-            displayView(R.id.nav_timetable);
         } else {
-            moveTaskToBack(true);  //If view is in News fragment, exit application
+            super.onBackPressed();
         }
     }
 
@@ -96,38 +83,48 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
         String title = getString(R.string.app_name);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setOnClickListener(null);
+        toolbar.setOnLongClickListener(null);
+
         switch (viewId) {
             case R.id.nav_timetable:
                 fragment = new TimetableFragment();
-                title  = getString(R.string.nav_timetable);
-                viewIsAtHome = true;
+                title = getString(R.string.nav_timetable);
                 break;
-            case R.id.nav_homeworks:
+            case R.id.nav_homework:
                 fragment = new HomeworkFragment();
-                title  = getString(R.string.nav_homeworks);
-                viewIsAtHome = false;
+                title  = getString(R.string.nav_homework);
                 break;
             case R.id.nav_marks:
-                fragment = new MarksFragment();
+                fragment = new SubjectsFragment();
                 title = getString(R.string.nav_marks);
-                viewIsAtHome = false;
+                break;
+            case R.id.nav_progress:
+                fragment = new ProgressFragment();
+                title = getString(R.string.nav_progress);
+                break;
+            case R.id.nav_statistics:
+                fragment = new StatisticsFragment();
+                title = getString(R.string.nav_statistics);
                 break;
             case R.id.nav_profile:
                 fragment = new ProfileFragment();
                 title = getString(R.string.nav_profile);
-                viewIsAtHome = false;
                 break;
         }
+
 
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment);
+            ft.addToBackStack(null);
             ft.commit();
         }
 
-        // set the toolbar title
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
+            invalidateOptionsMenu();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -3,11 +3,9 @@ package com.example.nsity.schooldiary.system.database.tables;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.renderscript.Sampler;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.Period;
-import com.example.nsity.schooldiary.navigation.Subject;
+import com.example.nsity.schooldiary.navigation.timetable.Period;
 import com.example.nsity.schooldiary.navigation.marks.progress.ProgressItem;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.database.ADBWorker;
@@ -153,11 +151,7 @@ public class ProgressDBInterface extends ADBWorker {
 
         cursor.close();
 
-        if(progress.size() == 0) {
-            return null;
-        } else {
-            return progress;
-        }
+        return progress.size() == 0 ? null : progress;
     }
 
     public Boolean existProgress() {

@@ -6,12 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.Subject;
+import com.example.nsity.schooldiary.navigation.marks.Subject;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 
 import java.util.ArrayList;
@@ -20,6 +18,7 @@ import java.util.ArrayList;
  * Created by nsity on 04.12.15.
  */
 public class SubjectsAdapter extends BaseAdapter {
+
     private ArrayList<Subject> arrayList;
     private Context context;
     private LayoutInflater layoutInflater;

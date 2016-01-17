@@ -3,6 +3,7 @@ package com.example.nsity.schooldiary.system.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.nsity.schooldiary.system.database.tables.HomeworkDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.PeriodDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.ProgressDBInterface;
@@ -12,17 +13,13 @@ import com.example.nsity.schooldiary.system.database.tables.TimetableDBInterface
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 
-import java.io.IOException;
-
 /**
  * Created by nsity on 15.11.15.
  */
 public class DBHelper extends OrmLiteSqliteOpenHelper {
 
-
     private static final String DB_NAME = "DIARY";
     private static final int DB_VERSION = 1;
-
 
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
@@ -33,6 +30,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         database.execSQL(LessonDBInterface.MARK_TABLE_CREATE);
         database.execSQL(ProgressDBInterface.PROGRESS_TABLE_CREATE);
         database.execSQL(PeriodDBInterface.PERIOD_TABLE_CREATE);
+        database.execSQL(HomeworkDBInterface.HOMEWORK_TABLE_CREATE);
 
     }
 
@@ -45,6 +43,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + LessonDBInterface.MARK_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ProgressDBInterface.PROGRESS_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + PeriodDBInterface.PERIOD_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + HomeworkDBInterface.HOMEWORK_TABLE_NAME);
 
         onCreate(db);
     }

@@ -50,7 +50,7 @@
         </activity>
 
         <activity
-            android:name=".navigation.homework.recent.HomeworkActivity"
+            android:name=".navigation.homework.HomeworkActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>

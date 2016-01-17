@@ -1,4 +1,4 @@
-package com.example.nsity.schooldiary.navigation.homework.recent;
+package com.example.nsity.schooldiary.navigation.homework;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.homework.Homework;
+import com.example.nsity.schooldiary.navigation.lesson.Lesson;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 
 /**
@@ -16,7 +16,7 @@ import com.example.nsity.schooldiary.system.CommonFunctions;
 public class HomeworkActivity extends AppCompatActivity {
 
     private TextView mHomeworkTextView, mDateTextView;
-    private Homework homework;
+    private Lesson lesson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,11 +24,11 @@ public class HomeworkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_homework);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        homework = (Homework) getIntent().getSerializableExtra("homework");
-        if(homework != null) {
-            int color = CommonFunctions.setColor(this, homework.getSubject().getColor());
+        lesson = (Lesson) getIntent().getSerializableExtra("lesson");
+        if(lesson != null) {
+            int color = CommonFunctions.setColor(this, lesson.getSubject().getColor());
 
-            toolbar.setTitle(homework.getSubject().getName());
+            toolbar.setTitle(lesson.getSubject().getName());
             toolbar.setBackgroundColor(color);
         }
 
@@ -44,10 +44,10 @@ public class HomeworkActivity extends AppCompatActivity {
 
 
         mHomeworkTextView = (TextView) findViewById(R.id.homework);
-        mHomeworkTextView.setText(homework.getTask());
+        mHomeworkTextView.setText(lesson.getHomework());
 
         mDateTextView = (TextView) findViewById(R.id.date);
-        mDateTextView.setText(CommonFunctions.getDate(homework.getDate(), CommonFunctions.FORMAT_YYYY_MM_DD, CommonFunctions.FORMAT_DD_MM_YYYY));
+        mDateTextView.setText(CommonFunctions.getDate(lesson.getDate(), CommonFunctions.FORMAT_YYYY_MM_DD, CommonFunctions.FORMAT_DD_MM_YYYY));
 
     }
 

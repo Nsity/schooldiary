@@ -1,16 +1,14 @@
 package com.example.nsity.schooldiary.navigation.lesson;
 
 import android.content.Context;
-import android.database.Cursor;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.Subject;
-import com.example.nsity.schooldiary.navigation.Time;
+import com.example.nsity.schooldiary.navigation.marks.Subject;
+import com.example.nsity.schooldiary.navigation.timetable.Time;
 import com.example.nsity.schooldiary.navigation.marks.Mark;
+import com.example.nsity.schooldiary.system.BaseEntity;
 import com.example.nsity.schooldiary.system.CommonManager;
 import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
-import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
-import com.example.nsity.schooldiary.system.database.tables.TimeDBInterface;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
 
@@ -19,9 +17,8 @@ import java.util.ArrayList;
 /**
  * Created by nsity on 24.11.15.
  */
-public class Lesson {
+public class Lesson extends BaseEntity {
 
-    private int id;
     private String date;
     private String theme;
     private String homework;
@@ -33,14 +30,6 @@ public class Lesson {
     private ArrayList<Mark> marksArrayList;
 
     private LessonDBInterface db;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getNote() {
         return note;
@@ -85,7 +74,7 @@ public class Lesson {
     public void loadFromDB(String date, int timeId, int subjectId) {
         Lesson lesson = db.getLesson(date, timeId, subjectId);
 
-        if(lesson == null) {
+        if(lesson.getId() == -1) {
             this.id = -1;
             return;
         }

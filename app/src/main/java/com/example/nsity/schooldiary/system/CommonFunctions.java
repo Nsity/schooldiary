@@ -1,14 +1,20 @@
 package com.example.nsity.schooldiary.system;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.nsity.schooldiary.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,26 +27,11 @@ import java.util.Locale;
 public class CommonFunctions {
     public static final String FORMAT_DD_MM_YYYY = "dd.MM.yyyy";
     public static final String FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
-
-    public static final String FORMAT_LLLL_D_YYYY = "LLLL d, yyyy";
     public static final String FORMAT_D_MMMM_YYYY = "d MMMM yyyy";
-    public static final String FORMAT_HH_MM = "HH:mm";
+    public static final String FORMAT_E_D_MMMM_YYYY = "d MMMM, yyyy";
 
     public static boolean StringIsNullOrEmpty(String string) {
         return (string == null) || (string.isEmpty());
-    }
-
-    public static long getDifferentBeetweenDates(String start, String end) {
-        SimpleDateFormat simple = new SimpleDateFormat("MM.yyyy", Locale.ENGLISH);
-        try {
-            Date startDate = simple.parse(start);
-            Date endDate = simple.parse(end);
-            return endDate.getTime() - startDate.getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return 0;
     }
 
     public static String getCurrentDateyyyyMMdd() {
@@ -56,6 +47,17 @@ public class CommonFunctions {
             return df.format(sdf.parse(date));
         } catch (Exception e) {
             return date;
+        }
+    }
+
+    public static String getDate(Date date, String endFormat) {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat(endFormat, new Locale("ru"));
+
+            return df.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
         }
     }
 
@@ -140,11 +142,35 @@ public class CommonFunctions {
             return dayOfWeek;
     }
 
-    public static String removeLastChar(String s) {
-        if (s == null || s.length() == 0) {
-            return s;
+
+    public static Date getMonday(Date datetime) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(datetime);
+        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        switch (dayOfWeek) {
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+                dayOfWeek--;
+                break;
+            case 1:
+                dayOfWeek = 7;
+                break;
         }
-        return s.substring(0, s.length()-1);
+        cal.add(Calendar.DATE, -dayOfWeek + 1);
+        Date d = cal.getTime();
+        return d;
+    }
+
+    public static Date addDays(int daysForAdd, Date currentDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentDate);
+        cal.add(Calendar.DATE, daysForAdd);
+        currentDate = cal.getTime();
+        return currentDate;
     }
 
 
@@ -161,4 +187,35 @@ public class CommonFunctions {
         else
             refreshItem.setActionView(null);
     }
+
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public static void showProgress(final boolean show, Context context, final View mFormView, final View mProgressView) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = context.getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mFormView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
+
 }

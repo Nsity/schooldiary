@@ -8,19 +8,22 @@
 
     <string name="nav_profile">Профиль</string>
     <string name="nav_timetable">Расписание</string>
-    <string name="nav_marks">Оценки</string>
-    <string name="nav_homeworks">Домашние задания</string>
+    <string name="nav_marks">Текущие оценки</string>
+    <string name="nav_progress">Итоговые оценки</string>
+    <string name="nav_homework">Домашние задания</string>
+    <string name="nav_statistics">Статистика</string>
 
     <string name="today">Сегодня</string>
 
     <string name="base_url">http://schooldiary.azurewebsites.net/</string>
-    <!--<string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>-->
+   <!-- <string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>-->
     <string name="call_method_api_login">auth/login/</string>
     <string name="call_method_api_get_timetable">timetable/get/</string>
     <string name="call_method_api_get_lesson">lesson/get/</string>
     <string name="call_method_api_get_progress">progress/get/</string>
     <string name="call_method_api_get_subject_marks">subject/getmarks/</string>
     <string name="call_method_api_get_homework">lesson/gethomework/</string>
+    <string name="call_method_api_get_statistics">subject/statistics/</string>
 
 
     <string name="error_encode">Ошибка кодирования данных</string>
@@ -34,6 +37,7 @@
     <string name="fio">ФИО</string>
     <string name="name">Наименование</string>
     <string name="class_name">КлассНаименование</string>
+    <string name="class_text">Класс</string>
 
     <string name="result">result</string>
     <string name="time">Время</string>
@@ -63,7 +67,7 @@
     <string name="period_id">ПериодИд</string>
     <string name="lessons">Уроки</string>
 
-    <string name="missing">Отсутсвует</string>
+    <string name="missing">Отсутствует</string>
 
     <string name="text_copied">Текст скопирован в буфер</string>
     <string name="no_data">Нет данных</string>
@@ -113,6 +117,7 @@
     <string name="error_tracker_timeout_error">Превышено время ожидания данных. Сервер не отвечает</string>
     <string name="error_tracker_error">При получении данных произошла ошибка</string>
     <string name="error_tracker_empty_content">В JSON отсутствуют данные</string>
+    <string name="error_tracker_empty_json">Получен пустой объект</string>
     <string name="error_tracker_exception_not_found">Не удалось получить текст ошибки</string>
 
 
@@ -122,9 +127,12 @@
 
     <string name="action_week_view">Календарь</string>
 
+    <string name="action_back">Назад</string>
+    <string name="action_next">Вперед</string>
+
     <string name="no_lessons_1">Сегодня занятий больше нет\nВсе ли задания выполнены?</string>
     <string name="no_lessons_2">Свободный день\nПроведите его весело!</string>
-    <string name="no_lessons_3">Каникулы\nУдачного дня!</string>
+    <string name="no_lessons_3">Выходной\nУдачного дня!</string>
 
     <string name="internet_problem">Необходимо подключение к интернету</string>
 
@@ -143,5 +151,28 @@
     <string name="year_period">Итоговая</string>
 
     <string name="action_refresh">Обновить</string>
+    <string name="action_change_view">Сменить отображение</string>
     <string name="favorites">Избранное</string>
+
+
+    <string name="offline_mode">Авт. режим</string>
+
+    <string name="exit">Выход</string>
+
+    <string name="exit_question">Вы действительно хотите выйти?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
+    <string name="user">Пользователь</string>
+
+    <string name="average_score">Средний балл</string>
+    <string name="average">СреднийБалл</string>
+    <string name="min_average">МинСреднийБалл</string>
+    <string name="max_average">МаксСреднийБалл</string>
+
+    <string name="statistics">Статистика</string>
+    <string name="values">Значения</string>
+    <string name="min_score">мин. по классу</string>
+    <string name="score">учащегося</string>
+    <string name="max_score">макс. по классу</string>
 </resources>

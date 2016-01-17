@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.example.nsity.schooldiary.system.database.tables.HomeworkDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.PeriodDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.ProgressDBInterface;
@@ -20,7 +21,8 @@ import java.util.ArrayList;
 /**
  * Created by nsity on 15.11.15.
  */
-public abstract class ADBWorker{
+public abstract class ADBWorker {
+
     protected static final int NULL = 0;
     protected static final int ROLLBACK = 1;
     protected static final int ABORT = 2;
@@ -251,6 +253,7 @@ public abstract class ADBWorker{
         db.delete(LessonDBInterface.MARK_TABLE_NAME, null, null);
         db.delete(ProgressDBInterface.PROGRESS_TABLE_NAME, null, null);
         db.delete(PeriodDBInterface.PERIOD_TABLE_NAME, null, null);
+        db.delete(HomeworkDBInterface.HOMEWORK_TABLE_NAME, null, null);
 
         db.close();
     }

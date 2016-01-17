@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:textColor="@android:color/primary_text_light"
+        android:id="@+id/subject"/>
+    <org.eazegraph.lib.charts.BarChart
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/barchart"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:padding="10dp"
+        app:egFixedBarWidth="true"
+        app:egBarWidth="20dp"
+        app:egShowDecimal="true"
+        app:egLegendHeight="40dp"
+        app:egLegendTextSize="12sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"
+        android:id="@+id/no_data"
+        android:paddingBottom="16dp"
+        android:text="@string/no_data"/>
+</LinearLayout>

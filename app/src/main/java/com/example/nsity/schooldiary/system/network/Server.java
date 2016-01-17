@@ -27,12 +27,4 @@ public class Server {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
-
-    /*public static String getActionUrl(Context context) {
-        String ssid = Preferences.get(Preferences.SSID, context);
-        String sessionUrl = Preferences.get(Preferences.SESSION_URL, context);
-        String url = Preferences.get(Preferences.URL, context);
-
-        return url + sessionUrl + "?ssid=" + ssid;
-    }*/
 }

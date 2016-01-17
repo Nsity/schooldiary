@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.Subject;
+import com.example.nsity.schooldiary.navigation.marks.Subject;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.database.ADBWorker;
 

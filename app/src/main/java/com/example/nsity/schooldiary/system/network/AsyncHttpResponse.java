@@ -1,8 +1,11 @@
 package com.example.nsity.schooldiary.system.network;
 
+import android.content.Context;
+
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
@@ -27,12 +30,12 @@ public class AsyncHttpResponse {
     private static final String MESSAGE_TAG = "Message";
     public static final String MESSAGE = "timeout";
 
-    public AsyncHttpResponse(String url, RequestParams params, int callMethod, CallBack<ResponseObject> callBack){
+    public AsyncHttpResponse(Context context, String url, RequestParams params, int callMethod, CallBack<ResponseObject> callBack){
         this.callBack = callBack;
 
         switch (callMethod) {
             case CALL_JSON_HTTP_RESPONSE:
-                callJsonHttpResponse(url, Server.getHttpClient());
+                callJsonHttpResponse(context, url, Server.getHttpClient());
                 break;
             case CALL_POST_JSON_HTTP_RESPONSE:
                 callPostJsonHttpResponse(url, params, Server.getHttpClient());
@@ -41,8 +44,8 @@ public class AsyncHttpResponse {
     }
 
 
-    public void callJsonHttpResponse(String url, AsyncHttpClient client){
-        client.get(url, new JsonHttpResponseHandler() {
+    public void callJsonHttpResponse(Context context, String url, AsyncHttpClient client){
+       client.get(context, url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 response = (response == null) ? new JSONObject() : response;

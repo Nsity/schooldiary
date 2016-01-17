@@ -3,6 +3,7 @@ package com.example.nsity.schooldiary.navigation.login;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.MainActivity;
+import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Preferences;
 import com.example.nsity.schooldiary.system.SyncManager;
 import com.example.nsity.schooldiary.system.network.CallBack;
@@ -37,7 +40,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
 
         mLoginView = (EditText) findViewById(R.id.login);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -59,6 +61,13 @@ public class LoginActivity extends AppCompatActivity {
         if (!Server.isOnline(this)) {
             Toast.makeText(this, getString(R.string.internet_problem), Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        try {
+            InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         mLoginView.setError(null);
@@ -85,17 +94,17 @@ public class LoginActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            showProgress(true);
-
+            CommonFunctions.showProgress(true, this, mLoginFormView, mProgressView);
             UserManager.login(getApplicationContext(), login, password, new CallBack() {
                 @Override
                 public void onSuccess() {
-                    showProgress(false);
+                    CommonFunctions.showProgress(false, getApplicationContext(), mLoginFormView, mProgressView);
                     sync();
                 }
+
                 @Override
                 public void onFail(String message) {
-                    showProgress(false);
+                    CommonFunctions.showProgress(false, getApplicationContext(), mLoginFormView, mProgressView);
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -111,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
         mProgressDialog.setIndeterminate(false);
         mProgressDialog.show();
 
-        SyncManager.sync(getApplicationContext(), Preferences.get(Preferences.CLASSID, getApplicationContext()), new CallBack() {
+        SyncManager.sync(getApplicationContext(), new CallBack() {
             @Override
             public void onSuccess() {
                 mProgressDialog.dismiss();
@@ -126,34 +135,6 @@ public class LoginActivity extends AppCompatActivity {
                 mProgressDialog.dismiss();
             }
         });
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
     }
 }
 

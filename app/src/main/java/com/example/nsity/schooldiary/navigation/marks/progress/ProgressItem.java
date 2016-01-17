@@ -1,26 +1,15 @@
 package com.example.nsity.schooldiary.navigation.marks.progress;
 
-import com.example.nsity.schooldiary.navigation.Period;
-import com.example.nsity.schooldiary.navigation.Subject;
-
-import java.io.Serializable;
+import com.example.nsity.schooldiary.navigation.timetable.Period;
+import com.example.nsity.schooldiary.system.BaseEntity;
 
 /**
  * Created by nsity on 06.12.15.
  */
-public class ProgressItem implements Serializable {
+public class ProgressItem extends BaseEntity {
 
-    private int id;
     private int value;
     private Period period;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public int getValue() {
         return value;

@@ -32,12 +32,12 @@
         android:id="@+id/date"
         android:textSize="12sp"
         android:layout_marginTop="16dp"
-        android:gravity="center"
+        android:gravity="center|center_horizontal"
         android:textColor="@android:color/secondary_text_light"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="16dp"
-        android:layout_alignBottom="@+id/type" />
+        android:layout_above="@+id/view1" />
 
     <View
         android:id="@+id/view1"

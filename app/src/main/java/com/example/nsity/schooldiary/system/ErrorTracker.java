@@ -17,8 +17,13 @@ public class ErrorTracker {
     private static final String EXCEPTION_STACK = "Stack";
 
     public static String getErrorDescription(Context context, String response) {
+
         if (CommonFunctions.StringIsNullOrEmpty(response)) {
             return context.getString(R.string.error_tracker_empty_content);
+        }
+
+        if (response.equalsIgnoreCase("{}")) {
+            return context.getString(R.string.error_tracker_empty_json);
         }
 
         JSONObject jsonMessage;

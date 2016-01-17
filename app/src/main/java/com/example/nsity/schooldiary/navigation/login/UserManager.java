@@ -35,15 +35,13 @@ public class UserManager {
         String url = context.getString(R.string.base_url) +
                 context.getString(R.string.call_method_api_login) + encodedLogin + "/" + encodedPassword;
 
-        new AsyncHttpResponse(url, null, AsyncHttpResponse.CALL_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
+        new AsyncHttpResponse(context, url, null, AsyncHttpResponse.CALL_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
             @Override
             public void onSuccess(ResponseObject object){
                 if (!(object.getResponse() instanceof JSONObject)) {
                     callBack.onFail(context.getString(R.string.error_response));
                     return;
                 }
-
-                HashMap<String, String> result = new HashMap<>();
 
                 try {
                     JSONObject response = (JSONObject)object.getResponse();

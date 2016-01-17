@@ -2,11 +2,9 @@ package com.example.nsity.schooldiary.navigation.lesson;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +24,8 @@ import com.example.nsity.schooldiary.navigation.marks.Mark;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableItem;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.network.CallBack;
+import com.example.nsity.schooldiary.system.network.Server;
+
 import java.util.ArrayList;
 
 
@@ -61,7 +61,7 @@ public class LessonActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         timetableItem = (TimetableItem) getIntent().getSerializableExtra("timetableItem");
-        if(timetableItem != null) {
+        if (timetableItem != null) {
             int color = CommonFunctions.setColor(this, timetableItem.getSubject().getColor());
 
             toolbar.setTitle(timetableItem.getSubject().getName());
@@ -118,12 +118,18 @@ public class LessonActivity extends AppCompatActivity {
         return true;
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setView();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 CommonFunctions.setRefreshActionButtonState(true, optionsMenu);
-
                 lesson.load(this, timetableItem.getSubject().getId(),
                         getIntent().getStringExtra("day"), timetableItem.getTime().getId(), new CallBack() {
                             @Override
@@ -154,14 +160,13 @@ public class LessonActivity extends AppCompatActivity {
     }
 
     private void setView() {
-        if(lesson.getId() == -1) {
-            showProgress(true);
-
+        if (lesson.getId() == -1) {
+            CommonFunctions.showProgress(true, getApplicationContext(), mLessonFormView, mProgressView);
             lesson.load(this, timetableItem.getSubject().getId(),
                     getIntent().getStringExtra("day"), timetableItem.getTime().getId(), new CallBack() {
                         @Override
                         public void onSuccess() {
-                            showProgress(false);
+                            CommonFunctions.showProgress(false, getApplicationContext(), mLessonFormView, mProgressView);
                             setView();
                         }
 
@@ -173,7 +178,6 @@ public class LessonActivity extends AppCompatActivity {
                         }
                     });
         } else {
-
             String date = CommonFunctions.getDate(lesson.getDate(), CommonFunctions.FORMAT_YYYY_MM_DD, CommonFunctions.FORMAT_D_MMMM_YYYY) +
                     " " + getResources().getString(R.string.year);
             mDateTextView.setText(date);
@@ -185,11 +189,10 @@ public class LessonActivity extends AppCompatActivity {
 
             mHomeworkTextView.setText(lesson.getHomework().equals("") ? getResources().getString(R.string.missing) : lesson.getHomework());
 
-            if(lesson.getNote().equals("")) {
+            if (lesson.getNote().equals("")) {
                 RelativeLayout mNoteLayout = (RelativeLayout) findViewById(R.id.note_layout);
                 mNoteLayout.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 RelativeLayout mNoteLayout = (RelativeLayout) findViewById(R.id.note_layout);
                 mNoteLayout.setVisibility(View.VISIBLE);
                 mNoteTextView.setText(lesson.getNote());
@@ -197,7 +200,7 @@ public class LessonActivity extends AppCompatActivity {
 
             String pass = lesson.getPass();
 
-            if(pass.equals("")) {
+            if (pass.equals("")) {
                 RelativeLayout mPassLayout = (RelativeLayout) findViewById(R.id.pass_layout);
                 mPassLayout.setVisibility(View.GONE);
             } else {
@@ -215,11 +218,10 @@ public class LessonActivity extends AppCompatActivity {
                 }
             }
 
-            if(lesson.getMarks() == null) {
+            if (lesson.getMarks() == null) {
                 RelativeLayout mMarksLayout = (RelativeLayout) findViewById(R.id.marks_layout);
                 mMarksLayout.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 RelativeLayout mMarksLayout = (RelativeLayout) findViewById(R.id.marks_layout);
                 mMarksLayout.setVisibility(View.VISIBLE);
 
@@ -227,7 +229,7 @@ public class LessonActivity extends AppCompatActivity {
                 linearLayout.removeAllViews();
 
                 ArrayList<Mark> marks = lesson.getMarks();
-                for(final Mark mark: marks) {
+                for (final Mark mark : marks) {
                     ImageView image = new ImageView(this);
 
                     TextDrawable drawable = TextDrawable.builder()
@@ -268,31 +270,10 @@ public class LessonActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.s_in, R.anim.s_out);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLessonFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLessonFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLessonFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLessonFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Server.getHttpClient().cancelRequests(this, true);
     }
 }

@@ -13,6 +13,7 @@ public class Preferences {
     public static final String CLASSNAME = "class_name";
     public static final String PUPILID = "pupil_id";
     public static final String FIO = "fio";
+    public static final String SELECTED_DATE = "selected_date";
 
 
     public static final String accountType = "com.schooldiary";

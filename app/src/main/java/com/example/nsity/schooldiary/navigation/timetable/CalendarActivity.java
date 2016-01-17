@@ -14,12 +14,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.Period;
-import com.example.nsity.schooldiary.navigation.Periods;
 import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -45,6 +42,8 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerCon
     private TextView mTextView;
 
     private Timetable timetable;
+
+    private DateFormat format = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD, new Locale("ru"));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,23 +71,21 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerCon
             }
         });
 
-
         mTodayView = (ListView) findViewById(R.id.timetable);
-
         mTimetableLinearLayout = (LinearLayout) findViewById(R.id.timetable_layout);
         mTextView = (TextView) findViewById(R.id.text);
-
         calendarView = (DayPickerView) findViewById(R.id.calendar_view);
-        calendarView.setController(this);
 
+        calendarView.setController(this);
         timetable = new Timetable(this);
+
         setView(Calendar.getInstance().getTime());
     }
 
 
     @Override
     public int getMaxYear() {
-        return 2045;
+        return 3000;
     }
 
     @Override
@@ -104,11 +101,12 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerCon
 
     public void setView(final Date date) {
         int dayOfWeek = CommonFunctions.getDayOfWeek(date);
+
         String[] timetableDays = getResources().getStringArray(R.array.timetable_days);
         ((TextView)findViewById(R.id.title)).setText(timetableDays[dayOfWeek - 1]);
 
         ArrayList<Period> periods = new Periods(this).getPeriods();
-        DateFormat format = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD, new Locale("ru"));
+
         try {
             for(Period period: periods) {
                 Date dateStart = format.parse(period.getPeriodStart());
@@ -203,5 +201,4 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerCon
         finish();
         overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
     }
-
 }

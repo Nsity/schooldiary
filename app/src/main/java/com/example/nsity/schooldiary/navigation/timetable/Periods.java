@@ -1,9 +1,11 @@
-package com.example.nsity.schooldiary.navigation;
+package com.example.nsity.schooldiary.navigation.timetable;
 
 import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.timetable.Period;
 import com.example.nsity.schooldiary.system.CommonFunctions;
+import com.example.nsity.schooldiary.system.ListBaseEntity;
 import com.example.nsity.schooldiary.system.database.tables.PeriodDBInterface;
 
 import java.text.DateFormat;
@@ -17,18 +19,22 @@ import java.util.Locale;
 /**
  * Created by nsity on 06.12.15.
  */
-public class Periods {
+public class Periods extends ListBaseEntity {
 
     private ArrayList<Period> periodsArrayList;
     private PeriodDBInterface db;
 
-    public Periods(Context context) {
-        this.db = new PeriodDBInterface(context);
-        periodsArrayList = loadFromDB();
+    @Override
+    protected void loadFromDB() {
+        periodsArrayList.clear();
+        periodsArrayList = db.getPeriods();
     }
 
-    public ArrayList<Period> loadFromDB() {
-        return db.getPeriods();
+    public Periods(Context context) {
+        super(context);
+        this.db = new PeriodDBInterface(context);
+        this.periodsArrayList = new ArrayList<>();
+        loadFromDB();
     }
 
     public Period getCurrentPeriod() {
@@ -89,4 +95,5 @@ public class Periods {
     public ArrayList<Period> getPeriods() {
         return periodsArrayList;
     }
+
 }

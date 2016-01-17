@@ -1,12 +1,12 @@
-package com.example.nsity.schooldiary.navigation;
+package com.example.nsity.schooldiary.navigation.timetable;
 
-import java.io.Serializable;
+import com.example.nsity.schooldiary.system.BaseEntity;
 
 /**
  * Created by nsity on 06.12.15.
  */
-public class Time implements Serializable {
-    private int id;
+public class Time extends BaseEntity {
+
     private String timeStart;
     private String timeEnd;
 
@@ -16,21 +16,12 @@ public class Time implements Serializable {
         this.timeEnd = timeEnd;
     }
 
-
     public String getTimeStart() {
         return timeStart;
     }
 
     public void setTimeStart(String timeStart) {
         this.timeStart = timeStart;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getTimeEnd() {

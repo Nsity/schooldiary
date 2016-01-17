@@ -1,10 +1,11 @@
-package com.example.nsity.schooldiary.navigation;
+package com.example.nsity.schooldiary.navigation.marks;
 
 import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.marks.progress.ProgressItem;
 import com.example.nsity.schooldiary.navigation.marks.subjects.SubjectMark;
+import com.example.nsity.schooldiary.system.BaseEntity;
 import com.example.nsity.schooldiary.system.CommonManager;
 import com.example.nsity.schooldiary.system.database.tables.ProgressDBInterface;
 import com.example.nsity.schooldiary.system.network.CallBack;
@@ -16,9 +17,8 @@ import java.util.ArrayList;
 /**
  * Created by nsity on 24.11.15.
  */
-public class Subject implements Serializable {
+public class Subject extends BaseEntity {
 
-    private int id;
     private int color;
     private String name;
 
@@ -26,14 +26,6 @@ public class Subject implements Serializable {
         this.color = color;
         this.id = id;
         this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getColor() {
@@ -75,11 +67,6 @@ public class Subject implements Serializable {
 
     public ArrayList<ProgressItem> loadProgressFromDB(Context context) {
         ProgressDBInterface dbProgress = new ProgressDBInterface(context);
-
-        ArrayList<ProgressItem> progress = dbProgress.getSubjectProgress(id);
-
-        dbProgress.closeDB();
-
-        return progress;
+        return dbProgress.getSubjectProgress(id);
     }
 }

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.Period;
+import com.example.nsity.schooldiary.navigation.timetable.Period;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.database.ADBWorker;
 
@@ -36,9 +36,6 @@ public class PeriodDBInterface extends ADBWorker {
     public PeriodDBInterface(Context context) {
         super(context);
     }
-
-
-
 
     @Override
     public int save(JSONArray objects, boolean dropAllData) {
@@ -94,10 +91,6 @@ public class PeriodDBInterface extends ADBWorker {
 
         cursor.close();
 
-        if(periods.size() == 0) {
-            return null;
-        } else {
-            return periods;
-        }
+        return periods.size() == 0 ? null : periods;
     }
 }

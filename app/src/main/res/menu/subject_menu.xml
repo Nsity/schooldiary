@@ -21,7 +21,7 @@
                 <item
                     android:id="@+id/second_period"
                     android:title="@string/second_period" />
-                <items
+                <item
                     android:id="@+id/third_period"
                     android:title="@string/third_period" />
                 <item

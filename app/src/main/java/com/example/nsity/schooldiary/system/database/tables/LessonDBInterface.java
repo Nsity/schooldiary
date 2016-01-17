@@ -5,8 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.Subject;
-import com.example.nsity.schooldiary.navigation.Time;
+import com.example.nsity.schooldiary.navigation.marks.Subject;
+import com.example.nsity.schooldiary.navigation.timetable.Time;
 import com.example.nsity.schooldiary.navigation.lesson.Lesson;
 import com.example.nsity.schooldiary.navigation.marks.Mark;
 import com.example.nsity.schooldiary.system.CommonFunctions;
@@ -68,11 +68,11 @@ public class LessonDBInterface extends ADBWorker {
             delete(LESSON_TABLE_NAME, null, null);
             delete(MARK_TABLE_NAME, null, null);
         }
-        return addLesson(objects);
+        return addLessons(objects);
     }
 
 
-    private int addLesson(JSONArray lessons) {
+    private int addLessons(JSONArray lessons) {
         if ((CommonFunctions.StringIsNullOrEmpty(lessons.toString())) || (lessons.length() == 0))
             return 0;
 
@@ -120,15 +120,6 @@ public class LessonDBInterface extends ADBWorker {
         super(context);
     }
 
-
-    public Cursor getLesson(String id) {
-        String selectQuery = "SELECT * FROM " + LESSON_TABLE_NAME + " t JOIN " + SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME
-                + " s ON t." + LESSON_COLUMN_SUBJECTS_CLASS_ID + " = s." + SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID +
-                " JOIN " + TimeDBInterface.TIME_TABLE_NAME + " time ON t." + LESSON_COLUMN_TIME_ID + " = time." +
-                TimeDBInterface.TIME_COLUMN_ID + " WHERE " + LESSON_COLUMN_ID + " =? ";
-        return getCursor(selectQuery, new String[] {id});
-    }
-
     public Lesson getLesson(String date, int timeId, int subjectId) {
         String selectQuery = "SELECT * FROM " + LESSON_TABLE_NAME + " t JOIN " + SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME
                 + " s ON t." + LESSON_COLUMN_SUBJECTS_CLASS_ID + " = s." + SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID +
@@ -146,21 +137,7 @@ public class LessonDBInterface extends ADBWorker {
 
         if (cursor.moveToFirst()) {
             do {
-                lesson.setId(cursor.getInt(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_ID)));
-                lesson.setDate(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_DATE)));
-                lesson.setHomework(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_HOMEWORK)));
-                lesson.setTheme(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_THEME)));
-                lesson.setNote(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_NOTE)));
-                lesson.setPass(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_PASS)));
-
-                lesson.setSubject(new Subject(cursor.getInt(cursor.getColumnIndex(LESSON_COLUMN_SUBJECTS_CLASS_ID)),
-                        cursor.getString(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_SUBJECT_NAME)),
-                        cursor.getInt(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_COLOR))));
-
-
-                lesson.setTime(new Time(cursor.getInt(cursor.getColumnIndex(LESSON_COLUMN_TIME_ID)),
-                        cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_START)),
-                        cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_END))));
+                lesson = setLessonFields(cursor);
             }
             while (cursor.moveToNext());
         } else {
@@ -169,17 +146,13 @@ public class LessonDBInterface extends ADBWorker {
 
         cursor.close();
 
-        if(lesson.getId() == -1) {
-            return null;
-        } else {
-            return lesson;
-        }
+        return lesson;
     }
 
 
     public void deleteLesson(int lessonId) {
         delete(LESSON_TABLE_NAME, LESSON_COLUMN_ID + " =?", new String[] {String.valueOf(lessonId)});
-        delete(MARK_TABLE_NAME, LESSON_COLUMN_ID + " =?", new String[] {String.valueOf(lessonId)});
+        delete(MARK_TABLE_NAME, LESSON_COLUMN_ID + " =?", new String[]{String.valueOf(lessonId)});
     }
 
 
@@ -205,10 +178,84 @@ public class LessonDBInterface extends ADBWorker {
 
         cursor.close();
 
-        if(marks.size() == 0) {
-            return null;
-        } else {
-            return marks;
+        return marks.size() == 0? null : marks;
+    }
+
+
+    public ArrayList<Lesson> getLessons(String beginDate, String endDate, boolean withHomework) {
+        ArrayList<Lesson> lessons = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + LESSON_TABLE_NAME + " t JOIN " + SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME
+                + " s ON t." + LESSON_COLUMN_SUBJECTS_CLASS_ID + " = s." + SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID +
+                " JOIN " + TimeDBInterface.TIME_TABLE_NAME + " time ON t." + LESSON_COLUMN_TIME_ID + " = time." +
+                TimeDBInterface.TIME_COLUMN_ID + " WHERE " + LESSON_COLUMN_DATE + " >= ? AND " + LESSON_COLUMN_DATE + " <= ? ";
+        if(!withHomework) {
+            selectQuery += " AND " + LESSON_COLUMN_HOMEWORK + " != '' ";
         }
+
+        selectQuery += " ORDER BY " + LESSON_COLUMN_DATE;
+
+        Cursor cursor = getCursor(selectQuery, new String[]{beginDate, endDate});
+
+        if(cursor == null) {
+            return null;
+        }
+
+        if (cursor.moveToFirst()) {
+            do {
+                lessons.add(setLessonFields(cursor));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return lessons;
+    }
+
+    public ArrayList<Lesson> getLessons() {
+        ArrayList<Lesson> lessons = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + LESSON_TABLE_NAME + " t JOIN " + SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME
+                + " s ON t." + LESSON_COLUMN_SUBJECTS_CLASS_ID + " = s." + SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID +
+                " JOIN " + TimeDBInterface.TIME_TABLE_NAME + " time ON t." + LESSON_COLUMN_TIME_ID + " = time." +
+                TimeDBInterface.TIME_COLUMN_ID + " ORDER BY " + LESSON_COLUMN_DATE;
+
+        Cursor cursor = getCursor(selectQuery, new String[]{});
+
+        if(cursor == null) {
+            return null;
+        }
+
+        if (cursor.moveToFirst()) {
+            do {
+                lessons.add(setLessonFields(cursor));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return lessons;
+    }
+
+
+    private Lesson setLessonFields(Cursor cursor) {
+        Lesson lesson = new Lesson();
+
+        lesson.setId(cursor.getInt(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_ID)));
+        lesson.setDate(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_DATE)));
+        lesson.setHomework(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_HOMEWORK)));
+        lesson.setTheme(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_THEME)));
+        lesson.setNote(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_NOTE)));
+        lesson.setPass(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_PASS)));
+
+        lesson.setSubject(new Subject(cursor.getInt(cursor.getColumnIndex(LESSON_COLUMN_SUBJECTS_CLASS_ID)),
+                cursor.getString(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_SUBJECT_NAME)),
+                cursor.getInt(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_COLOR))));
+
+
+        lesson.setTime(new Time(cursor.getInt(cursor.getColumnIndex(LESSON_COLUMN_TIME_ID)),
+                cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_START)),
+                cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_END))));
+
+        return lesson;
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.system.database.tables.PeriodDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.ProgressDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TimeDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TimetableDBInterface;
@@ -20,12 +21,12 @@ import org.json.JSONObject;
  */
 public class SyncManager {
 
-    public static void sync(final Context context, final String classId, final CallBack callBack) {
+    public static void sync(final Context context, final CallBack callBack) {
 
         String url = context.getString(R.string.base_url) +
-                context.getString(R.string.call_method_api_get_timetable) + classId;
+                context.getString(R.string.call_method_api_get_timetable) + Preferences.get(Preferences.CLASSID, context) + "/" + Preferences.get(Preferences.PUPILID, context);
 
-        new AsyncHttpResponse(url, null, AsyncHttpResponse.CALL_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
+        new AsyncHttpResponse(context, url, null, AsyncHttpResponse.CALL_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
             @Override
             public void onSuccess(ResponseObject object){
                 if (!(object.getResponse() instanceof JSONObject)) {
@@ -41,30 +42,28 @@ public class SyncManager {
                     JSONArray timesArray = (JSONArray) result.get(context.getString(R.string.time));
                     TimeDBInterface dbTime = new TimeDBInterface(context);
                     dbTime.save(timesArray, true);
-                    dbTime.closeDB();
 
                     JSONArray subjectsArray = (JSONArray) result.get(context.getString(R.string.subjects));
                     SubjectsClassDBInterface dbSubjects = new SubjectsClassDBInterface(context);
                     dbSubjects.save(subjectsArray, true);
-                    dbSubjects.closeDB();
 
                     JSONArray timetableArray = (JSONArray) result.get(context.getString(R.string.timetable));
                     TimetableDBInterface dbTimetable = new TimetableDBInterface(context);
                     dbTimetable.save(timetableArray, true);
-                    dbTimetable.closeDB();
 
                     JSONArray periodsArray = (JSONArray) result.get(context.getString(R.string.periods));
                     PeriodDBInterface dbPeriods = new PeriodDBInterface(context);
                     dbPeriods.save(periodsArray, true);
-                    dbPeriods.closeDB();
 
+                    /*JSONArray progressArray = (JSONArray) result.get(context.getString(R.string.progress_marks));
+                    ProgressDBInterface dbProgress = new ProgressDBInterface(context);
+                    dbProgress.save(progressArray, true);*/
+
+                    callBack.onSuccess();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     callBack.onFail(context.getString(R.string.error_response));
-                    return;
                 }
-
-                callBack.onSuccess();
             }
 
             @Override

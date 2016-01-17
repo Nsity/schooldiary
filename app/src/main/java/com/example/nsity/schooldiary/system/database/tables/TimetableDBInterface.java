@@ -5,8 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.Subject;
-import com.example.nsity.schooldiary.navigation.Time;
+import com.example.nsity.schooldiary.navigation.marks.Subject;
+import com.example.nsity.schooldiary.navigation.timetable.Time;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableItem;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.database.ADBWorker;
@@ -28,7 +28,6 @@ public class TimetableDBInterface extends ADBWorker {
     public static final String TIMETABLE_COLUMN_SUBJECTS_CLASS_ID = "SUBJECTS_CLASS_ID";
     public static final String TIMETABLE_COLUMN_TIME_ID = "TIME_ID";
 
-
     public static final String TIMETABLE_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS "
             + TIMETABLE_TABLE_NAME + "("
             + TIMETABLE_COLUMN_ID + " INTEGER PRIMARY KEY, "
@@ -37,13 +36,15 @@ public class TimetableDBInterface extends ADBWorker {
             + TIMETABLE_COLUMN_TIME_ID + " INTEGER, "
             + TIMETABLE_COLUMN_SUBJECTS_CLASS_ID + " INTEGER " + ");";
 
+    public TimetableDBInterface(Context context) {
+        super(context);
+    }
 
     @Override
     public int save(JSONArray clients, boolean dropAllData) {
         if (dropAllData) {
             delete(TIMETABLE_TABLE_NAME, null, null);
         }
-
         return addTimetableData(clients);
     }
 
@@ -56,8 +57,10 @@ public class TimetableDBInterface extends ADBWorker {
             ArrayList<ContentValues> subjectsValues = new ArrayList<>();
             for (int i = 0; i < timetable.length(); i++) {
                 JSONArray subjects = timetable.getJSONArray(i);
+
                 for (int j = 0; j < subjects.length(); j++) {
                     JSONObject subject = subjects.getJSONObject(j);
+
                     ContentValues cv = new ContentValues();
                     cv.put(TIMETABLE_COLUMN_ID, CommonFunctions.getFieldInt(subject, context.getString(R.string.id)));
                     cv.put(TIMETABLE_COLUMN_ROOM, CommonFunctions.getFieldString(subject, context.getString(R.string.room_name)));
@@ -81,11 +84,10 @@ public class TimetableDBInterface extends ADBWorker {
                 " JOIN " + TimeDBInterface.TIME_TABLE_NAME + " time ON t." + TIMETABLE_COLUMN_TIME_ID + " = time." +
                 TimeDBInterface.TIME_COLUMN_ID + " ORDER BY " + TIMETABLE_COLUMN_DAY_OF_WEEK + ", " +  TimeDBInterface.TIME_COLUMN_START;
 
-
         Cursor cursor = getCursor(selectQuery, new String[]{});
-        if(cursor == null) {
+
+        if(cursor == null)
             return null;
-        }
 
         ArrayList<TimetableItem> timetable = new ArrayList<>();
 
@@ -111,15 +113,6 @@ public class TimetableDBInterface extends ADBWorker {
         }
 
         cursor.close();
-
-        if(timetable.size() == 0) {
-            return null;
-        } else {
-            return timetable;
-        }
-    }
-
-    public TimetableDBInterface(Context context) {
-        super(context);
+        return timetable.size() == 0 ? null : timetable;
     }
 }

@@ -1,28 +1,17 @@
 package com.example.nsity.schooldiary.navigation.timetable;
 
-import com.example.nsity.schooldiary.navigation.Subject;
-import com.example.nsity.schooldiary.navigation.Time;
-
-import java.io.Serializable;
+import com.example.nsity.schooldiary.navigation.marks.Subject;
+import com.example.nsity.schooldiary.system.BaseEntity;
 
 /**
  * Created by nsity on 29.11.15.
  */
-public class TimetableItem implements Serializable {
+public class TimetableItem extends BaseEntity {
 
-    private int id;
     private String room;
     private int day;
     private Subject subject;
     private Time time;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getRoom() {
         return room;

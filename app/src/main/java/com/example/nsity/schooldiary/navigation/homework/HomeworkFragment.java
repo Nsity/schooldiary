@@ -1,29 +1,50 @@
 package com.example.nsity.schooldiary.navigation.homework;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.homework.favorites.FavoriteHomeworkFragment;
-import com.example.nsity.schooldiary.navigation.homework.recent.RecentHomeworkFragment;
+import com.example.nsity.schooldiary.navigation.lesson.Lesson;
+import com.example.nsity.schooldiary.system.BaseEntity;
+import com.example.nsity.schooldiary.system.CommonFunctions;
+import com.example.nsity.schooldiary.system.network.CallBack;
+import com.example.nsity.schooldiary.system.network.Server;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
- * Created by nsity on 15.11.15.
+ * Created by nsity on 17.01.16.
  */
-public class HomeworkFragment extends Fragment{
+public class HomeworkFragment extends Fragment {
 
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
+    private Menu optionsMenu;
+
+    private Date monday;
+
+    private View mProgressView;
+    private ListView mHomeworkView;
+
+    private Lessons lessons;
+
+    private ArrayList<BaseEntity> arrayList;
+
+    private TextView mTitleTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,50 +52,156 @@ public class HomeworkFragment extends Fragment{
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-        View rootView = inflater.inflate(R.layout.fragment_marks, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_homework, container, false);
 
-        viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
+        mProgressView = rootView.findViewById(R.id.progress);
+        mHomeworkView = (ListView) rootView.findViewById(R.id.homework_list);
 
-        tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        mTitleTextView = (TextView) rootView.findViewById(R.id.title);
 
+        mTitleTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                monday = CommonFunctions.getMonday(Calendar.getInstance().getTime());
+                setView();
+            }
+        });
+
+        mHomeworkView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
+                                    long id) {
+                BaseEntity lesson = arrayList.get(position);
+                if(lesson instanceof Lesson) {
+                    Intent intent = new Intent(getActivity(), HomeworkActivity.class);
+                    intent.putExtra("lesson", lesson);
+                    getActivity().startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                }
+            }
+        });
+
+        monday = CommonFunctions.getMonday(Calendar.getInstance().getTime());
+        setView();
         return rootView;
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new RecentHomeworkFragment(), getResources().getString(R.string.recent).toUpperCase());
-        adapter.addFragment(new FavoriteHomeworkFragment(), getResources().getString(R.string.favorites).toUpperCase());
-        viewPager.setAdapter(adapter);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        optionsMenu = menu;
+        inflater.inflate(R.menu.homework_menu, menu);
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                CommonFunctions.setRefreshActionButtonState(true, optionsMenu);
+                lessons.loadHomework(CommonFunctions.getDate(monday, CommonFunctions.FORMAT_YYYY_MM_DD),
+                        CommonFunctions.getDate(CommonFunctions.addDays(6, monday), CommonFunctions.FORMAT_YYYY_MM_DD), new CallBack<String>() {
+                            @Override
+                            public void onSuccess(String date) {
+                                if (date.equals(CommonFunctions.getDate(monday, CommonFunctions.FORMAT_YYYY_MM_DD))) {
+                                    CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
+                                    setListAdapter(lessons);
+                                }
+                            }
 
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
+                            @Override
+                            public void onFail(String error) {
+                                if (isAdded() && getActivity() != null) {
+                                    mHomeworkView.setAdapter(null);
+                                    Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                                    CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
+                                }
+                            }
+                        });
+                return false;
+            case R.id.action_next:
+                CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
+                monday = CommonFunctions.addDays(7, monday);
+                Server.getHttpClient().cancelRequests(getActivity(), true);
+                setView();
+                return false;
+            case R.id.action_back:
+                CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
+                monday = CommonFunctions.addDays(-7, monday);
+                Server.getHttpClient().cancelRequests(getActivity(), true);
+                setView();
+                return false;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    private void setView() {
+        if(monday == null) {
+            monday = CommonFunctions.getMonday(Calendar.getInstance().getTime());
         }
 
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
+        String title = CommonFunctions.getDate(monday, CommonFunctions.FORMAT_DD_MM_YYYY) + " - " +
+                CommonFunctions.getDate(CommonFunctions.addDays(6, monday), CommonFunctions.FORMAT_DD_MM_YYYY);
+
+        mTitleTextView.setText(title);
+
+        lessons = new Lessons(getActivity(), CommonFunctions.getDate(monday, CommonFunctions.FORMAT_YYYY_MM_DD),
+                CommonFunctions.getDate(CommonFunctions.addDays(6, monday), CommonFunctions.FORMAT_YYYY_MM_DD), false);
+
+        if(lessons.getLessons().size() == 0) {
+            CommonFunctions.showProgress(true, getActivity(), mHomeworkView, mProgressView);
+
+            lessons.loadHomework(CommonFunctions.getDate(monday, CommonFunctions.FORMAT_YYYY_MM_DD),
+                    CommonFunctions.getDate(CommonFunctions.addDays(6, monday), CommonFunctions.FORMAT_YYYY_MM_DD), new CallBack<String>() {
+                        @Override
+                        public void onSuccess(String date) {
+                            if(date.equals(CommonFunctions.getDate(monday, CommonFunctions.FORMAT_YYYY_MM_DD))) {
+                                CommonFunctions.showProgress(false, getActivity(), mHomeworkView, mProgressView);
+                                setListAdapter(lessons);
+                            }
+                        }
+
+                        @Override
+                        public void onFail(String error) {
+                            if (isAdded() && getActivity() != null) {
+                                mHomeworkView.setAdapter(null);
+                                Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                                CommonFunctions.showProgress(false, getActivity(), mHomeworkView, mProgressView);
+                            }
+                        }
+                    });
+        } else {
+            CommonFunctions.showProgress(false, getActivity(), mHomeworkView, mProgressView);
+            setListAdapter(lessons);
+        }
+    }
+
+    private void setListAdapter(Lessons lessons) {
+        arrayList = new ArrayList<>();
+        ArrayList<String> dates = lessons.getDates();
+
+        for (String date : dates) {
+            try {
+                Date headerDate = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD, new Locale("ru")).parse(date);
+                String header = CommonFunctions.getDate(headerDate, "E").toUpperCase() + " " +
+                        CommonFunctions.getDate(headerDate, CommonFunctions.FORMAT_E_D_MMMM_YYYY);
+                arrayList.add(new SectionItem(header));
+                for (Lesson lesson : lessons.getLessons()) {
+                    if (lesson.getDate().equals(date)) {
+                        arrayList.add(lesson);
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
+        mHomeworkView.setAdapter(new HomeworkAdapter(getActivity(), arrayList));
+    }
 
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Server.getHttpClient().cancelRequests(getActivity(), true);
     }
 }

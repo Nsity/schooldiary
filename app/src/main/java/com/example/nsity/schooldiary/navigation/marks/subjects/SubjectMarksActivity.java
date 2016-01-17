@@ -1,9 +1,5 @@
 package com.example.nsity.schooldiary.navigation.marks.subjects;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,9 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.Period;
-import com.example.nsity.schooldiary.navigation.Periods;
-import com.example.nsity.schooldiary.navigation.Subject;
+import com.example.nsity.schooldiary.navigation.timetable.Period;
+import com.example.nsity.schooldiary.navigation.timetable.Periods;
+import com.example.nsity.schooldiary.navigation.marks.Subject;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.network.CallBack;
 
@@ -29,21 +25,16 @@ import java.util.ArrayList;
 public class SubjectMarksActivity extends AppCompatActivity {
 
     private Subject subject;
-
     private Periods periods;
 
     private View mProgressView;
     private View mSubjectFormView;
-
     private ListView marksListView;
-
     private TextView textView;
     private TextView mPeriodTextView;
 
     private Menu optionsMenu;
-
     private MenuItem checkedItem;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +43,12 @@ public class SubjectMarksActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         subject = (Subject) getIntent().getSerializableExtra("subject");
-
         if(subject != null) {
             toolbar.setTitle(subject.getName());
             toolbar.setBackgroundColor(CommonFunctions.setColor(this, subject.getColor()));
         }
 
         setSupportActionBar(toolbar);
-
         toolbar.setNavigationIcon(getResources().getDrawable(R.mipmap.ic_arrow_back_white_24dp));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,19 +58,20 @@ public class SubjectMarksActivity extends AppCompatActivity {
         });
 
         marksListView = (ListView) findViewById(R.id.marks);
-
         mProgressView = findViewById(R.id.progress);
         mSubjectFormView = findViewById(R.id.subject_form);
-
         textView = (TextView) findViewById(R.id.text);
         mPeriodTextView = (TextView) findViewById(R.id.period);
 
-        periods = new Periods(getApplicationContext());
+        periods = new Periods(this);
         setView(periods.getCurrentPeriod().getName());
     }
 
 
     private void setView(String name) {
+        if(name.equals(getResources().getString(R.string.all_period)))
+            name = getResources().getString(R.string.year_period);
+
         Period period = periods.getPeriodByName(name);
 
         if(period == null)
@@ -94,12 +84,11 @@ public class SubjectMarksActivity extends AppCompatActivity {
 
         mPeriodTextView.setText(periodStr);
 
-        showProgress(true);
+        CommonFunctions.showProgress(true, getApplicationContext(), mSubjectFormView, mProgressView);
         subject.loadMarks(getApplicationContext(), period.getId(), new CallBack<ArrayList<SubjectMark>>() {
             @Override
             public void onSuccess(ArrayList<SubjectMark> marks) {
-
-                showProgress(false);
+                CommonFunctions.showProgress(false, getApplicationContext(), mSubjectFormView, mProgressView);
                 CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
 
                 if (marks.size() == 0) {
@@ -108,7 +97,6 @@ public class SubjectMarksActivity extends AppCompatActivity {
                 } else {
                     textView.setVisibility(View.GONE);
                     marksListView.setVisibility(View.VISIBLE);
-
                     marksListView.setAdapter(new MarksAdapter(getApplicationContext(), marks));
                 }
             }
@@ -135,7 +123,6 @@ public class SubjectMarksActivity extends AppCompatActivity {
         super.onPrepareOptionsMenu(menu);
 
         Period period = periods.getCurrentPeriod();
-
         MenuItem menuItem;
 
         if(period.getName().equals(getResources().getString(R.string.first_period))) {
@@ -204,33 +191,5 @@ public class SubjectMarksActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.s_in, R.anim.s_out);
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mSubjectFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mSubjectFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mSubjectFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mSubjectFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
     }
 }
