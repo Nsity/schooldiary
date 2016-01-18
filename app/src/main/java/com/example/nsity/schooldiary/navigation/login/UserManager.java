@@ -3,7 +3,7 @@ package com.example.nsity.schooldiary.navigation.login;
 import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.system.ErrorTracker;
+import com.example.nsity.schooldiary.system.network.ErrorTracker;
 import com.example.nsity.schooldiary.system.Preferences;
 import com.example.nsity.schooldiary.system.database.ADBWorker;
 import com.example.nsity.schooldiary.system.network.AsyncHttpResponse;
@@ -15,7 +15,6 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.HashMap;
 
 /**
  * Created by nsity on 15.11.15.

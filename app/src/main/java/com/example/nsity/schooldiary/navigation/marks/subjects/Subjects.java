@@ -70,7 +70,7 @@ public class Subjects extends ListBaseEntity {
             return;
         }
 
-        CommonManager.getStatistics(context, 51, new CallBack<ArrayList<Score>>() {
+        CommonManager.getStatistics(context, periodId, new CallBack<ArrayList<Score>>() {
             @Override
             public void onSuccess(ArrayList<Score> arrayList) {
                 callBack.onSuccess(arrayList);

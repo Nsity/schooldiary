@@ -28,7 +28,7 @@ public class SubjectsClassDBInterface extends ADBWorker {
     public static final String SUBJECTS_CLASS_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS "
             + SUBJECTS_CLASS_TABLE_NAME + "("
             + SUBJECTS_CLASS_COLUMN_ID + " INTEGER PRIMARY KEY , "
-            + SUBJECTS_CLASS_COLUMN_SUBJECT_NAME + " INTEGER, "
+            + SUBJECTS_CLASS_COLUMN_SUBJECT_NAME + " VARCHAR(500), "
             + SUBJECTS_CLASS_COLUMN_COLOR + " INTEGER "
             + ");";
 

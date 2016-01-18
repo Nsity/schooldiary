@@ -71,14 +71,6 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
             selectedDate = Calendar.getInstance().getTime();
         }
 
-        if(!Preferences.get(Preferences.SELECTED_DATE, getActivity()).equals("")) {
-            try {
-                selectedDate = format.parse(Preferences.get(Preferences.SELECTED_DATE, getActivity()));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-
         mTimetableView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
@@ -248,12 +240,5 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString("date", CommonFunctions.getDate(selectedDate, CommonFunctions.FORMAT_YYYY_MM_DD));
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Preferences.set(Preferences.SELECTED_DATE, CommonFunctions.getDate(selectedDate, CommonFunctions.FORMAT_YYYY_MM_DD), getActivity());
     }
 }

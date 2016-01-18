@@ -1,8 +1,9 @@
-package com.example.nsity.schooldiary.system;
+package com.example.nsity.schooldiary.system.network;
 
 import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.network.AsyncHttpResponse;
 
 import org.json.JSONException;
