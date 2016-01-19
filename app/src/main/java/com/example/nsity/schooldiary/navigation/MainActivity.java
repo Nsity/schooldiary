@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -68,6 +69,9 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+            FragmentManager fm = getSupportFragmentManager();
+            if (fm.getBackStackEntryCount() == 0)
+                this.finish();
         }
     }
 
@@ -90,27 +94,21 @@ public class MainActivity extends AppCompatActivity
         switch (viewId) {
             case R.id.nav_timetable:
                 fragment = new TimetableFragment();
-                title = getString(R.string.nav_timetable);
                 break;
             case R.id.nav_homework:
                 fragment = new HomeworkFragment();
-                title  = getString(R.string.nav_homework);
                 break;
             case R.id.nav_marks:
                 fragment = new SubjectsFragment();
-                title = getString(R.string.nav_marks);
                 break;
             case R.id.nav_progress:
                 fragment = new ProgressFragment();
-                title = getString(R.string.nav_progress);
                 break;
             case R.id.nav_statistics:
                 fragment = new StatisticsFragment();
-                title = getString(R.string.nav_statistics);
                 break;
             case R.id.nav_profile:
                 fragment = new ProfileFragment();
-                title = getString(R.string.nav_profile);
                 break;
         }
 
@@ -123,7 +121,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(title);
+           // getSupportActionBar().setTitle(title);
             invalidateOptionsMenu();
         }
 

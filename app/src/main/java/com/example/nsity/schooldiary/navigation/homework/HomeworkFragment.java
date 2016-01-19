@@ -3,6 +3,8 @@ package com.example.nsity.schooldiary.navigation.homework;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,6 +53,11 @@ public class HomeworkFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null && isAdded()) {
+            actionBar.setTitle(getString(R.string.nav_homework));
+        }
+
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_homework, container, false);
 
@@ -72,7 +79,7 @@ public class HomeworkFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
                                     long id) {
                 BaseEntity lesson = arrayList.get(position);
-                if(lesson instanceof Lesson) {
+                if (lesson instanceof Lesson) {
                     Intent intent = new Intent(getActivity(), HomeworkActivity.class);
                     intent.putExtra("lesson", lesson);
                     getActivity().startActivity(intent);

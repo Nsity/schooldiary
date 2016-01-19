@@ -71,6 +71,10 @@ public class LessonDBInterface extends ADBWorker {
         return addLessons(objects);
     }
 
+    public void deleteHomeworkForWeek(String beginDate, String endDate) {
+        delete(LESSON_TABLE_NAME, LESSON_COLUMN_DATE + " >= ? AND " + LESSON_COLUMN_DATE + " <= ?", new String[]{beginDate, endDate});
+    }
+
 
     private int addLessons(JSONArray lessons) {
         if ((CommonFunctions.StringIsNullOrEmpty(lessons.toString())) || (lessons.length() == 0))

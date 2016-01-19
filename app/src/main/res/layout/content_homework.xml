@@ -16,7 +16,8 @@
             android:textColor="@android:color/primary_text_light"
             android:layout_height="wrap_content"
             android:layout_below="@+id/date"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -25,6 +26,7 @@
             android:id="@+id/date"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:layout_alignParentTop="true"
-            android:layout_alignEnd="@+id/homework" />
+            android:layout_alignEnd="@+id/homework"
+            android:layout_alignRight="@id/homework"/>
     </RelativeLayout>
 </RelativeLayout>

@@ -215,7 +215,7 @@ public class CommonManager {
         });
     }*/
 
-    public static void getHomework(final Context context, final String beginDate, String endDate, final CallBack callBack) {
+    public static void getHomework(final Context context, final String beginDate, final String endDate, final CallBack callBack) {
         String url = context.getString(R.string.base_url) +
                 context.getString(R.string.call_method_api_get_homework) + Preferences.get(Preferences.CLASSID, context) + "/" + Preferences.get(Preferences.PUPILID, context)
                 + "/" + beginDate + "/" + endDate;
@@ -233,6 +233,7 @@ public class CommonManager {
                     JSONObject result = response.getJSONObject(context.getString(R.string.result));
 
                     LessonDBInterface dbLesson = new LessonDBInterface(context);
+                    dbLesson.deleteHomeworkForWeek(beginDate, endDate);
                     dbLesson.save((JSONArray)result.get(context.getString(R.string.lessons)), false);
 
                     callBack.onSuccess(beginDate);

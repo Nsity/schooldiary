@@ -219,7 +219,7 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
 
     private void setFragmentTitle() {
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null && TimetableFragment.this.isAdded()) {
+        if (actionBar != null && isAdded()) {
             String date = CommonFunctions.getDate(selectedDate, "E").toUpperCase() + " " +
                     CommonFunctions.getDate(selectedDate, CommonFunctions.FORMAT_E_D_MMMM_YYYY);
             actionBar.setTitle(date);

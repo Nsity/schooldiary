@@ -136,7 +136,7 @@
 
     <string name="internet_problem">Необходимо подключение к интернету</string>
 
-    <string name="action_load">Загружаю данные… Подожите…</string>
+    <string name="action_load">Загружаю данные… Подождите…</string>
 
     <string name="recent">Последние</string>
     <string name="progress">Итоговые оценки</string>

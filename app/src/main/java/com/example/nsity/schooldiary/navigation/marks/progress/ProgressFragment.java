@@ -9,6 +9,8 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +29,7 @@ import com.example.nsity.schooldiary.navigation.timetable.CalendarActivity;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.CommonManager;
 import com.example.nsity.schooldiary.system.network.CallBack;
+import com.example.nsity.schooldiary.system.network.Server;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -47,6 +50,11 @@ public class ProgressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null && isAdded()) {
+            actionBar.setTitle(getString(R.string.nav_progress));
+        }
 
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_progress, container, false);
@@ -157,6 +165,12 @@ public class ProgressFragment extends Fragment {
     public void onResume() {
         super.onResume();
         setView();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Server.getHttpClient().cancelRequests(getActivity(), true);
     }
 
 

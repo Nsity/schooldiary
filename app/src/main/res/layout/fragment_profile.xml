@@ -31,6 +31,8 @@
                 android:textSize="16sp"
                 android:textColor="@android:color/primary_text_light"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
                 android:layout_marginRight="16dp"
                 android:layout_alignParentStart="true" />
 
@@ -44,6 +46,8 @@
                 android:paddingBottom="16dp"
                 android:layout_below="@+id/user_name"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
                 android:layout_marginRight="16dp"
                 android:layout_alignParentStart="true" />
 
@@ -54,7 +58,8 @@
                 android:layout_marginLeft="72dp"
                 android:background="@color/divider"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -83,6 +88,8 @@
                 android:layout_marginRight="16dp"
                 android:textColor="@android:color/primary_text_light"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
                 android:layout_alignParentStart="true" />
 
             <TextView
@@ -96,6 +103,8 @@
                 android:paddingBottom="16dp"
                 android:layout_below="@+id/class_text_view"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
                 android:layout_alignParentStart="true" />
 
             <View
@@ -105,7 +114,8 @@
                 android:layout_marginLeft="72dp"
                 android:background="@color/divider"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"/>
         </RelativeLayout>
     </LinearLayout>
 

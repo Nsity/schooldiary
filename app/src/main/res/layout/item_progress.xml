@@ -14,9 +14,11 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignBottom="@+id/image_view4"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/image_view4" />
+        android:layout_toStartOf="@+id/image_view4"
+        android:layout_toLeftOf="@id/image_view4"/>
 
     <ImageView android:layout_width="24dp"
         android:layout_height="24dp"
@@ -24,7 +26,8 @@
         android:id="@+id/image_view"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
     <ImageView android:layout_width="24dp"
         android:layout_height="24dp"
         android:id="@+id/image_view1"
@@ -32,7 +35,8 @@
         android:layout_marginRight="8dp"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/image_view" />
+        android:layout_toStartOf="@+id/image_view"
+        android:layout_toLeftOf="@id/image_view"/>
     <ImageView android:layout_width="24dp"
         android:layout_height="24dp"
         android:id="@+id/image_view2"
@@ -40,7 +44,8 @@
         android:layout_marginRight="8dp"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/image_view1" />
+        android:layout_toStartOf="@+id/image_view1"
+        android:layout_toLeftOf="@id/image_view1"/>
     <ImageView android:layout_width="24dp"
         android:layout_height="24dp"
         android:id="@+id/image_view3"
@@ -48,7 +53,8 @@
         android:contentDescription="@string/mark"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/image_view2" />
+        android:layout_toStartOf="@+id/image_view2"
+        android:layout_toLeftOf="@id/image_view2"/>
     <ImageView android:layout_width="24dp"
         android:layout_height="24dp"
         android:id="@+id/image_view4"
@@ -56,5 +62,6 @@
         android:contentDescription="@string/mark"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/image_view3" />
+        android:layout_toStartOf="@+id/image_view3"
+        android:layout_toLeftOf="@id/image_view3"/>
 </RelativeLayout>
