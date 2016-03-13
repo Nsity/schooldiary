@@ -1,17 +1,12 @@
 package com.example.nsity.schooldiary.navigation.login;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -22,10 +17,15 @@ import android.widget.Toast;
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.MainActivity;
 import com.example.nsity.schooldiary.system.CommonFunctions;
-import com.example.nsity.schooldiary.system.Preferences;
 import com.example.nsity.schooldiary.system.SyncManager;
+import com.example.nsity.schooldiary.system.gcm.GCMIntentService;
+import com.example.nsity.schooldiary.system.gcm.ServiceRegister;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
+import javax.crypto.spec.GCMParameterSpec;
 
 /**
  * Created by nsity on 15.11.15.
@@ -124,6 +124,11 @@ public class LoginActivity extends AppCompatActivity {
         SyncManager.sync(getApplicationContext(), new CallBack() {
             @Override
             public void onSuccess() {
+                if (ServiceRegister.checkPlayServices(getApplicationContext())) {
+                    Intent intent = new Intent(getApplicationContext(), GCMIntentService.class);
+                    intent.putExtra(GCMIntentService.KEY, GCMIntentService.REGISTER);
+                    startService(intent);
+                }
                 mProgressDialog.dismiss();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
@@ -137,6 +142,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
 }
 
 

@@ -7,6 +7,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,6 +15,8 @@ import org.json.JSONObject;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.security.KeyStore;
+import java.util.Random;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -25,6 +28,7 @@ public class AsyncHttpResponse {
 
     public static final int CALL_JSON_HTTP_RESPONSE = 0;
     public static final int CALL_POST_JSON_HTTP_RESPONSE = 1;
+    public static final int CALL_SYNCHRONIZATION_RESPONSE = 2;
 
     private static final String EXCEPTION_TAG = "Exception";
     private static final String MESSAGE_TAG = "Message";
@@ -33,12 +37,22 @@ public class AsyncHttpResponse {
     public AsyncHttpResponse(Context context, String url, RequestParams params, int callMethod, CallBack<ResponseObject> callBack){
         this.callBack = callBack;
 
+
+        AsyncHttpClient client = new SyncHttpClient();
+        if ((callMethod == CALL_SYNCHRONIZATION_RESPONSE)) {
+            client.setTimeout(30000);
+            client.addHeader(AsyncHttpClient.HEADER_ACCEPT_ENCODING, AsyncHttpClient.ENCODING_GZIP);
+        }
+
         switch (callMethod) {
             case CALL_JSON_HTTP_RESPONSE:
                 callJsonHttpResponse(context, url, Server.getHttpClient());
                 break;
             case CALL_POST_JSON_HTTP_RESPONSE:
                 callPostJsonHttpResponse(url, params, Server.getHttpClient());
+                break;
+            case CALL_SYNCHRONIZATION_RESPONSE:
+                callJsonHttpResponse(context, url, client);
                 break;
         }
     }
@@ -146,5 +160,9 @@ public class AsyncHttpResponse {
                 callBack.onFailure(new ResponseObject(statusCode, headers, throwable, errorResponse));
             }
         });
+
+
+        Random rnd = new Random();
+        rnd.nextInt();
     }
 }

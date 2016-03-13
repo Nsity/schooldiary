@@ -29,13 +29,20 @@ public class CommonFunctions {
     public static final String FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
     public static final String FORMAT_D_MMMM_YYYY = "d MMMM yyyy";
     public static final String FORMAT_E_D_MMMM_YYYY = "d MMMM, yyyy";
+    public static final String FORMAT_YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+
 
     public static boolean StringIsNullOrEmpty(String string) {
         return (string == null) || (string.isEmpty());
     }
 
     public static String getCurrentDateyyyyMMdd() {
-        SimpleDateFormat simple = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        SimpleDateFormat simple = new SimpleDateFormat(FORMAT_YYYY_MM_DD, new Locale("ru"));
+        return simple.format(new Date());
+    }
+
+    public static String getCurrentDateyyyyMMddHHmmss() {
+        SimpleDateFormat simple = new SimpleDateFormat(FORMAT_YYYY_MM_DD_HH_MM_SS, new Locale("ru"));
         return simple.format(new Date());
     }
 
@@ -216,6 +223,8 @@ public class CommonFunctions {
             mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
+
+
 
 
 }

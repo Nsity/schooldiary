@@ -1,5 +1,7 @@
 package com.example.nsity.schooldiary.navigation.marks.subjects;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -103,10 +105,21 @@ public class SubjectMarksActivity extends AppCompatActivity {
 
             @Override
             public void onFail(String error) {
-                mProgressView.setVisibility(View.GONE);
+               // mProgressView.setVisibility(View.GONE);
                 mSubjectFormView.setVisibility(View.GONE);
                 CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
                 Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+
+                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+                final boolean show = false;
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                mProgressView.animate().setDuration(shortAnimTime).alpha(
+                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    }
+                });
             }
         });
     }

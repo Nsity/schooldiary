@@ -13,7 +13,11 @@ public class Preferences {
     public static final String CLASSNAME = "class_name";
     public static final String PUPILID = "pupil_id";
     public static final String FIO = "fio";
-    public static final String SELECTED_DATE = "selected_date";
+    public static final String NOTIFICATION_LAST_SYNC = "notification_last_sync";
+    public static final String NOTIFICATION_LESSON_SETTING = "notification_lesson_setting";
+    public static final String NOTIFICATION_MARK_SETTING = "notification_mark_setting";
+    public static final String FIRST_LOGIN = "first_login";
+    public static final String GCM_TOKEN = "gcm_token";
 
 
     public static final String accountType = "com.schooldiary";

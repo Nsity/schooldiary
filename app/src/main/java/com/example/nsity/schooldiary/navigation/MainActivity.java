@@ -1,33 +1,50 @@
 package com.example.nsity.schooldiary.navigation;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.homework.HomeworkFragment;
 import com.example.nsity.schooldiary.navigation.login.LoginActivity;
 import com.example.nsity.schooldiary.navigation.login.ProfileFragment;
+import com.example.nsity.schooldiary.navigation.login.UserManager;
 import com.example.nsity.schooldiary.navigation.marks.progress.ProgressFragment;
 import com.example.nsity.schooldiary.navigation.marks.subjects.SubjectsFragment;
 import com.example.nsity.schooldiary.navigation.statistics.StatisticsFragment;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableFragment;
+import com.example.nsity.schooldiary.navigation.timetable.notification.TimetableNotificationIntentService;
+import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Preferences;
+import com.example.nsity.schooldiary.system.gcm.ServiceRegister;
+import com.example.nsity.schooldiary.system.network.Server;
+import com.google.android.gcm.GCMRegistrar;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private AlertDialog alertDialog;
+    private SharedPreferences.OnSharedPreferenceChangeListener myPrefListener;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +76,51 @@ public class MainActivity extends AppCompatActivity
 
             TextView text = (TextView) header.findViewById(R.id.nav_app_name);
             text.setText(getResources().getString(R.string.app_name));
+
+
+            //notification
+            myPrefListener = new SharedPreferences.OnSharedPreferenceChangeListener(){
+                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                    if(key.equals(Preferences.NOTIFICATION_LESSON_SETTING)) {
+                        Intent intent = new Intent(getApplicationContext(), TimetableNotificationIntentService.class).
+                                putExtra(TimetableNotificationIntentService.NOTIFICATION_SETTING,
+                                        Preferences.getBoolean(Preferences.NOTIFICATION_LESSON_SETTING, false, getApplicationContext()));
+                        startService(intent);
+                    }
+                    if(key.equals(Preferences.NOTIFICATION_MARK_SETTING)) {
+                        //TODO
+                    }
+                }
+            };
+            prefs = getSharedPreferences(Preferences.accountType, Context.MODE_PRIVATE);
+
+            //alert for notification
+            if(!Preferences.getBoolean(Preferences.FIRST_LOGIN, false, this)) {
+                alertDialog = new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.notification_alert))
+                        .setMessage(getString(R.string.notification_alert_text))
+                        .setCancelable(true)
+                        .setPositiveButton(getResources().getString(R.string.ok).toUpperCase(),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Preferences.set(Preferences.NOTIFICATION_LESSON_SETTING, true, getApplicationContext());
+                                        Preferences.set(Preferences.NOTIFICATION_MARK_SETTING, true, getApplicationContext());
+                                        Preferences.set(Preferences.FIRST_LOGIN, true, getApplicationContext());
+                                        alertDialog.dismiss();
+                                    }
+                                })
+                        .setNegativeButton(getResources().getString(R.string.not_allow).toUpperCase(),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Preferences.set(Preferences.FIRST_LOGIN, true, getApplicationContext());
+                                        alertDialog.dismiss();
+                                    }
+                                })
+                        .create();
+                alertDialog.show();
+            }
         }
     }
 
@@ -127,5 +189,27 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            prefs.unregisterOnSharedPreferenceChangeListener(myPrefListener);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        try {
+            prefs.registerOnSharedPreferenceChangeListener(myPrefListener);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }

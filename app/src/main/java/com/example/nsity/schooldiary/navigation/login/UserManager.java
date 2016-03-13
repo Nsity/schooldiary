@@ -1,14 +1,18 @@
 package com.example.nsity.schooldiary.navigation.login;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.system.gcm.GCMIntentService;
+import com.example.nsity.schooldiary.system.gcm.ServiceRegister;
 import com.example.nsity.schooldiary.system.network.ErrorTracker;
 import com.example.nsity.schooldiary.system.Preferences;
 import com.example.nsity.schooldiary.system.database.ADBWorker;
 import com.example.nsity.schooldiary.system.network.AsyncHttpResponse;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.ResponseObject;
+import com.google.android.gcm.GCMRegistrar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,6 +71,10 @@ public class UserManager {
 
     public static void logoff(Context context) {
         ADBWorker.deleteAllTables(context);//remove all tables in database
-        Preferences.clear(context);
+        if (ServiceRegister.checkPlayServices(context)) {
+            Intent intent = new Intent(context, GCMIntentService.class);
+            intent.putExtra(GCMIntentService.KEY, GCMIntentService.UNREGISTER);
+            context.startService(intent);
+        }
     }
 }

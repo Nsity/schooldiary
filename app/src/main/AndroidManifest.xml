@@ -3,12 +3,21 @@
     package="com.example.nsity.schooldiary"
     android:installLocation="auto"
     android:versionCode="1"
-    android:versionName="0.1">
+    android:versionName="1.0">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <permission android:name="com.example.nsity.schooldiary.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.example.nsity.schooldiary.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
 
 
     <application
@@ -60,6 +69,40 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+
+
+        <receiver android:name=".navigation.timetable.notification.TimetableNotificationReceiver">
+        </receiver>
+        <service android:name=".navigation.timetable.notification.TimetableNotificationIntentService"/>
+        <service android:name=".navigation.timetable.notification.ShowNotificationWakefulService"/>
+
+        <service android:name=".system.gcm.GCMIntentService" android:exported="false"/>
+        <service
+            android:name=".system.gcm.MyInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID"/>
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.example.nsity.schooldiary" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".system.gcm.GCMMessageHandler"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

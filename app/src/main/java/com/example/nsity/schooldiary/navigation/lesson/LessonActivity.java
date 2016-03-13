@@ -172,9 +172,20 @@ public class LessonActivity extends AppCompatActivity {
 
                         @Override
                         public void onFail(String message) {
+                            //CommonFunctions.showProgress(false, getApplicationContext(), mLessonFormView, mProgressView);
                             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                            mProgressView.setVisibility(View.GONE);
+                            //mProgressView.setVisibility(View.GONE);
                             mLessonFormView.setVisibility(View.GONE);
+                            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+                            final boolean show = false;
+                            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                                }
+                            });
                         }
                     });
         } else {

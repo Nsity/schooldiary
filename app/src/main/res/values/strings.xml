@@ -15,8 +15,8 @@
 
     <string name="today">Сегодня</string>
 
-    <string name="base_url">http://schooldiary.azurewebsites.net/</string>
-   <!-- <string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>-->
+    <!--<string name="base_url">http://schooldiary.azurewebsites.net/</string>-->
+    <string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>
     <string name="call_method_api_login">auth/login/</string>
     <string name="call_method_api_get_timetable">timetable/get/</string>
     <string name="call_method_api_get_lesson">lesson/get/</string>
@@ -24,6 +24,8 @@
     <string name="call_method_api_get_subject_marks">subject/getmarks/</string>
     <string name="call_method_api_get_homework">lesson/gethomework/</string>
     <string name="call_method_api_get_statistics">subject/statistics/</string>
+    <string name="call_method_push_register">gcm/register/</string>
+    <string name="call_method_push_unregister">gcm/unregister/</string>
 
 
     <string name="error_encode">Ошибка кодирования данных</string>
@@ -163,7 +165,14 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
 
+    <string name="notification_alert">Разрешение на отправку уведомлений</string>
+    <string name="notification_alert_text">Уведомления могут содержать напоминания, звуки и наклейки значков. Их конфигурирование возможно в Настройках</string>
+
+    <string name="not_allow">Не разрешать</string>
+    <string name="ok">ОК</string>
+
     <string name="user">Пользователь</string>
+    <string name="notification">Уведомления</string>
 
     <string name="average_score">Средний балл</string>
     <string name="average">СреднийБалл</string>
@@ -175,4 +184,11 @@
     <string name="min_score">мин. по классу</string>
     <string name="score">учащегося</string>
     <string name="max_score">макс. по классу</string>
+    <string name="notification_lesson_setting_text">О занятиях, за 5 минут до урока</string>
+    <string name="notification_mark_setting_text">Об оценках и домашних заданиях</string>
+    <string name="add_mark">Добавлена новая оценка</string>
+    <string name="on">по</string>
+
+
+
 </resources>

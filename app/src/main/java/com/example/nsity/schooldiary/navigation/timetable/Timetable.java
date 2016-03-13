@@ -41,6 +41,10 @@ public class Timetable extends ListBaseEntity {
         return timetableOfDay.size() == 0 ? null : timetableOfDay;
     }
 
+    public ArrayList<TimetableItem> getTimetable() {
+        return timetableArrayList;
+    }
+
     public TimetableItem getItem(int position) {
         return timetableArrayList.get(position);
     }

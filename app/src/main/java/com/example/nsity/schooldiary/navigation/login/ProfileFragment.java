@@ -1,6 +1,8 @@
 package com.example.nsity.schooldiary.navigation.login;
 
 
+import android.app.AlarmManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,9 +19,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.timetable.notification.TimetableNotificationIntentService;
+import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Preferences;
+import com.rey.material.widget.Switch;
 
-import org.w3c.dom.Text;
+import java.util.Calendar;
+import java.util.Date;
+
 
 /**
  * Created by nsity on 15.11.15.
@@ -36,7 +43,6 @@ public class ProfileFragment extends Fragment {
             actionBar.setTitle(getString(R.string.nav_profile));
         }
 
-
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
@@ -45,6 +51,30 @@ public class ProfileFragment extends Fragment {
 
         TextView mClassTextView = (TextView) rootView.findViewById(R.id.class_text);
         mClassTextView.setText(Preferences.get(Preferences.CLASSNAME, getActivity()));
+
+
+        Switch notificationLessonSwitch = (Switch) rootView.findViewById(R.id.notification_lesson_switch);
+        Switch notificationMarkSwitch = (Switch) rootView.findViewById(R.id.notification_mark_switch);
+
+        if(Preferences.getBoolean(Preferences.NOTIFICATION_LESSON_SETTING, false, getActivity()))
+            notificationLessonSwitch.setChecked(true);
+
+        notificationLessonSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(Switch view, boolean checked) {
+                Preferences.set(Preferences.NOTIFICATION_LESSON_SETTING, checked, getActivity());
+            }
+        });
+
+        if(Preferences.getBoolean(Preferences.NOTIFICATION_MARK_SETTING, false, getActivity()))
+            notificationMarkSwitch.setChecked(true);
+
+        notificationMarkSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(Switch view, boolean checked) {
+                Preferences.set(Preferences.NOTIFICATION_MARK_SETTING, checked, getActivity());
+            }
+        });
 
         return rootView;
     }

@@ -11,23 +11,13 @@
             android:layout_height="72dp"
             android:id="@+id/user_layout">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/image_user"
-                android:layout_marginTop="24dp"
-                android:layout_marginLeft="16dp"
-                android:foregroundGravity="center"
-                android:background="@mipmap/ic_account_box_black_24dp"
-                android:contentDescription="@string/user" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/user_name"
                 android:text="@string/user"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_marginLeft="72dp"
+                android:layout_marginLeft="16dp"
                 android:textSize="16sp"
                 android:textColor="@android:color/primary_text_light"
                 android:layout_alignParentEnd="true"
@@ -41,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/user"
                 android:textColor="@android:color/secondary_text_light"
-                android:layout_marginLeft="72dp"
+                android:layout_marginLeft="16dp"
                 android:textSize="14sp"
                 android:paddingBottom="16dp"
                 android:layout_below="@+id/user_name"
@@ -55,7 +45,7 @@
                 android:id="@+id/view1"
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:layout_marginLeft="72dp"
+                android:layout_marginLeft="16dp"
                 android:background="@color/divider"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentStart="true"
@@ -67,15 +57,6 @@
             android:layout_height="72dp"
             android:id="@+id/class_layout">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/image_class"
-                android:layout_marginTop="24dp"
-                android:layout_marginLeft="16dp"
-                android:foregroundGravity="center"
-                android:background="@mipmap/ic_class_black_24dp"
-                android:contentDescription="@string/time" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -83,7 +64,7 @@
                 android:id="@+id/class_text_view"
                 android:text="@string/class_text"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_marginLeft="72dp"
+                android:layout_marginLeft="16dp"
                 android:textSize="16sp"
                 android:layout_marginRight="16dp"
                 android:textColor="@android:color/primary_text_light"
@@ -97,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/class_text"
                 android:textColor="@android:color/secondary_text_light"
-                android:layout_marginLeft="72dp"
+                android:layout_marginLeft="16dp"
                 android:textSize="14sp"
                 android:layout_marginRight="16dp"
                 android:paddingBottom="16dp"
@@ -111,11 +92,118 @@
                 android:id="@+id/view2"
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:layout_marginLeft="72dp"
+                android:layout_marginLeft="16dp"
                 android:background="@color/divider"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:id="@+id/notification_layout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/notification_lesson_name"
+                android:text="@string/notification"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_marginLeft="16dp"
+                android:textSize="16sp"
+                android:textColor="@android:color/primary_text_light"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/secondary_text_light"
+                android:layout_marginLeft="16dp"
+                android:textSize="14sp"
+                android:text="@string/notification_lesson_setting_text"
+                android:paddingBottom="16dp"
+                android:layout_below="@+id/notification_lesson_name"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/notification_lesson_switch"
+                android:layout_toStartOf="@+id/notification_lesson_switch" />
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:background="@color/divider"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"/>
+
+            <com.rey.material.widget.Switch
+                style="@style/Material.Widget.Switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:checked="false"
+                android:layout_marginTop="16dp"
+                android:layout_alignRight="@+id/notification_lesson_name"
+                android:id="@+id/notification_lesson_switch" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="72dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/notification_mark_name"
+                android:text="@string/notification"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_marginLeft="16dp"
+                android:textSize="16sp"
+                android:textColor="@android:color/primary_text_light"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/secondary_text_light"
+                android:layout_marginLeft="16dp"
+                android:textSize="14sp"
+                android:text="@string/notification_mark_setting_text"
+                android:paddingBottom="16dp"
+                android:layout_below="@+id/notification_mark_name"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/notification_mark_switch"
+                android:layout_toStartOf="@+id/notification_mark_switch" />
+
+            <View
+                android:id="@+id/view4"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:background="@color/divider"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"/>
+
+            <com.rey.material.widget.Switch
+                style="@style/Material.Widget.Switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:checked="false"
+                android:layout_marginTop="16dp"
+                android:layout_alignRight="@+id/notification_mark_name"
+                android:id="@+id/notification_mark_switch" />
         </RelativeLayout>
     </LinearLayout>
 

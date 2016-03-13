@@ -1,11 +1,15 @@
 package com.example.nsity.schooldiary.navigation.timetable;
 
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -20,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.MainActivity;
 import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Preferences;
@@ -241,4 +246,18 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString("date", CommonFunctions.getDate(selectedDate, CommonFunctions.FORMAT_YYYY_MM_DD));
     }
+
+
+    /*void sendNotif() {
+        Notification.Builder builder = new NotificationCompat.Builder(getActivity());
+        builder.setContentIntent(contentIntent)
+                .setSmallIcon(R.drawable.ic_launcher_cat)
+                .setContentTitle("Напоминание")
+                .setContentText("Пора покормить кота"); // Текст уведомления
+
+        Notification notification = builder.build();
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getActivity());
+        notificationManager.notify(NOTIFY_ID, notification);
+    }*/
 }
