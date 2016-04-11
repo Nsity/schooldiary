@@ -1,8 +1,6 @@
 package com.example.nsity.schooldiary.navigation.login;
 
 
-import android.app.AlarmManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,13 +17,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.timetable.notification.TimetableNotificationIntentService;
-import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Preferences;
 import com.rey.material.widget.Switch;
-
-import java.util.Calendar;
-import java.util.Date;
 
 
 /**

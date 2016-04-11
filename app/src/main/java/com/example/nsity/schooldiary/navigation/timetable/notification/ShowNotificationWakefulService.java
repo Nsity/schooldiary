@@ -16,6 +16,8 @@ import com.example.nsity.schooldiary.navigation.MainActivity;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableItem;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 
+import java.util.Random;
+
 /**
  * Created by nsity on 20.02.16.
  */
@@ -55,7 +57,7 @@ public class ShowNotificationWakefulService extends IntentService {
         Notification notification = builder.build();
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(101, notification);
+        notificationManager.notify(new Random().nextInt(100), notification);
 
         TimetableNotificationReceiver.completeWakefulIntent(intent);
     }

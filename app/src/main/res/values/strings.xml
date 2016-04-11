@@ -50,6 +50,7 @@
     <string name="room_name">КабинетНаименование</string>
     <string name="timetable">Расписание</string>
     <string name="progress_marks">ИтоговыеОценки</string>
+    <string name="timetable_id">РасписаниеИд</string>
 
     <string name="time_start">ВремяНачала</string>
     <string name="day_id">ДеньИд</string>
@@ -62,12 +63,15 @@
     <string name="note">Замечание</string>
     <string name="theme">Тема</string>
     <string name="date">Дата</string>
+    <string name="day_of_week">ДеньНедели</string>
 
     <string name="type">Тип</string>
     <string name="lessonId">УрокИд</string>
     <string name="mark">Оценка</string>
     <string name="period_id">ПериодИд</string>
     <string name="lessons">Уроки</string>
+    <string name="lesson">Урок</string>
+    <string name="text">Текст</string>
 
     <string name="missing">Отсутствует</string>
 
@@ -85,6 +89,7 @@
     <string name="year">года</string>
     <string name="holidays">Каникулы</string>
     <string name="weekend">Выходной</string>
+    <string name="day">День</string>
 
     <string-array name="days">
         <item>Понедельник</item>
@@ -185,10 +190,8 @@
     <string name="score">учащегося</string>
     <string name="max_score">макс. по классу</string>
     <string name="notification_lesson_setting_text">О занятиях, за 5 минут до урока</string>
-    <string name="notification_mark_setting_text">Об оценках и домашних заданиях</string>
-    <string name="add_mark">Добавлена новая оценка</string>
-    <string name="on">по</string>
-
-
+    <string name="notification_mark_setting_text">О текущих и итоговых оценках</string>
+    <string name="collapse_key">collapse_key</string>
+    <string name="message">message</string>
 
 </resources>

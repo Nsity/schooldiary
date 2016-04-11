@@ -28,6 +28,7 @@ import com.example.nsity.schooldiary.navigation.MainActivity;
 import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Preferences;
+import com.example.nsity.schooldiary.system.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.DateFormat;
@@ -85,8 +86,8 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
                 String currentDate = CommonFunctions.getDate(selectedDate, CommonFunctions.FORMAT_YYYY_MM_DD);
 
                 Intent intent = new Intent(getActivity(), LessonActivity.class);
-                intent.putExtra("timetableItem", timetableItem);
-                intent.putExtra("day", currentDate);
+                intent.putExtra(Utils.TIMETABLE_ITEM, timetableItem);
+                intent.putExtra(Utils.DAY, currentDate);
 
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -246,18 +247,4 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString("date", CommonFunctions.getDate(selectedDate, CommonFunctions.FORMAT_YYYY_MM_DD));
     }
-
-
-    /*void sendNotif() {
-        Notification.Builder builder = new NotificationCompat.Builder(getActivity());
-        builder.setContentIntent(contentIntent)
-                .setSmallIcon(R.drawable.ic_launcher_cat)
-                .setContentTitle("Напоминание")
-                .setContentText("Пора покормить кота"); // Текст уведомления
-
-        Notification notification = builder.build();
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getActivity());
-        notificationManager.notify(NOTIFY_ID, notification);
-    }*/
 }

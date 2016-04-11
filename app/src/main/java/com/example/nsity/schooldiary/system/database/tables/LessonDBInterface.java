@@ -155,8 +155,8 @@ public class LessonDBInterface extends ADBWorker {
 
 
     public void deleteLesson(int lessonId) {
-        delete(LESSON_TABLE_NAME, LESSON_COLUMN_ID + " =?", new String[] {String.valueOf(lessonId)});
         delete(MARK_TABLE_NAME, LESSON_COLUMN_ID + " =?", new String[]{String.valueOf(lessonId)});
+        delete(LESSON_TABLE_NAME, LESSON_COLUMN_ID + " =?", new String[] {String.valueOf(lessonId)});
     }
 
 

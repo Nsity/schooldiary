@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
 import com.example.nsity.schooldiary.system.CommonFunctions;
+import com.example.nsity.schooldiary.system.Utils;
 
 
 import java.text.DateFormat;
@@ -144,8 +145,8 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerCon
                             String currentDate = sdf.format(date);
 
                             Intent intent = new Intent(CalendarActivity.this, LessonActivity.class);
-                            intent.putExtra("timetableItem", timetableItem);
-                            intent.putExtra("day", currentDate);
+                            intent.putExtra(Utils.TIMETABLE_ITEM, timetableItem);
+                            intent.putExtra(Utils.DAY, currentDate);
 
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

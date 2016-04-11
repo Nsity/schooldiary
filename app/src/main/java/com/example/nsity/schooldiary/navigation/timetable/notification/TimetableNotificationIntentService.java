@@ -52,29 +52,40 @@ public class TimetableNotificationIntentService extends IntentService {
 
         clearAlarmReceiver();
 
-       // if(Preferences.get(Preferences.NOTIFICATION_LAST_SYNC, this).equals(""))
-         //   Preferences.set(Preferences.NOTIFICATION_LAST_SYNC, CommonFunctions.getCurrentDateyyyyMMddHHmmss(), this);
-
-        /*int i = 0;
+        int i = 0;
         for (TimetableItem timetableItem : timetable.getTimetable()) {
             Intent intent = new Intent(this, TimetableNotificationReceiver.class);
             intent.putExtra(TIMETABLE_EXTRA, timetableItem);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, i, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             Calendar calendar = Calendar.getInstance();
+           // calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.DAY_OF_WEEK, getDay(timetableItem.getDay()));
             calendar.set(Calendar.HOUR, Integer.valueOf(getHour(timetableItem.getTime().getTimeStart())));
             calendar.set(Calendar.MINUTE, Integer.valueOf(getMinute(timetableItem.getTime().getTimeStart())));
             calendar.set(Calendar.SECOND, 0);
 
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+           /* long alarmTime = calendar.getTimeInMillis();
+            if (alarmTime < System.currentTimeMillis() + 500)
+                alarmTime += 24 * 60 * 60 * 1000;*/
+
+            Date now = new Date(System.currentTimeMillis());
+            if (calendar.getTime().before(now)) {
+                calendar.add(Calendar.MONTH, 1);
+            }
+
+            long firstTime = calendar.getTime().getTime();
+            //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
 
             i++;
-        }*/
+        }
 
 
-        int dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+       /* int dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         int numDays = Calendar.getInstance().getActualMaximum(Calendar.DATE);
 
         for (int i = dayOfMonth; i <= numDays; i++) {
@@ -113,30 +124,8 @@ public class TimetableNotificationIntentService extends IntentService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        /*for (CheckPoint checkPoint : checkPoints) {
-            Intent intent = new Intent(context, CheckAlarmReceiver.class);
-            intent.putExtra("checkPoint", checkPoint);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, i, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(getDay(checkPoint.getDate())));
-            calendar.set(Calendar.MONTH, Integer.valueOf(getMonth(checkPoint.getDate())) - 1);
-            calendar.set(Calendar.YEAR, Integer.valueOf(getYear(checkPoint.getDate())));
-            calendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(getHour(checkPoint.getCheckInTime())));
-            calendar.set(Calendar.MINUTE, Integer.valueOf(getMinute(checkPoint.getCheckInTime())));
-            calendar.set(Calendar.SECOND, 0);
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            if (android.os.Build.VERSION.SDK_INT >= 19) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            } else {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            }
-
-            i++;
         }*/
 
-
-        Preferences.set(Preferences.NOTIFICATION_LAST_SYNC, CommonFunctions.getCurrentDateyyyyMMdd(), this);
     }
 
 
@@ -166,5 +155,22 @@ public class TimetableNotificationIntentService extends IntentService {
         } catch (Exception e) {
             return baseTime;
         }
+    }
+
+    private int getDay(int dayOfWeek) {
+        switch (dayOfWeek) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                dayOfWeek++;
+                break;
+            case 7:
+                dayOfWeek = 1;
+                break;
+        }
+        return dayOfWeek;
     }
 }

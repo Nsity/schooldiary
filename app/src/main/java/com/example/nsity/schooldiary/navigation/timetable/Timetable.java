@@ -45,6 +45,15 @@ public class Timetable extends ListBaseEntity {
         return timetableArrayList;
     }
 
+    public TimetableItem getItemById(int id) {
+        for(TimetableItem item: timetableArrayList) {
+            if(item.getId() == id) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     public TimetableItem getItem(int position) {
         return timetableArrayList.get(position);
     }

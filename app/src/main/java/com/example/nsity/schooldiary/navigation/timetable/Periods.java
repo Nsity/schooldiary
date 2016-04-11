@@ -60,7 +60,7 @@ public class Periods extends ListBaseEntity {
             for(int i = 0; i < periodsArrayList.size() - 1; i++) {
                 Date dateStart = format.parse(periodsArrayList.get(i).getPeriodStart());
                 Date dateEnd;
-                if(i == periodsArrayList.size() - 1)
+                if(i == periodsArrayList.size() - 2)
                     dateEnd = format.parse(periodsArrayList.get(i).getPeriodEnd());
                 else
                     dateEnd = format.parse(periodsArrayList.get(i + 1).getPeriodStart());

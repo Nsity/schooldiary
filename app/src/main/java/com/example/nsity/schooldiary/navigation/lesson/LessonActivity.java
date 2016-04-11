@@ -23,6 +23,8 @@ import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.marks.Mark;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableItem;
 import com.example.nsity.schooldiary.system.CommonFunctions;
+import com.example.nsity.schooldiary.system.Utils;
+import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
 
@@ -60,7 +62,7 @@ public class LessonActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lesson);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        timetableItem = (TimetableItem) getIntent().getSerializableExtra("timetableItem");
+        timetableItem = (TimetableItem) getIntent().getSerializableExtra(Utils.TIMETABLE_ITEM);
         if (timetableItem != null) {
             int color = CommonFunctions.setColor(this, timetableItem.getSubject().getColor());
 
@@ -106,7 +108,14 @@ public class LessonActivity extends AppCompatActivity {
             }
         });
 
-        lesson = new Lesson(this, getIntent().getStringExtra("day"), timetableItem.getTime().getId(), timetableItem.getSubject().getId());
+        lesson = new Lesson(this, getIntent().getStringExtra(Utils.DAY), timetableItem.getTime().getId(), timetableItem.getSubject().getId());
+
+
+        //if notification appears, update lesson
+        if(getIntent().getBooleanExtra("update", false) && lesson.getId() != -1) {
+            new LessonDBInterface(this).deleteLesson(lesson.getId());
+            lesson.setId(-1);
+        }
 
         setView();
     }
@@ -131,7 +140,7 @@ public class LessonActivity extends AppCompatActivity {
             case R.id.action_refresh:
                 CommonFunctions.setRefreshActionButtonState(true, optionsMenu);
                 lesson.load(this, timetableItem.getSubject().getId(),
-                        getIntent().getStringExtra("day"), timetableItem.getTime().getId(), new CallBack() {
+                        getIntent().getStringExtra(Utils.DAY), timetableItem.getTime().getId(), new CallBack() {
                             @Override
                             public void onSuccess() {
                                 CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
@@ -163,7 +172,7 @@ public class LessonActivity extends AppCompatActivity {
         if (lesson.getId() == -1) {
             CommonFunctions.showProgress(true, getApplicationContext(), mLessonFormView, mProgressView);
             lesson.load(this, timetableItem.getSubject().getId(),
-                    getIntent().getStringExtra("day"), timetableItem.getTime().getId(), new CallBack() {
+                    getIntent().getStringExtra(Utils.DAY), timetableItem.getTime().getId(), new CallBack() {
                         @Override
                         public void onSuccess() {
                             CommonFunctions.showProgress(false, getApplicationContext(), mLessonFormView, mProgressView);

@@ -50,6 +50,7 @@
     </array>
 
 
+    <color name="grey">#EEEEEE</color>
     <color name="current_day_background">@color/colorPrimaryLight</color>
     <color name="weekends_day">@android:color/white</color>
 </resources>
