@@ -8,7 +8,7 @@ import com.example.nsity.schooldiary.navigation.timetable.Time;
 import com.example.nsity.schooldiary.navigation.marks.Mark;
 import com.example.nsity.schooldiary.system.BaseEntity;
 import com.example.nsity.schooldiary.system.CommonManager;
-import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.LessonsDBInterface;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
 
@@ -26,10 +26,11 @@ public class Lesson extends BaseEntity {
     private String pass;
     private Time time;
     private Subject subject;
+    private boolean isHomeworkCompleted;
 
     private ArrayList<Mark> marksArrayList;
 
-    private LessonDBInterface db;
+    private LessonsDBInterface db;
 
     public String getNote() {
         return note;
@@ -67,7 +68,7 @@ public class Lesson extends BaseEntity {
     }
 
     public Lesson(Context context, String date, int timeId, int subjectId) {
-        this.db = new LessonDBInterface(context);
+        this.db = new LessonsDBInterface(context);
         loadFromDB(date, timeId, subjectId);
     }
 
@@ -144,4 +145,11 @@ public class Lesson extends BaseEntity {
         this.subject = subject;
     }
 
+    public boolean isHomeworkCompleted() {
+        return isHomeworkCompleted;
+    }
+
+    public void setIsHomeworkCompleted(boolean isHomeworkCompleted) {
+        this.isHomeworkCompleted = isHomeworkCompleted;
+    }
 }

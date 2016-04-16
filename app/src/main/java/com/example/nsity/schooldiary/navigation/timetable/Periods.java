@@ -2,11 +2,9 @@ package com.example.nsity.schooldiary.navigation.timetable;
 
 import android.content.Context;
 
-import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.timetable.Period;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.ListBaseEntity;
-import com.example.nsity.schooldiary.system.database.tables.PeriodDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.PeriodsDBInterface;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -22,7 +20,7 @@ import java.util.Locale;
 public class Periods extends ListBaseEntity {
 
     private ArrayList<Period> periodsArrayList;
-    private PeriodDBInterface db;
+    private PeriodsDBInterface db;
 
     @Override
     protected void loadFromDB() {
@@ -32,7 +30,7 @@ public class Periods extends ListBaseEntity {
 
     public Periods(Context context) {
         super(context);
-        this.db = new PeriodDBInterface(context);
+        this.db = new PeriodsDBInterface(context);
         this.periodsArrayList = new ArrayList<>();
         loadFromDB();
     }

@@ -79,10 +79,10 @@ public class ProgressDBInterface extends ADBWorker {
     }
 
     public ArrayList<ProgressItem> getProgress() {
-        String selectQuery = "SELECT * FROM " + PROGRESS_TABLE_NAME + " p JOIN " + PeriodDBInterface.PERIOD_TABLE_NAME +
-                " pr ON p." + PROGRESS_COLUMN_PERIOD_ID + " = pr." + PeriodDBInterface.PERIOD_COLUMN_ID +
+        String selectQuery = "SELECT * FROM " + PROGRESS_TABLE_NAME + " p JOIN " + PeriodsDBInterface.PERIOD_TABLE_NAME +
+                " pr ON p." + PROGRESS_COLUMN_PERIOD_ID + " = pr." + PeriodsDBInterface.PERIOD_COLUMN_ID +
                 " JOIN " + SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME + " s ON p." + PROGRESS_COLUMN_SUBJECTS_CLASS_ID +
-                " = s." + SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID + " ORDER BY " + PeriodDBInterface.PERIOD_COLUMN_NAME + ", " +
+                " = s." + SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID + " ORDER BY " + PeriodsDBInterface.PERIOD_COLUMN_NAME + ", " +
                 SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_SUBJECT_NAME;
 
         Cursor cursor = getCursor(selectQuery, new String[]{});
@@ -100,9 +100,9 @@ public class ProgressDBInterface extends ADBWorker {
                 progressItem.setValue(cursor.getInt(cursor.getColumnIndex(PROGRESS_COLUMN_MARK)));
 
                 progressItem.setPeriod(new Period(cursor.getInt(cursor.getColumnIndex(PROGRESS_COLUMN_PERIOD_ID)),
-                        cursor.getString(cursor.getColumnIndex(PeriodDBInterface.PERIOD_COLUMN_START)),
-                        cursor.getString(cursor.getColumnIndex(PeriodDBInterface.PERIOD_COLUMN_END)),
-                        cursor.getString(cursor.getColumnIndex(PeriodDBInterface.PERIOD_COLUMN_NAME))));
+                        cursor.getString(cursor.getColumnIndex(PeriodsDBInterface.PERIOD_COLUMN_START)),
+                        cursor.getString(cursor.getColumnIndex(PeriodsDBInterface.PERIOD_COLUMN_END)),
+                        cursor.getString(cursor.getColumnIndex(PeriodsDBInterface.PERIOD_COLUMN_NAME))));
 
                 progress.add(progressItem);
             }
@@ -120,10 +120,10 @@ public class ProgressDBInterface extends ADBWorker {
 
 
     public ArrayList<ProgressItem> getSubjectProgress(int subjectId) {
-        String selectQuery = "SELECT * FROM " + PROGRESS_TABLE_NAME + " p JOIN " + PeriodDBInterface.PERIOD_TABLE_NAME +
-                " pr ON p." + PROGRESS_COLUMN_PERIOD_ID + " = pr." + PeriodDBInterface.PERIOD_COLUMN_ID +
+        String selectQuery = "SELECT * FROM " + PROGRESS_TABLE_NAME + " p JOIN " + PeriodsDBInterface.PERIOD_TABLE_NAME +
+                " pr ON p." + PROGRESS_COLUMN_PERIOD_ID + " = pr." + PeriodsDBInterface.PERIOD_COLUMN_ID +
                 " WHERE " + PROGRESS_COLUMN_SUBJECTS_CLASS_ID + " =? " +
-                " ORDER BY " + PeriodDBInterface.PERIOD_COLUMN_NAME;
+                " ORDER BY " + PeriodsDBInterface.PERIOD_COLUMN_NAME;
 
         Cursor cursor = getCursor(selectQuery, new String[]{String.valueOf(subjectId)});
 
@@ -140,9 +140,9 @@ public class ProgressDBInterface extends ADBWorker {
                 progressItem.setValue(cursor.getInt(cursor.getColumnIndex(PROGRESS_COLUMN_MARK)));
 
                 progressItem.setPeriod(new Period(cursor.getInt(cursor.getColumnIndex(PROGRESS_COLUMN_PERIOD_ID)),
-                        cursor.getString(cursor.getColumnIndex(PeriodDBInterface.PERIOD_COLUMN_START)),
-                        cursor.getString(cursor.getColumnIndex(PeriodDBInterface.PERIOD_COLUMN_END)),
-                        cursor.getString(cursor.getColumnIndex(PeriodDBInterface.PERIOD_COLUMN_NAME))));
+                        cursor.getString(cursor.getColumnIndex(PeriodsDBInterface.PERIOD_COLUMN_START)),
+                        cursor.getString(cursor.getColumnIndex(PeriodsDBInterface.PERIOD_COLUMN_END)),
+                        cursor.getString(cursor.getColumnIndex(PeriodsDBInterface.PERIOD_COLUMN_NAME))));
 
                 progress.add(progressItem);
             }

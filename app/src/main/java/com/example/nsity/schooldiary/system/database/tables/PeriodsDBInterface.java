@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by nsity on 06.12.15.
  */
-public class PeriodDBInterface extends ADBWorker {
+public class PeriodsDBInterface extends ADBWorker {
 
     public static final String PERIOD_TABLE_NAME = "PERIOD";
     public static final String PERIOD_COLUMN_ID = "PERIOD_ID";
@@ -33,7 +33,7 @@ public class PeriodDBInterface extends ADBWorker {
             + PERIOD_COLUMN_NAME + " VARCHAR(255) "
             + ");";
 
-    public PeriodDBInterface(Context context) {
+    public PeriodsDBInterface(Context context) {
         super(context);
     }
 

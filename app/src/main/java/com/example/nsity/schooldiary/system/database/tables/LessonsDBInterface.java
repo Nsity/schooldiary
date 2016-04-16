@@ -20,7 +20,7 @@ import java.util.ArrayList;
 /**
  * Created by nsity on 15.11.15.
  */
-public class LessonDBInterface extends ADBWorker {
+public class LessonsDBInterface extends ADBWorker {
 
     public static final String LESSON_TABLE_NAME = "LESSON";
     public static final String LESSON_COLUMN_ID = "LESSON_ID";
@@ -60,6 +60,20 @@ public class LessonDBInterface extends ADBWorker {
             + MARK_COLUMN_VALUE + " INTEGER, "
             + MARK_COLUMN_TYPE + " VARCHAR(500), "
             + MARK_COLUMN_LESSON_ID + " INTEGER " + ");";
+
+
+
+    public static final String HOMEWORK_TABLE_NAME = "HOMEWORK";
+    public static final String HOMEWORK_COLUMN_ID = "HOMEWORK_ID";
+    public static final String HOMEWORK_COLUMN_LESSON_ID = "LESSON_ID";
+    public static final String HOMEWORK_COLUMN_COMPLETE = "HOMEWORK_COMPLETE";
+
+
+    public static final String HOMEWORK_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS "
+            + HOMEWORK_TABLE_NAME + "("
+            + HOMEWORK_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + HOMEWORK_COLUMN_COMPLETE + " INTEGER, "
+            + HOMEWORK_COLUMN_LESSON_ID + " INTEGER " + ");";
 
 
     @Override
@@ -120,7 +134,7 @@ public class LessonDBInterface extends ADBWorker {
         }
     }
 
-    public LessonDBInterface(Context context) {
+    public LessonsDBInterface(Context context) {
         super(context);
     }
 
@@ -156,7 +170,8 @@ public class LessonDBInterface extends ADBWorker {
 
     public void deleteLesson(int lessonId) {
         delete(MARK_TABLE_NAME, LESSON_COLUMN_ID + " =?", new String[]{String.valueOf(lessonId)});
-        delete(LESSON_TABLE_NAME, LESSON_COLUMN_ID + " =?", new String[] {String.valueOf(lessonId)});
+        delete(LESSON_TABLE_NAME, LESSON_COLUMN_ID + " =?", new String[]{String.valueOf(lessonId)});
+        //delete(HOMEWORK_TABLE_NAME, HOMEWORK_COLUMN_LESSON_ID + " =?", new String[]{String.valueOf(lessonId)});
     }
 
 
@@ -172,9 +187,9 @@ public class LessonDBInterface extends ADBWorker {
         ArrayList<Mark> marks = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
-                Mark mark = new Mark(cursor.getInt(cursor.getColumnIndex(LessonDBInterface.MARK_COLUMN_ID)),
-                        cursor.getInt(cursor.getColumnIndex(LessonDBInterface.MARK_COLUMN_VALUE)),
-                        cursor.getString(cursor.getColumnIndex(LessonDBInterface.MARK_COLUMN_TYPE)));
+                Mark mark = new Mark(cursor.getInt(cursor.getColumnIndex(LessonsDBInterface.MARK_COLUMN_ID)),
+                        cursor.getInt(cursor.getColumnIndex(LessonsDBInterface.MARK_COLUMN_VALUE)),
+                        cursor.getString(cursor.getColumnIndex(LessonsDBInterface.MARK_COLUMN_TYPE)));
                 marks.add(mark);
             }
             while (cursor.moveToNext());
@@ -244,12 +259,14 @@ public class LessonDBInterface extends ADBWorker {
     private Lesson setLessonFields(Cursor cursor) {
         Lesson lesson = new Lesson();
 
-        lesson.setId(cursor.getInt(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_ID)));
-        lesson.setDate(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_DATE)));
-        lesson.setHomework(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_HOMEWORK)));
-        lesson.setTheme(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_THEME)));
-        lesson.setNote(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_NOTE)));
-        lesson.setPass(cursor.getString(cursor.getColumnIndex(LessonDBInterface.LESSON_COLUMN_PASS)));
+        int lessonId = cursor.getInt(cursor.getColumnIndex(LessonsDBInterface.LESSON_COLUMN_ID));
+
+        lesson.setId(lessonId);
+        lesson.setDate(cursor.getString(cursor.getColumnIndex(LessonsDBInterface.LESSON_COLUMN_DATE)));
+        lesson.setHomework(cursor.getString(cursor.getColumnIndex(LessonsDBInterface.LESSON_COLUMN_HOMEWORK)));
+        lesson.setTheme(cursor.getString(cursor.getColumnIndex(LessonsDBInterface.LESSON_COLUMN_THEME)));
+        lesson.setNote(cursor.getString(cursor.getColumnIndex(LessonsDBInterface.LESSON_COLUMN_NOTE)));
+        lesson.setPass(cursor.getString(cursor.getColumnIndex(LessonsDBInterface.LESSON_COLUMN_PASS)));
 
         lesson.setSubject(new Subject(cursor.getInt(cursor.getColumnIndex(LESSON_COLUMN_SUBJECTS_CLASS_ID)),
                 cursor.getString(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_SUBJECT_NAME)),
@@ -260,6 +277,62 @@ public class LessonDBInterface extends ADBWorker {
                 cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_START)),
                 cursor.getString(cursor.getColumnIndex(TimeDBInterface.TIME_COLUMN_END))));
 
+
+        lesson.setIsHomeworkCompleted(getLessonIsHomeworkCompleted(lessonId));
+
         return lesson;
+    }
+
+
+    public boolean getLessonIsHomeworkCompleted(int lessonId) {
+        String selectQuery = "SELECT * FROM " + HOMEWORK_TABLE_NAME + " WHERE " + HOMEWORK_COLUMN_LESSON_ID + " =?";
+
+        Cursor cursor = getCursor(selectQuery, new String[]{String.valueOf(lessonId)});
+
+        if(cursor == null) {
+            return false;
+        }
+
+        boolean isHomeworkCompleted = false;
+
+        if (cursor.moveToFirst()) {
+            isHomeworkCompleted = cursor.getInt(cursor.getColumnIndex(LessonsDBInterface.HOMEWORK_COLUMN_COMPLETE)) == 1;
+        }
+
+        cursor.close();
+
+        return isHomeworkCompleted;
+    }
+
+
+    public void setLessonIsHomeworkCompleted(int lessonId, int isChecked) {
+        String selectQuery = "SELECT * FROM " + HOMEWORK_TABLE_NAME + " WHERE " + HOMEWORK_COLUMN_LESSON_ID + " =?";
+
+        Cursor cursor = getCursor(selectQuery, new String[]{String.valueOf(lessonId)});
+
+        if(cursor == null) {
+            return;
+        }
+
+        ContentValues cv = new ContentValues();
+        cv.put(HOMEWORK_COLUMN_LESSON_ID, lessonId);
+        cv.put(HOMEWORK_COLUMN_COMPLETE, isChecked);
+
+        if(cursor.getCount() == 0) {
+            insert(HOMEWORK_TABLE_NAME, cv);
+        } else {
+
+            int homeworkId = -1;
+
+            if (cursor.moveToFirst()) {
+                homeworkId = cursor.getInt(cursor.getColumnIndex(LessonsDBInterface.HOMEWORK_COLUMN_ID));
+            }
+
+            update(HOMEWORK_TABLE_NAME, cv, HOMEWORK_COLUMN_ID + " = ?", new String [] {String.valueOf(homeworkId)});
+
+        }
+
+        cursor.close();
+        closeDB();
     }
 }

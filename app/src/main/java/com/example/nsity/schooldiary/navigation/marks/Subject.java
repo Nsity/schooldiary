@@ -21,6 +21,7 @@ public class Subject extends BaseEntity {
 
     private int color;
     private String name;
+    private Teacher teacher;
 
     public Subject(int id, String name, int color) {
         this.color = color;
@@ -68,5 +69,13 @@ public class Subject extends BaseEntity {
     public ArrayList<ProgressItem> loadProgressFromDB(Context context) {
         ProgressDBInterface dbProgress = new ProgressDBInterface(context);
         return dbProgress.getSubjectProgress(id);
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 }

@@ -29,6 +29,7 @@ import com.example.nsity.schooldiary.navigation.login.ProfileFragment;
 import com.example.nsity.schooldiary.navigation.login.UserManager;
 import com.example.nsity.schooldiary.navigation.marks.progress.ProgressFragment;
 import com.example.nsity.schooldiary.navigation.marks.subjects.SubjectsFragment;
+import com.example.nsity.schooldiary.navigation.messages.MessagesFragment;
 import com.example.nsity.schooldiary.navigation.statistics.StatisticsFragment;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableFragment;
 import com.example.nsity.schooldiary.navigation.timetable.notification.TimetableNotificationIntentService;
@@ -165,6 +166,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_progress:
                 fragment = new ProgressFragment();
+                break;
+            case R.id.nav_messages:
+                fragment = new MessagesFragment();
                 break;
             case R.id.nav_statistics:
                 fragment = new StatisticsFragment();

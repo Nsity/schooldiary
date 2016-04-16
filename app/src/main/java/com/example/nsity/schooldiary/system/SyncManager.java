@@ -3,8 +3,9 @@ package com.example.nsity.schooldiary.system;
 import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.system.database.tables.PeriodDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.PeriodsDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.TeachersDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TimeDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TimetableDBInterface;
 import com.example.nsity.schooldiary.system.network.AsyncHttpResponse;
@@ -47,12 +48,16 @@ public class SyncManager {
                     SubjectsClassDBInterface dbSubjects = new SubjectsClassDBInterface(context);
                     dbSubjects.save(subjectsArray, true);
 
+                    JSONArray teachersArray = (JSONArray) result.get(context.getString(R.string.teachers));
+                    TeachersDBInterface dbTeachers = new TeachersDBInterface(context);
+                    dbTeachers.save(teachersArray, true);
+
                     JSONArray timetableArray = (JSONArray) result.get(context.getString(R.string.timetable));
                     TimetableDBInterface dbTimetable = new TimetableDBInterface(context);
                     dbTimetable.save(timetableArray, true);
 
                     JSONArray periodsArray = (JSONArray) result.get(context.getString(R.string.periods));
-                    PeriodDBInterface dbPeriods = new PeriodDBInterface(context);
+                    PeriodsDBInterface dbPeriods = new PeriodsDBInterface(context);
                     dbPeriods.save(periodsArray, true);
 
                     /*JSONArray progressArray = (JSONArray) result.get(context.getString(R.string.progress_marks));

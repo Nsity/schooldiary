@@ -10,6 +10,8 @@
             android:title="@string/nav_homework"/>
         <item android:id="@+id/nav_progress" android:icon="@mipmap/ic_bookmark_black_24dp"
             android:title="@string/nav_progress" />
+        <item android:id="@+id/nav_messages" android:icon="@mipmap/ic_message_black_24dp"
+            android:title="@string/nav_messages" />
         <item android:id="@+id/nav_statistics" android:icon="@mipmap/ic_insert_chart_black_24dp"
             android:title="@string/nav_statistics" />
         <item android:id="@+id/nav_profile" android:icon="@mipmap/ic_face_black_24dp"

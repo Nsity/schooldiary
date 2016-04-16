@@ -6,10 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
-import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
-import com.example.nsity.schooldiary.system.database.tables.PeriodDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.LessonsDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.PeriodsDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.ProgressDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.TeachersDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TimeDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TimetableDBInterface;
 
@@ -246,12 +247,14 @@ public abstract class ADBWorker {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         db.delete(TimetableDBInterface.TIMETABLE_TABLE_NAME, null, null);
-        db.delete(LessonDBInterface.LESSON_TABLE_NAME, null, null);
+        db.delete(LessonsDBInterface.LESSON_TABLE_NAME, null, null);
         db.delete(TimeDBInterface.TIME_TABLE_NAME, null, null);
         db.delete(SubjectsClassDBInterface.SUBJECTS_CLASS_TABLE_NAME, null, null);
-        db.delete(LessonDBInterface.MARK_TABLE_NAME, null, null);
+        db.delete(LessonsDBInterface.MARK_TABLE_NAME, null, null);
         db.delete(ProgressDBInterface.PROGRESS_TABLE_NAME, null, null);
-        db.delete(PeriodDBInterface.PERIOD_TABLE_NAME, null, null);
+        db.delete(PeriodsDBInterface.PERIOD_TABLE_NAME, null, null);
+        db.delete(TeachersDBInterface.TEACHER_TABLE_NAME, null, null);
+        db.delete(LessonsDBInterface.HOMEWORK_TABLE_NAME, null, null);
 
         db.close();
     }

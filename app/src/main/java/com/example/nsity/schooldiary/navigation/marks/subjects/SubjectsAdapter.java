@@ -12,6 +12,8 @@ import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.marks.Subject;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 /**
@@ -32,6 +34,7 @@ public class SubjectsAdapter extends BaseAdapter {
     public static class ViewHolder {
         TextView mSubjectTextView;
         View mCircleView;
+        TextView mTeacherTextView;
     }
 
     @Override
@@ -60,12 +63,14 @@ public class SubjectsAdapter extends BaseAdapter {
             customView = layoutInflater.inflate(R.layout.item_subject, parent, false);
             holder.mSubjectTextView = (TextView) customView.findViewById(R.id.subject);
             holder.mCircleView = customView.findViewById(R.id.circle);
+            holder.mTeacherTextView = (TextView) customView.findViewById(R.id.teacher);
             customView.setTag(holder);
         } else {
             holder = (ViewHolder) customView.getTag();
         }
 
         holder.mSubjectTextView.setText(subject.getName());
+        holder.mTeacherTextView.setText(subject.getTeacher().getName());
         ((GradientDrawable)holder.mCircleView.getBackground()).setColor(CommonFunctions.setColor(context, subject.getColor()));
 
         return customView;

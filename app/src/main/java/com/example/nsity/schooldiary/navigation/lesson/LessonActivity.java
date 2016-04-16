@@ -24,7 +24,7 @@ import com.example.nsity.schooldiary.navigation.marks.Mark;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableItem;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Utils;
-import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.LessonsDBInterface;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
 
@@ -113,7 +113,7 @@ public class LessonActivity extends AppCompatActivity {
 
         //if notification appears, update lesson
         if(getIntent().getBooleanExtra("update", false) && lesson.getId() != -1) {
-            new LessonDBInterface(this).deleteLesson(lesson.getId());
+            new LessonsDBInterface(this).deleteLesson(lesson.getId());
             lesson.setId(-1);
         }
 

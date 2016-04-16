@@ -25,16 +25,24 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true">
     </View>
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
         android:layout_height="wrap_content"
-        android:id="@+id/subject"
-        android:textSize="16sp"
-        android:gravity="center"
-        android:textColor="@android:color/primary_text_light"
-        android:layout_toEndOf="@+id/circle"
-        android:layout_toRightOf="@id/circle"
-        android:layout_alignBottom="@+id/next"
-        android:layout_alignTop="@+id/next" />
+        android:layout_toLeftOf="@+id/next"
+        android:layout_toRightOf="@+id/circle">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/subject"
+            android:textSize="16sp"
+            android:textColor="@android:color/primary_text_light" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/teacher"
+            android:textSize="12sp" />
+    </LinearLayout>
+
 
 </RelativeLayout>

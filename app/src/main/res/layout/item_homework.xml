@@ -10,7 +10,7 @@
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
         android:layout_alignParentEnd="true"
-        android:id="@+id/view" />
+        android:id="@+id/is_homework_completed" />
     <View
         android:layout_width="8dp"
         android:layout_height="8dp"
@@ -32,20 +32,19 @@
         android:ellipsize="end"
         android:gravity="top"
         android:layout_toRightOf="@+id/circle"
-        android:layout_toLeftOf="@+id/view" />
+        android:layout_toLeftOf="@+id/is_homework_completed" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/homework"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:maxLines="2"
         android:ellipsize="end"
         android:paddingBottom="16dp"
-        android:textColor="@android:color/secondary_text_light"
         android:layout_below="@+id/subject"
         android:layout_alignStart="@+id/subject"
         android:layout_alignLeft="@id/subject"
-        android:layout_toLeftOf="@+id/view"
-        android:layout_toStartOf="@+id/view" />
+        android:layout_toLeftOf="@+id/is_homework_completed"
+        android:layout_toStartOf="@+id/is_homework_completed" />
 </RelativeLayout>

@@ -12,6 +12,7 @@
     <string name="nav_progress">Итоговые оценки</string>
     <string name="nav_homework">Домашние задания</string>
     <string name="nav_statistics">Статистика</string>
+    <string name="nav_messages">Сообщения</string>
 
     <string name="today">Сегодня</string>
 
@@ -40,12 +41,15 @@
     <string name="name">Наименование</string>
     <string name="class_name">КлассНаименование</string>
     <string name="class_text">Класс</string>
+    <string name="teacher_id">УчительИд</string>
+    <string name="name_short">Имя</string>
 
     <string name="result">result</string>
     <string name="time">Время</string>
     <string name="periods">Периоды</string>
     <string name="time_id">ВремяИд</string>
     <string name="subjects">Предметы</string>
+    <string name="teachers">Учителя</string>
     <string name="subject_id">ПредметИд</string>
     <string name="room_name">КабинетНаименование</string>
     <string name="timetable">Расписание</string>

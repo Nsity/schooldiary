@@ -4,11 +4,10 @@ import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.lesson.Lesson;
-import com.example.nsity.schooldiary.navigation.marks.Subject;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.CommonManager;
 import com.example.nsity.schooldiary.system.ListBaseEntity;
-import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.LessonsDBInterface;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
 
@@ -24,12 +23,12 @@ import java.util.Locale;
 public class Lessons extends ListBaseEntity {
 
     private ArrayList<Lesson> arrayList;
-    private LessonDBInterface db;
+    private LessonsDBInterface db;
 
     public Lessons(Context context) {
         super(context);
         arrayList = new ArrayList<>();
-        db = new LessonDBInterface(context);
+        db = new LessonsDBInterface(context);
         loadFromDB();
     }
 
@@ -37,7 +36,7 @@ public class Lessons extends ListBaseEntity {
     public Lessons(Context context, String beginDate, String endDate, boolean withHomework) {
         super(context);
         arrayList = new ArrayList<>();
-        db = new LessonDBInterface(context);
+        db = new LessonsDBInterface(context);
         loadFromDB(beginDate, endDate, withHomework);
     }
 

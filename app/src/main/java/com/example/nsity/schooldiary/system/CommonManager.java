@@ -6,7 +6,7 @@ import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.statistics.Score;
 import com.example.nsity.schooldiary.navigation.marks.subjects.SubjectMark;
 import com.example.nsity.schooldiary.navigation.marks.subjects.Subjects;
-import com.example.nsity.schooldiary.system.database.tables.LessonDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.LessonsDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.ProgressDBInterface;
 import com.example.nsity.schooldiary.system.network.AsyncHttpResponse;
 import com.example.nsity.schooldiary.system.network.CallBack;
@@ -29,7 +29,7 @@ public class CommonManager {
                 context.getString(R.string.call_method_api_get_lesson) + Preferences.get(Preferences.PUPILID, context) + "/"
                 + subjectId + "/" + day + "/" + timeId;
 
-        LessonDBInterface db = new LessonDBInterface(context);
+        LessonsDBInterface db = new LessonsDBInterface(context);
         db.deleteLesson(lessonId);
 
         new AsyncHttpResponse(context, url, null, AsyncHttpResponse.CALL_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
@@ -46,7 +46,7 @@ public class CommonManager {
                     JSONArray result = new JSONArray();
                     result.put(response);
 
-                    LessonDBInterface dbLesson = new LessonDBInterface(context);
+                    LessonsDBInterface dbLesson = new LessonsDBInterface(context);
                     dbLesson.save(result, false);
 
                     callBack.onSuccess();
@@ -232,7 +232,7 @@ public class CommonManager {
                 try {
                     JSONObject result = response.getJSONObject(context.getString(R.string.result));
 
-                    LessonDBInterface dbLesson = new LessonDBInterface(context);
+                    LessonsDBInterface dbLesson = new LessonsDBInterface(context);
                     dbLesson.deleteHomeworkForWeek(beginDate, endDate);
                     dbLesson.save((JSONArray)result.get(context.getString(R.string.lessons)), false);
 

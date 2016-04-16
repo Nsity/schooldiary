@@ -23,22 +23,24 @@ public class SubjectsClassDBInterface extends ADBWorker {
     public static final String SUBJECTS_CLASS_COLUMN_ID = "SUBJECTS_CLASS_ID";
     public static final String SUBJECTS_CLASS_COLUMN_SUBJECT_NAME = "SUBJECT_NAME";
     public static final String SUBJECTS_CLASS_COLUMN_COLOR = "SUBJECTS_COLOR";
+    public static final String SUBJECTS_CLASS_COLUMN_TEACHER_ID = "TEACHER_ID";
 
 
     public static final String SUBJECTS_CLASS_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS "
             + SUBJECTS_CLASS_TABLE_NAME + "("
             + SUBJECTS_CLASS_COLUMN_ID + " INTEGER PRIMARY KEY , "
             + SUBJECTS_CLASS_COLUMN_SUBJECT_NAME + " VARCHAR(500), "
-            + SUBJECTS_CLASS_COLUMN_COLOR + " INTEGER "
+            + SUBJECTS_CLASS_COLUMN_COLOR + " INTEGER, "
+            + SUBJECTS_CLASS_COLUMN_TEACHER_ID + " INTEGER "
             + ");";
 
     @Override
-    public int save(JSONArray clients, boolean dropAllData) {
+    public int save(JSONArray subjects, boolean dropAllData) {
         if (dropAllData) {
             delete(SUBJECTS_CLASS_TABLE_NAME, null, null);
         }
 
-        return addSubjectsClassData(clients);
+        return addSubjectsClassData(subjects);
     }
 
 
@@ -54,6 +56,7 @@ public class SubjectsClassDBInterface extends ADBWorker {
                 cv.put(SUBJECTS_CLASS_COLUMN_ID, CommonFunctions.getFieldInt(subject, context.getString(R.string.id)));
                 cv.put(SUBJECTS_CLASS_COLUMN_SUBJECT_NAME, CommonFunctions.getFieldString(subject, context.getString(R.string.name)));
                 cv.put(SUBJECTS_CLASS_COLUMN_COLOR, i);
+                cv.put(SUBJECTS_CLASS_COLUMN_TEACHER_ID, CommonFunctions.getFieldString(subject, context.getString(R.string.teacher_id)));
 
                 subjectsClassValues.add(cv);
             }
@@ -81,9 +84,11 @@ public class SubjectsClassDBInterface extends ADBWorker {
 
         if (cursor.moveToFirst()) {
             do {
-                Subject subject = new Subject(cursor.getInt(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_ID)),
-                        cursor.getString(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_SUBJECT_NAME)),
-                        cursor.getInt(cursor.getColumnIndex(SubjectsClassDBInterface.SUBJECTS_CLASS_COLUMN_COLOR)));
+                Subject subject = new Subject(cursor.getInt(cursor.getColumnIndex(SUBJECTS_CLASS_COLUMN_ID)),
+                        cursor.getString(cursor.getColumnIndex(SUBJECTS_CLASS_COLUMN_SUBJECT_NAME)),
+                        cursor.getInt(cursor.getColumnIndex(SUBJECTS_CLASS_COLUMN_COLOR)));
+                subject.setTeacher(new TeachersDBInterface(context).getTeacherById(cursor.getInt(cursor.getColumnIndex(SUBJECTS_CLASS_COLUMN_TEACHER_ID))));
+
                 subjects.add(subject);
             }
             while (cursor.moveToNext());
