@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -49,10 +50,12 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
     private Timetable timetable;
     private Periods periods;
 
+    private View swipeLayout;
+
     private DateFormat format = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD, new Locale("ru"));
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_timetable, container, false);
@@ -120,8 +123,9 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
         periods = new Periods(getActivity());
 
 
-        RelativeLayout swipeLayout = (RelativeLayout) rootView.findViewById(R.id.swipe_layout);
-        swipeLayout.setOnTouchListener(swipe);
+        swipeLayout = (View) rootView.findViewById(R.id.swipe_layout);
+        mTimetableView.setOnTouchListener(swipe);
+
 
         setView();
         return rootView;
@@ -203,6 +207,8 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
 
                         mTextView.setVisibility(View.VISIBLE);
 
+                        swipeLayout.setOnTouchListener(swipe);
+
                         Random rnd = new Random();
                         int k = rnd.nextInt(3);
                         switch (k) {
@@ -222,6 +228,8 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
                         mCardView.setVisibility(View.VISIBLE);
                         mTextView.setVisibility(View.INVISIBLE);
 
+                        swipeLayout.setOnTouchListener(null);
+
                         mTimetableView.setAdapter(new TimetableAdapter(getActivity(), timetableItemArrayList));
                     }
                     break;
@@ -230,6 +238,8 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
                     mTimetableView.setAdapter(null);
 
                     mTextView.setVisibility(View.VISIBLE);
+
+                    swipeLayout.setOnTouchListener(swipe);
 
                     mTextView.setText(getResources().getString(R.string.holidays));
                 }

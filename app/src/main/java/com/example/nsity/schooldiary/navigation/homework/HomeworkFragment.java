@@ -50,6 +50,8 @@ public class HomeworkFragment extends Fragment  {
 
     private TextView mTitleTextView;
 
+    private View swipeLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,7 +96,9 @@ public class HomeworkFragment extends Fragment  {
             }
         });
 
-        RelativeLayout swipeLayout = (RelativeLayout) rootView.findViewById(R.id.swipe_layout);
+        swipeLayout = rootView.findViewById(R.id.swipe_layout);
+
+        mHomeworkView.setOnTouchListener(swipe);
         swipeLayout.setOnTouchListener(swipe);
 
         monday = CommonFunctions.getMonday(Calendar.getInstance().getTime());
@@ -191,7 +195,6 @@ public class HomeworkFragment extends Fragment  {
                         @Override
                         public void onSuccess(String date) {
                             if(date.equals(CommonFunctions.getDate(monday, CommonFunctions.FORMAT_YYYY_MM_DD))) {
-                                CommonFunctions.showProgress(false, getActivity(), mHomeworkView, mProgressView);
                                 setListAdapter(lessons);
                             }
                         }
@@ -199,6 +202,7 @@ public class HomeworkFragment extends Fragment  {
                         @Override
                         public void onFail(String error) {
                             if (isAdded() && getActivity() != null) {
+                                swipeLayout.setOnTouchListener(swipe);
                                 mHomeworkView.setAdapter(null);
                                 Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
                                 CommonFunctions.showProgress(false, getActivity(), mHomeworkView, mProgressView);
@@ -206,12 +210,12 @@ public class HomeworkFragment extends Fragment  {
                         }
                     });
         } else {
-            CommonFunctions.showProgress(false, getActivity(), mHomeworkView, mProgressView);
             setListAdapter(lessons);
         }
     }
 
     private void setListAdapter(Lessons lessons) {
+        CommonFunctions.showProgress(false, getActivity(), mHomeworkView, mProgressView);
         arrayList = new ArrayList<>();
         ArrayList<String> dates = lessons.getDates();
 
