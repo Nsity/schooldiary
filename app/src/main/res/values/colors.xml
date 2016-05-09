@@ -53,4 +53,7 @@
     <color name="grey">#EEEEEE</color>
     <color name="current_day_background">@color/colorPrimaryLight</color>
     <color name="weekends_day">@android:color/white</color>
+
+    <color name="list_divider">#dedede</color>
+    <color name="bg_bubble_self">#E1E1E1</color>
 </resources>

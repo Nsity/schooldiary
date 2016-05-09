@@ -49,7 +49,7 @@ public class AsyncHttpResponse {
                 callJsonHttpResponse(context, url, Server.getHttpClient());
                 break;
             case CALL_POST_JSON_HTTP_RESPONSE:
-                callPostJsonHttpResponse(url, params, Server.getHttpClient());
+                callPostJsonHttpResponse(context, url, params, Server.getHttpClient());
                 break;
             case CALL_SYNCHRONIZATION_RESPONSE:
                 callJsonHttpResponse(context, url, client);
@@ -111,8 +111,8 @@ public class AsyncHttpResponse {
     }
 
 
-    public void callPostJsonHttpResponse(String url, RequestParams params, AsyncHttpClient client){
-        client.post(url, params, new JsonHttpResponseHandler() {
+    public void callPostJsonHttpResponse(Context context, String url, RequestParams params, AsyncHttpClient client){
+        client.post(context, url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 response = (response == null) ? new JSONObject() : response;

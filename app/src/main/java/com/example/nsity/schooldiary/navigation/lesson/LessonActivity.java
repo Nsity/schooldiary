@@ -76,7 +76,7 @@ public class LessonActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        toolbar.setNavigationIcon(getResources().getDrawable(R.mipmap.ic_arrow_back_white_24dp));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

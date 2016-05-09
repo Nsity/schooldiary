@@ -1,15 +1,11 @@
 package com.example.nsity.schooldiary.navigation.timetable;
 
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -20,14 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.MainActivity;
 import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
 import com.example.nsity.schooldiary.system.CommonFunctions;
-import com.example.nsity.schooldiary.system.Preferences;
+import com.example.nsity.schooldiary.system.SwipeListener;
 import com.example.nsity.schooldiary.system.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -43,7 +38,7 @@ import java.util.Random;
 /**
  * Created by nsity on 15.11.15.
  */
-public class TimetableFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
+public class TimetableFragment extends Fragment implements DatePickerDialog.OnDateSetListener{
 
     private ListView mTimetableView;
     private ArrayList<TimetableItem> timetableItemArrayList;
@@ -124,9 +119,27 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
         timetable = new Timetable(getActivity());
         periods = new Periods(getActivity());
 
+
+        RelativeLayout swipeLayout = (RelativeLayout) rootView.findViewById(R.id.swipe_layout);
+        swipeLayout.setOnTouchListener(swipe);
+
         setView();
         return rootView;
     }
+
+    private SwipeListener swipe = new SwipeListener(){
+        @Override
+        public void onLeftToRightSwipe() {
+            selectedDate = CommonFunctions.addDays(-1, selectedDate);
+            setView();
+        }
+
+        @Override
+        public void onRightToLeftSwipe() {
+            selectedDate = CommonFunctions.addDays(1, selectedDate);
+            setView();
+        }
+    };
 
 
     @Override
@@ -186,6 +199,8 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
                     if (timetableItemArrayList == null) {
 
                         mCardView.setVisibility(View.INVISIBLE);
+                        mTimetableView.setAdapter(null);
+
                         mTextView.setVisibility(View.VISIBLE);
 
                         Random rnd = new Random();
@@ -212,6 +227,8 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
                     break;
                 } else {
                     mCardView.setVisibility(View.INVISIBLE);
+                    mTimetableView.setAdapter(null);
+
                     mTextView.setVisibility(View.VISIBLE);
 
                     mTextView.setText(getResources().getString(R.string.holidays));

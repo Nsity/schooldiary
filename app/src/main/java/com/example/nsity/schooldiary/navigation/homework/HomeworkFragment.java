@@ -13,11 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.lesson.Lesson;
+import com.example.nsity.schooldiary.system.SwipeListener;
 import com.example.nsity.schooldiary.system.BaseEntity;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.network.CallBack;
@@ -33,7 +35,7 @@ import java.util.Locale;
 /**
  * Created by nsity on 17.01.16.
  */
-public class HomeworkFragment extends Fragment {
+public class HomeworkFragment extends Fragment  {
 
     private Menu optionsMenu;
 
@@ -74,6 +76,10 @@ public class HomeworkFragment extends Fragment {
             }
         });
 
+       // ActivitySwipeDetector swipe = new ActivitySwipeDetector(getActivity(), this);
+        //mHomeworkView.setOnTouchListener(swipe);
+
+
         mHomeworkView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
@@ -88,6 +94,9 @@ public class HomeworkFragment extends Fragment {
             }
         });
 
+        RelativeLayout swipeLayout = (RelativeLayout) rootView.findViewById(R.id.swipe_layout);
+        swipeLayout.setOnTouchListener(swipe);
+
         monday = CommonFunctions.getMonday(Calendar.getInstance().getTime());
         setView();
         return rootView;
@@ -99,6 +108,25 @@ public class HomeworkFragment extends Fragment {
         optionsMenu = menu;
         inflater.inflate(R.menu.homework_menu, menu);
     }
+
+
+    private SwipeListener swipe = new SwipeListener(){
+        @Override
+        public void onLeftToRightSwipe() {
+            CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
+            monday = CommonFunctions.addDays(-7, monday);
+            Server.getHttpClient().cancelRequests(getActivity(), true);
+            setView();
+        }
+
+        @Override
+        public void onRightToLeftSwipe() {
+            CommonFunctions.setRefreshActionButtonState(false, optionsMenu);
+            monday = CommonFunctions.addDays(7, monday);
+            Server.getHttpClient().cancelRequests(getActivity(), true);
+            setView();
+        }
+    };
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

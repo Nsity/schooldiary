@@ -88,9 +88,8 @@ public class TeachersDBInterface extends ADBWorker {
         return teacher;
     }
 
-
-    /*public ArrayList<Teacher> getTeachers() {
-        String selectQuery = "SELECT * FROM " + TEACHER_TABLE_NAME;
+    public ArrayList<Teacher> getTeachers() {
+        String selectQuery = "SELECT * FROM " + TEACHER_TABLE_NAME + " ORDER BY " + TEACHER_COLUMN_NAME;
 
         Cursor cursor = getCursor(selectQuery, null);
 
@@ -98,18 +97,20 @@ public class TeachersDBInterface extends ADBWorker {
             return null;
         }
 
-        Teacher teacher = null;
+        ArrayList<Teacher> teachers = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
             do {
-                teacher = new Teacher(cursor.getInt(cursor.getColumnIndex(TEACHER_COLUMN_ID)),
+                Teacher teacher  = new Teacher(cursor.getInt(cursor.getColumnIndex(TEACHER_COLUMN_ID)),
                         cursor.getString(cursor.getColumnIndex(TEACHER_COLUMN_NAME)));
+
+                teachers.add(teacher);
             }
             while (cursor.moveToNext());
         }
 
         cursor.close();
 
-        return null;
-    }*/
+        return teachers;
+    }
 }

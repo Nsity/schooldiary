@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.example.nsity.schooldiary.navigation.messages.Message;
 import com.example.nsity.schooldiary.system.database.tables.LessonsDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.MessageDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.PeriodsDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.ProgressDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
@@ -255,6 +257,7 @@ public abstract class ADBWorker {
         db.delete(PeriodsDBInterface.PERIOD_TABLE_NAME, null, null);
         db.delete(TeachersDBInterface.TEACHER_TABLE_NAME, null, null);
         db.delete(LessonsDBInterface.HOMEWORK_TABLE_NAME, null, null);
+        db.delete(MessageDBInterface.MESSAGE_TABLE_NAME, null, null);
 
         db.close();
     }

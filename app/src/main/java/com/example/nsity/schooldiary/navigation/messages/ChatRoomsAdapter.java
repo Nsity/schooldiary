@@ -13,6 +13,7 @@ import com.example.nsity.schooldiary.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,8 +22,8 @@ import java.util.Date;
  */
 public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.ViewHolder> {
 
-    private Context mContext;
-   // private ArrayList<ChatRoom> chatRoomArrayList;
+    private Context context;
+    private ArrayList<ChatRoom> chatRoomArrayList;
     private static String today;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -38,13 +39,13 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
     }
 
 
-    /*public ChatRoomsAdapter(Context mContext, ArrayList<ChatRoom> chatRoomArrayList) {
-        this.mContext = mContext;
+    public ChatRoomsAdapter(Context context, ArrayList<ChatRoom> chatRoomArrayList) {
+        this.context = context;
         this.chatRoomArrayList = chatRoomArrayList;
 
         Calendar calendar = Calendar.getInstance();
         today = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-    }*/
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -56,7 +57,7 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        /*ChatRoom chatRoom = chatRoomArrayList.get(position);
+        ChatRoom chatRoom = chatRoomArrayList.get(position);
         holder.name.setText(chatRoom.getName());
         holder.message.setText(chatRoom.getLastMessage());
         if (chatRoom.getUnreadCount() > 0) {
@@ -66,12 +67,12 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
             holder.count.setVisibility(View.GONE);
         }
 
-        holder.timestamp.setText(getTimeStamp(chatRoom.getTimestamp()));*/
+        holder.timestamp.setText(getTimeStamp(chatRoom.getTimestamp()));
     }
 
     @Override
     public int getItemCount() {
-        return 0;//chatRoomArrayList.size();
+        return chatRoomArrayList.size();
     }
 
     public static String getTimeStamp(String dateStr) {

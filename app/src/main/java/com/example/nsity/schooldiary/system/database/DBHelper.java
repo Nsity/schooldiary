@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.nsity.schooldiary.system.database.tables.LessonsDBInterface;
+import com.example.nsity.schooldiary.system.database.tables.MessageDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.PeriodsDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.ProgressDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
@@ -40,6 +41,7 @@ public class DBHelper extends SQLiteOpenHelper {
         database.execSQL(PeriodsDBInterface.PERIOD_TABLE_CREATE);
         database.execSQL(TeachersDBInterface.TEACHER_TABLE_CREATE);
         database.execSQL(LessonsDBInterface.HOMEWORK_TABLE_CREATE);
+        database.execSQL(MessageDBInterface.MESSAGE_TABLE_CREATE);
     }
 
     @Override
@@ -53,6 +55,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + PeriodsDBInterface.PERIOD_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TeachersDBInterface.TEACHER_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + LessonsDBInterface.HOMEWORK_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MessageDBInterface.MESSAGE_TABLE_NAME);
 
         onCreate(db);
     }

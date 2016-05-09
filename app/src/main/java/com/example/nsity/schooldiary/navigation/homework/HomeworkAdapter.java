@@ -6,16 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.lesson.Lesson;
 import com.example.nsity.schooldiary.system.BaseEntity;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.database.tables.LessonsDBInterface;
-import com.rey.material.widget.CheckBox;
 
 import java.util.ArrayList;
 
@@ -65,10 +64,10 @@ public class HomeworkAdapter extends BaseAdapter {
 
             ((GradientDrawable) (customView.findViewById(R.id.circle)).getBackground()).setColor(CommonFunctions.setColor(context, ((Lesson) item).getSubject().getColor()));
 
-            CheckBox mIsHomeworkCompleted = (CheckBox) customView.findViewById(R.id.is_homework_completed);
+            CheckBox checkBox = (android.widget.CheckBox) customView.findViewById(R.id.is_homework_completed);
+            checkBox.setChecked(((Lesson) item).isHomeworkCompleted());
 
-            mIsHomeworkCompleted.setChecked(((Lesson) item).isHomeworkCompleted());
-            mIsHomeworkCompleted.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     new LessonsDBInterface(context).setLessonIsHomeworkCompleted(item.getId(), isChecked ? 1 : 0);

@@ -27,6 +27,8 @@
     <string name="call_method_api_get_statistics">subject/statistics/</string>
     <string name="call_method_push_register">gcm/register/</string>
     <string name="call_method_push_unregister">gcm/unregister/</string>
+    <string name="call_method_api_create_message">message/create/</string>
+    <string name="call_method_api_get_messages">message/get/</string>
 
 
     <string name="error_encode">Ошибка кодирования данных</string>
@@ -197,5 +199,13 @@
     <string name="notification_mark_setting_text">О текущих и итоговых оценках</string>
     <string name="collapse_key">collapse_key</string>
     <string name="message">message</string>
+    <string name="choose_interlocutor">Выберите собеседника</string>
+    <string name="cancel">Отмена</string>
+    <string name="action_send">Отправить</string>
+    <string name="write_message">Написать сообщение</string>
+
+    <string name="message_text">ТекстСообщения</string>
+    <string name="send_date">ДатаОтправки</string>
+    <string name="messages">Сообщения</string>
 
 </resources>
