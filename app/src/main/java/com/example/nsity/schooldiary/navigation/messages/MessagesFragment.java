@@ -1,9 +1,12 @@
 package com.example.nsity.schooldiary.navigation.messages;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -24,7 +28,9 @@ import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.MainActivity;
 import com.example.nsity.schooldiary.navigation.marks.Teacher;
 import com.example.nsity.schooldiary.navigation.marks.Teachers;
+import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Utils;
+import com.example.nsity.schooldiary.system.network.CallBack;
 
 import java.util.ArrayList;
 
@@ -37,6 +43,10 @@ public class MessagesFragment extends Fragment {
     private RecyclerView recyclerView;
     private ChatRoomsAdapter mAdapter;
     private View mProgressView;
+
+   // private SwipeRefreshLayout swipeRefreshLayout;
+
+    private ChatRooms chatRooms;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,9 +61,20 @@ public class MessagesFragment extends Fragment {
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_messages, container, false);
 
+       /* swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                setView();
+            }
+        });*/
+
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mProgressView = rootView.findViewById(R.id.progress);
 
+
+        chatRooms = new ChatRooms(getActivity());
         setView();
 
         return rootView;
@@ -61,6 +82,44 @@ public class MessagesFragment extends Fragment {
 
 
     private void setView() {
+       // loadChatRooms();
+    }
+
+
+    private void loadChatRooms() {
+        CommonFunctions.showProgress(true, getActivity(),  recyclerView, mProgressView);
+        chatRooms.loadLastMessages(new CallBack() {
+            @Override
+            public void onSuccess() {
+                CommonFunctions.showProgress(false, getActivity(),  recyclerView, mProgressView);
+                setRecyclerView();
+            }
+
+            @Override
+            public void onFail(String error) {
+                recyclerView.setVisibility(View.GONE);
+                try {
+                    Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+                final boolean show = false;
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                mProgressView.animate().setDuration(shortAnimTime).alpha(
+                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    }
+                });
+            }
+        });
+    }
+
+
+    private void setRecyclerView() {
         chatRoomArrayList = new ArrayList<>();
         mAdapter = new ChatRoomsAdapter(getActivity(), chatRoomArrayList);
 
@@ -89,7 +148,6 @@ public class MessagesFragment extends Fragment {
             }
         }));
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

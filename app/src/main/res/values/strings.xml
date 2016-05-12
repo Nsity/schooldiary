@@ -29,6 +29,7 @@
     <string name="call_method_push_unregister">gcm/unregister/</string>
     <string name="call_method_api_create_message">message/create/</string>
     <string name="call_method_api_get_messages">message/get/</string>
+    <string name="call_method_api_get_last_messages">message/getlast/</string>
 
 
     <string name="error_encode">Ошибка кодирования данных</string>
@@ -205,7 +206,9 @@
     <string name="write_message">Написать сообщение</string>
 
     <string name="message_text">ТекстСообщения</string>
-    <string name="send_date">ДатаОтправки</string>
+    <string name="message_date">ДатаСообщения</string>
     <string name="messages">Сообщения</string>
+    <string name="last_messages">ПоследниеСообщения</string>
+    <string name="message_id">СообщениеИд</string>
 
 </resources>

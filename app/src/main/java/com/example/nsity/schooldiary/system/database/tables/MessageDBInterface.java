@@ -2,8 +2,10 @@ package com.example.nsity.schooldiary.system.database.tables;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.messages.ChatRoom;
 import com.example.nsity.schooldiary.navigation.messages.Message;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.database.ADBWorker;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 public class MessageDBInterface extends ADBWorker {
 
     public static final String MESSAGE_TABLE_NAME = "MESSAGE";
-    public static final String MESSAGE_COLUMN_ID = "MESSAGE_ID";
+    public static final String MESSAGE_COLUMN_ID = "PUPIL_MESSAGE_ID";
     public static final String MESSAGE_COLUMN_TEACHER_ID = "TEACHER_ID";
     public static final String MESSAGE_COLUMN_TEXT = "MESSAGE_TEXT";
     public static final String MESSAGE_COLUMN_CREATED_AT = "MESSAGE_CREATED_AT";
@@ -32,7 +34,6 @@ public class MessageDBInterface extends ADBWorker {
             + MESSAGE_COLUMN_TEXT + " TEXT, "
             + MESSAGE_COLUMN_CREATED_AT + " DATETIME, "
             + ");";
-
 
 
     public MessageDBInterface(Context context) {
@@ -60,7 +61,7 @@ public class MessageDBInterface extends ADBWorker {
                 ContentValues cv = new ContentValues();
                 cv.put(MESSAGE_COLUMN_ID, CommonFunctions.getFieldInt(message, context.getString(R.string.id)));
                 cv.put(MESSAGE_COLUMN_TEXT, CommonFunctions.getFieldString(message, context.getString(R.string.message_text)));
-                cv.put(MESSAGE_COLUMN_CREATED_AT, CommonFunctions.getFieldString(message, context.getString(R.string.send_date)));
+                cv.put(MESSAGE_COLUMN_CREATED_AT, CommonFunctions.getFieldString(message, context.getString(R.string.message_date)));
                 cv.put(MESSAGE_COLUMN_TEACHER_ID, CommonFunctions.getFieldInt(message, context.getString(R.string.teacher_id)));
 
                 messagesValues.add(cv);
@@ -80,5 +81,35 @@ public class MessageDBInterface extends ADBWorker {
         contentValues.put(MESSAGE_COLUMN_TEACHER_ID, teacherId);
 
         return insert(MESSAGE_TABLE_NAME, contentValues);
+    }
+
+
+
+    public ArrayList<ChatRoom> getChatRooms() {
+        ArrayList<ChatRoom> arrayList = new ArrayList<>();
+
+        String selectQuery = "SELECT " + MESSAGE_COLUMN_TEACHER_ID + " FROM " + MESSAGE_TABLE_NAME + " GROUP BY " + MESSAGE_COLUMN_TEACHER_ID;
+
+        Cursor cursor = getCursor(selectQuery, new String[]{});
+
+        if(cursor == null) {
+            return arrayList;
+        }
+
+
+        ArrayList<Integer> teachersId = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                teachersId.add(cursor.getInt(cursor.getColumnIndex(MESSAGE_COLUMN_TEACHER_ID)));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+
+
+
+        return arrayList;
     }
 }

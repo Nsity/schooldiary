@@ -28,7 +28,7 @@ public class MessageManager {
 
         RequestParams requestParams = new RequestParams();
         requestParams.add(context.getString(R.string.message_text), message.getMessage());
-        requestParams.add(context.getString(R.string.send_date), message.getCreatedAt());
+        requestParams.add(context.getString(R.string.message_date), message.getCreatedAt());
 
         new AsyncHttpResponse(context, url, requestParams, AsyncHttpResponse.CALL_POST_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
             @Override
@@ -94,5 +94,41 @@ public class MessageManager {
             }
         });
     }
+
+
+    public static void getLastMessages(final Context context, final CallBack callBack) {
+        String url = context.getString(R.string.base_url) +
+                context.getString(R.string.call_method_api_get_last_messages) + Preferences.get(Preferences.PUPILID, context);
+
+        new AsyncHttpResponse(context, url, null, AsyncHttpResponse.CALL_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
+            @Override
+            public void onSuccess(ResponseObject object){
+                if (!(object.getResponse() instanceof JSONObject)) {
+                    callBack.onFail(context.getString(R.string.error_response));
+                    return;
+                }
+
+                JSONObject response = (JSONObject)object.getResponse();
+                try {
+                    JSONObject result = response.getJSONObject(context.getString(R.string.result));
+
+                    JSONArray jsonArray = (JSONArray) result.get(context.getString(R.string.last_messages));
+                    MessageDBInterface db = new MessageDBInterface(context);
+                    db.save(jsonArray, true);
+
+                    callBack.onSuccess();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    callBack.onFail(context.getString(R.string.error_response));
+                }
+            }
+
+            @Override
+            public void onFailure(ResponseObject object){
+                callBack.onFail(ErrorTracker.getErrorDescription(context, String.valueOf(object.getResponse())));
+            }
+        });
+    }
+
 
 }
