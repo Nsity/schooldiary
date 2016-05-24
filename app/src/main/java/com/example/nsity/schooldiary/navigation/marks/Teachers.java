@@ -43,4 +43,15 @@ public class Teachers extends ListBaseEntity {
         return names;
     }
 
+
+    public Teacher findTeacherById(int id) {
+        for(Teacher teacher: teachersArrayList) {
+            if(teacher.getId() == id) {
+                return teacher;
+            }
+        }
+
+        return null;
+    }
+
 }

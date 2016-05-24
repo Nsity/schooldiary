@@ -3,53 +3,60 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/colorPrimaryLight"
     android:layout_height="match_parent"
+    android:id="@+id/activityRoot"
+    android:background="@color/grey"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".navigation.messages.ChatRoomActivity"
-    tools:showIn="@layout/activity_chat_room">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:overScrollMode="never"
-        android:scrollbars="vertical" />
-
-    <LinearLayout
-        android:background="@android:color/white"
-        android:layout_width="match_parent"
+    tools:context=".navigation.messages.ChatRoomActivity">
+   <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:weightSum="4"
-        android:id="@+id/linearLayout">
-
-        <EditText android:id="@+id/message"
-            android:layout_width="0dp"
-            android:hint="@string/write_message"
-            android:background="@null"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+        android:indeterminate="true"
+        android:layout_centerInParent="true"
+        android:id="@+id/progress"
+        android:visibility="gone"
+        style="@style/Widget.MaterialProgressBar.ProgressBar" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:layout_gravity="center_vertical"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:layout_weight="2.5" />
-
-        <Button android:id="@+id/btn_send"
-            android:layout_width="0dp"
+            android:overScrollMode="never"
+            android:scrollbars="vertical"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/linearLayout" />
+        <LinearLayout
+            android:background="@android:color/white"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:background="@null"
-            android:text="@string/action_send"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:layout_gravity="bottom" />
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:id="@+id/linearLayout">
 
-    </LinearLayout>
+            <EditText android:id="@+id/message"
+                android:layout_width="0dp"
+                android:hint="@string/write_message"
+                android:background="@null"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:maxHeight="100dp"
+                android:focusableInTouchMode="true"
+                android:layout_weight="2.5" >
+                <requestFocus/>
+            </EditText>
 
-</RelativeLayout>
+            <Button android:id="@+id/btn_send"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:background="@null"
+                android:text="@string/action_send"
+                android:textSize="16sp"
+                android:textColor="@color/colorPrimary"
+                android:layout_gravity="bottom" />
+        </LinearLayout>
+    </RelativeLayout>

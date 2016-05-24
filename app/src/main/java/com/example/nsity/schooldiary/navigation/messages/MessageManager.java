@@ -42,11 +42,10 @@ public class MessageManager {
                 try {
                     response = response.getJSONObject(context.getString(R.string.result));
 
-                    int messageId = CommonFunctions.getFieldInt(response, context.getString(R.string.id));
-                    message.setId(messageId);
-                    new MessageDBInterface(context).addMessage(message, teacherId);
 
-                    callBack.onSuccess(messageId);
+                    new MessageDBInterface(context).addMessage(response);
+
+                    callBack.onSuccess(CommonFunctions.getFieldInt(response, context.getString(R.string.id)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                     callBack.onFail(context.getString(R.string.error_response));
@@ -95,7 +94,7 @@ public class MessageManager {
         });
     }
 
-
+/*
     public static void getLastMessages(final Context context, final CallBack callBack) {
         String url = context.getString(R.string.base_url) +
                 context.getString(R.string.call_method_api_get_last_messages) + Preferences.get(Preferences.PUPILID, context);
@@ -128,7 +127,42 @@ public class MessageManager {
                 callBack.onFail(ErrorTracker.getErrorDescription(context, String.valueOf(object.getResponse())));
             }
         });
-    }
+    }*/
 
+    public static void getMessagesInConversation(final int teacherId, final Context context, final CallBack callBack) {
+        String url = context.getString(R.string.base_url) +
+                context.getString(R.string.call_method_api_get_chat_messages) + Preferences.get(Preferences.PUPILID, context) + "/"
+                + String.valueOf(teacherId);
+
+        new AsyncHttpResponse(context, url, null, AsyncHttpResponse.CALL_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
+            @Override
+            public void onSuccess(ResponseObject object){
+                if (!(object.getResponse() instanceof JSONObject)) {
+                    callBack.onFail(context.getString(R.string.error_response));
+                    return;
+                }
+
+                JSONObject response = (JSONObject)object.getResponse();
+                try {
+                    JSONObject result = response.getJSONObject(context.getString(R.string.result));
+
+                    JSONArray jsonArray = (JSONArray) result.get(context.getString(R.string.messages));
+                    MessageDBInterface db = new MessageDBInterface(context);
+                    db.deleteConversation(teacherId);
+                    db.save(jsonArray, false);
+
+                    callBack.onSuccess();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    callBack.onFail(context.getString(R.string.error_response));
+                }
+            }
+
+            @Override
+            public void onFailure(ResponseObject object){
+                callBack.onFail(ErrorTracker.getErrorDescription(context, String.valueOf(object.getResponse())));
+            }
+        });
+    }
 
 }

@@ -3,6 +3,7 @@ package com.example.nsity.schooldiary.system;
 import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.system.database.tables.MessageDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.PeriodsDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.SubjectsClassDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TeachersDBInterface;
@@ -59,6 +60,11 @@ public class SyncManager {
                     JSONArray periodsArray = (JSONArray) result.get(context.getString(R.string.periods));
                     PeriodsDBInterface dbPeriods = new PeriodsDBInterface(context);
                     dbPeriods.save(periodsArray, true);
+
+
+                    JSONArray messagesArray = (JSONArray) result.get(context.getString(R.string.messages));
+                    MessageDBInterface dbMessages = new MessageDBInterface(context);
+                    dbMessages.save(messagesArray, true);
 
                     /*JSONArray progressArray = (JSONArray) result.get(context.getString(R.string.progress_marks));
                     ProgressDBInterface dbProgress = new ProgressDBInterface(context);

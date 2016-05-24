@@ -12,13 +12,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Config;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
@@ -26,24 +26,31 @@ import com.example.nsity.schooldiary.navigation.marks.Teacher;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Preferences;
 import com.example.nsity.schooldiary.system.Utils;
+import com.example.nsity.schooldiary.system.database.tables.MessageDBInterface;
 import com.example.nsity.schooldiary.system.network.CallBack;
+import com.example.nsity.schooldiary.system.network.Server;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Handler;
+
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by nsity on 19.04.16.
  */
 public class ChatRoomActivity extends AppCompatActivity {
 
-    private String chatRoomId;
     private RecyclerView recyclerView;
     private ChatRoomThreadAdapter mAdapter;
-    private ArrayList<Message> messageArrayList;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private EditText inputMessage;
-    private Button btnSend;
-    private int teacherId;
+    private ArrayList<Message> messageArrayList;
+    private View mProgressView;
+
+   // private MaterialProgressBar sendProgressBar;
+
+    private ChatRoom chatRoom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +59,8 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Teacher teacher = (Teacher)intent.getSerializableExtra(Utils.TEACHER);
-        teacherId = teacher.getId();
+
+        chatRoom = new ChatRoom(teacher.getId(), this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -70,53 +78,56 @@ public class ChatRoomActivity extends AppCompatActivity {
         }
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+       // sendProgressBar = (MaterialProgressBar) findViewById(R.id.progress_item);
+        mProgressView = findViewById(R.id.progress);
 
         inputMessage = (EditText) findViewById(R.id.message);
 
-        /*inputMessage.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN
-                        && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-
+        Button btnSend = (Button) findViewById(R.id.btn_send);
+        if (btnSend != null) {
+            btnSend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     sendMessage();
-                    return false;
                 }
-
-                return false;
-            }
-        });*/
-
-        btnSend = (Button) findViewById(R.id.btn_send);
+            });
+        }
 
         messageArrayList = new ArrayList<>();
+        mAdapter = new ChatRoomThreadAdapter(this, messageArrayList);
 
-        // self user id is to identify the message owner
-        String selfUserId = Preferences.get(Preferences.PUPILID, this);
-
-        mAdapter = new ChatRoomThreadAdapter(this, messageArrayList, selfUserId);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+        recyclerView.setScrollContainer(true);
+
+
+
+       /* recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int current_page) {
+                //add progress item
+                messageArrayList.add(null);
+                mAdapter.notifyItemInserted(messageArrayList.size());
+
+
+                messageArrayList.remove(messageArrayList.size() - 1);
+                        mAdapter.notifyItemRemoved(messageArrayList.size());
+
+            }
+        });*/
+
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                /*if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
-                    // new push message is received
+                if (intent.getAction().equals(Utils.MESSAGE_PUSH)) {
                     handlePushNotification(intent);
-                }*/
+                }
             }
         };
-
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendMessage();
-            }
-        });
 
         fetchChatThread();
     }
@@ -124,17 +135,13 @@ public class ChatRoomActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        /*// registering the receiver for new notification
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(Config.PUSH_NOTIFICATION));
-
-        NotificationUtils.clearNotifications();*/
+                new IntentFilter(Utils.MESSAGE_PUSH));
     }
 
     @Override
     protected void onPause() {
-       // LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
 
@@ -165,13 +172,17 @@ public class ChatRoomActivity extends AppCompatActivity {
         final Message message = new Message();
         message.setMessage(strMessage);
         message.setCreatedAt(CommonFunctions.getDate(Calendar.getInstance().getTime(), CommonFunctions.FORMAT_YYYY_MM_DD_HH_MM_SS));
-        message.setUserId(Integer.parseInt(Preferences.get(Preferences.PUPILID, this)));
+        message.setUserId(MessageDBInterface.PUPIL_TYPE);
+        message.setRead(0);
 
+        inputMessage.setText("");
 
-        MessageManager.createMessage(this, message, teacherId, new CallBack<Integer>() {
+       // sendProgressBar.setVisibility(View.VISIBLE);
+        MessageManager.createMessage(this, message, chatRoom.getTeacherId(), new CallBack<Integer>() {
             @Override
             public void onSuccess(Integer messageId) {
-                inputMessage.setText("");
+               // sendProgressBar.setVisibility(View.GONE);
+
 
                 message.setId(messageId);
                 messageArrayList.add(message);
@@ -184,59 +195,68 @@ public class ChatRoomActivity extends AppCompatActivity {
 
             @Override
             public void onFail(String message) {
+              //  sendProgressBar.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
 
-    /**
-     * Fetching all the messages of a single chat room
-     * */
     private void fetchChatThread() {
+        if (chatRoom.getMessages().size() != 0) {
+            messageArrayList.addAll(chatRoom.getMessages());
 
-        /*
-                    JSONObject obj = new JSONObject(response);
+            mAdapter.notifyDataSetChanged();
+            if (mAdapter.getItemCount() > 1) {
+                recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
+            }
 
-                    // check for error
-                    if (obj.getBoolean("error") == false) {
-                        JSONArray commentsObj = obj.getJSONArray("messages");
+            return;
+        }
+        CommonFunctions.showProgress(true, getApplicationContext(), recyclerView, mProgressView);
+        chatRoom.loadMessages(new CallBack() {
+            @Override
+            public void onSuccess() {
+                CommonFunctions.showProgress(false, getApplicationContext(), recyclerView, mProgressView);
 
-                        for (int i = 0; i < commentsObj.length(); i++) {
-                            JSONObject commentObj = (JSONObject) commentsObj.get(i);
+                messageArrayList.addAll(chatRoom.getMessages());
 
-                            String commentId = commentObj.getString("message_id");
-                            String commentText = commentObj.getString("message");
-                            String createdAt = commentObj.getString("created_at");
-
-                            JSONObject userObj = commentObj.getJSONObject("user");
-                            String userId = userObj.getString("user_id");
-                            String userName = userObj.getString("username");
-                            User user = new User(userId, userName, null);
-
-                            Message message = new Message();
-                            message.setId(commentId);
-                            message.setMessage(commentText);
-                            message.setCreatedAt(createdAt);
-                            message.setUser(user);
-
-                            messageArrayList.add(message);
-                        }
-
-                        mAdapter.notifyDataSetChanged();
-                        if (mAdapter.getItemCount() > 1) {
-                            recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
-                        }
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "" + obj.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
-                    }
-
-                } catch (JSONException e) {
-                    Log.e(TAG, "json parsing error: " + e.getMessage());
-                    Toast.makeText(getApplicationContext(), "json parse error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                mAdapter.notifyDataSetChanged();
+                if (mAdapter.getItemCount() > 1) {
+                    recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
                 }
-         */
+            }
+
+            @Override
+            public void onFail(String message) {
+                CommonFunctions.showProgress(false, getApplicationContext(), recyclerView, mProgressView);
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.s_in, R.anim.s_out);
+        hideKeyboard();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Server.getHttpClient().cancelRequests(this, true);
+        hideKeyboard();
+    }
+
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
 }

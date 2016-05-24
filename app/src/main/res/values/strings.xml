@@ -28,8 +28,8 @@
     <string name="call_method_push_register">gcm/register/</string>
     <string name="call_method_push_unregister">gcm/unregister/</string>
     <string name="call_method_api_create_message">message/create/</string>
-    <string name="call_method_api_get_messages">message/get/</string>
-    <string name="call_method_api_get_last_messages">message/getlast/</string>
+    <string name="call_method_api_get_messages">message/getall/</string>
+    <string name="call_method_api_get_chat_messages">message/get/</string>
 
 
     <string name="error_encode">Ошибка кодирования данных</string>
@@ -45,6 +45,8 @@
     <string name="class_name">КлассНаименование</string>
     <string name="class_text">Класс</string>
     <string name="teacher_id">УчительИд</string>
+    <string name="message_type">ТипСообщения</string>
+    <string name="message_read">Прочтено</string>
     <string name="name_short">Имя</string>
 
     <string name="result">result</string>
@@ -210,5 +212,20 @@
     <string name="messages">Сообщения</string>
     <string name="last_messages">ПоследниеСообщения</string>
     <string name="message_id">СообщениеИд</string>
+
+
+    <string-array name="months_short">
+        <item>янв.</item>
+        <item>фев.</item>
+        <item>марта</item>
+        <item>апр.</item>
+        <item>мая</item>
+        <item>июня</item>
+        <item>июля</item>
+        <item>авг.</item>
+        <item>сен.</item>
+        <item>окт.</item>
+        <item>дек.</item>
+    </string-array>
 
 </resources>

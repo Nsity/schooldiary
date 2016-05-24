@@ -13,12 +13,17 @@ import android.text.Html;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
+import com.example.nsity.schooldiary.navigation.marks.Teacher;
+import com.example.nsity.schooldiary.navigation.marks.Teachers;
+import com.example.nsity.schooldiary.navigation.messages.ChatRoomActivity;
+import com.example.nsity.schooldiary.navigation.messages.Message;
 import com.example.nsity.schooldiary.navigation.timetable.Time;
 import com.example.nsity.schooldiary.navigation.timetable.Timetable;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableItem;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Preferences;
 import com.example.nsity.schooldiary.system.Utils;
+import com.example.nsity.schooldiary.system.database.tables.MessageDBInterface;
 import com.google.android.gms.gcm.GcmListenerService;
 
 import org.json.JSONException;
@@ -36,6 +41,7 @@ public class GCMMessageHandler extends GcmListenerService {
     public static final String LESSON_COLLAPSE_KEY = "lesson";
     public static final String HOMEWORK_COLLAPSE_KEY = "homework";
     public static final String PROGRESS_COLLAPSE_KEY = "progress";
+    public static final String MESSAGE_COLLAPSE_KEY = "message";
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
@@ -53,6 +59,9 @@ public class GCMMessageHandler extends GcmListenerService {
                     break;
                 case PROGRESS_COLLAPSE_KEY:
                     createProgressNotification(message);
+                    break;
+                case MESSAGE_COLLAPSE_KEY:
+                    createMessageNotification(message);
                     break;
 
             }
@@ -89,7 +98,9 @@ public class GCMMessageHandler extends GcmListenerService {
 
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+            buildNotification(text, text, getString(R.string.app_name), contentIntent);
+
+           /*NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                     .setTicker(text)
                     .setAutoCancel(true)
                     .setContentIntent(contentIntent)
@@ -99,13 +110,30 @@ public class GCMMessageHandler extends GcmListenerService {
                     .setDefaults(Notification.DEFAULT_ALL);
 
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(MESSAGE_NOTIFICATION_ID, mBuilder.build());
+            mNotificationManager.notify(MESSAGE_NOTIFICATION_ID, mBuilder.build());*/
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
+
+    private void buildNotification(String tickerText, String contentText, String contentTitle, PendingIntent contentIntent) {
+        Context context = getBaseContext();
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setTicker(tickerText)
+                .setAutoCancel(true)
+                .setContentIntent(contentIntent)
+                .setSmallIcon(R.mipmap.ic_school_white_24dp)
+                .setContentTitle(contentTitle)
+                .setLargeIcon(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.school), 150, 150, true))
+                .setContentText(contentText)
+                .setDefaults(Notification.DEFAULT_ALL);
+
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(MESSAGE_NOTIFICATION_ID, mBuilder.build());
+    }
 
     private void createProgressNotification(String body) {
         Context context = getBaseContext();
@@ -135,6 +163,38 @@ public class GCMMessageHandler extends GcmListenerService {
 
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(MESSAGE_NOTIFICATION_ID, mBuilder.build());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void createMessageNotification(String body) {
+        Context context = getBaseContext();
+
+        try {
+            JSONObject jsonObject = new JSONObject(body);
+
+
+            String text = CommonFunctions.getFieldString(jsonObject, context.getString(R.string.message_text));
+            int teacherId = CommonFunctions.getFieldInt(jsonObject, context.getString(R.string.teacher_id));
+
+
+            new MessageDBInterface(context).addMessage(jsonObject);
+
+            Teacher teacher = new Teachers(context).findTeacherById(teacherId);
+
+            if(teacher == null)
+                return;
+
+            Intent notificationIntent = new Intent(context, ChatRoomActivity.class);
+            notificationIntent.putExtra(Utils.TEACHER, teacher);
+
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+            buildNotification(text, text, teacher.getName(), contentIntent);
+
 
         } catch (JSONException e) {
             e.printStackTrace();

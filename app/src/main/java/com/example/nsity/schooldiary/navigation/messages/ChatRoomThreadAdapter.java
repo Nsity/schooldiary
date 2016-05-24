@@ -5,91 +5,148 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.system.Preferences;
+import com.example.nsity.schooldiary.system.CommonFunctions;
+import com.example.nsity.schooldiary.system.database.tables.MessageDBInterface;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by nsity on 27.04.16.
  */
 public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private String userId;
-    private int SELF = 100;
-    private static String today;
+    private final int VIEW_PROG = 0;
 
-    private Context mContext;
+
+    public static final int Header = 3;
+    public static final int Normal = 4;
+    public static final int Footer = 5;
+
+    private Context context;
     private ArrayList<Message> messageArrayList;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class TextViewHolder extends RecyclerView.ViewHolder {
         TextView message, timestamp;
+        RelativeLayout messageLayout;
 
-        public ViewHolder(View view) {
+        public TextViewHolder(View view) {
             super(view);
             message = (TextView) itemView.findViewById(R.id.message);
             timestamp = (TextView) itemView.findViewById(R.id.timestamp);
+            messageLayout = (RelativeLayout) itemView.findViewById(R.id.message_layout);
+
+        }
+    }
+
+    public static class ProgressViewHolder extends RecyclerView.ViewHolder {
+        public MaterialProgressBar progressBar;
+        public ProgressViewHolder(View v) {
+            super(v);
+            progressBar = (MaterialProgressBar)v.findViewById(R.id.progress);
+            progressBar.setVisibility(View.VISIBLE);
         }
     }
 
 
-    public ChatRoomThreadAdapter(Context mContext, ArrayList<Message> messageArrayList, String userId) {
-        this.mContext = mContext;
+    public ChatRoomThreadAdapter(Context context, ArrayList<Message> messageArrayList) {
+        this.context = context;
         this.messageArrayList = messageArrayList;
-        this.userId = userId;
-
-        Calendar calendar = Calendar.getInstance();
-        today = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
 
-        // view type is to identify where to render the chat message
-        // left or right
-        if (viewType == SELF) {
+        if(viewType == MessageDBInterface.PUPIL_TYPE) {
             // self message
-            itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.chat_item_self, parent, false);
-        } else {
-            // others message
-            itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.chat_item_other, parent, false);
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_self, parent, false);
+            return new TextViewHolder(itemView);
         }
 
+        if(viewType == MessageDBInterface.TEACHER_TYPE) {
+            // others message
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_other, parent, false);
+            return new TextViewHolder(itemView);
+        }
 
-        return new ViewHolder(itemView);
+        if(viewType == VIEW_PROG) {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress_item, parent, false);
+            return new ProgressViewHolder(itemView);
+        }
+
+      /*  // view type is to identify where to render the chat message
+        // left or right
+        if (viewType == MessageDBInterface.PUPIL_TYPE) {
+            // self message
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_self, parent, false);
+        } else {
+            // others message
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_other, parent, false);
+        }
+
+        return new TextViewHolder(itemView);*/
+
+        return null;
     }
 
 
     @Override
     public int getItemViewType(int position) {
-        Message message = messageArrayList.get(position);
-        if (String.valueOf(message.getUserId()).equals(userId)) {
-            return SELF;
+        if (messageArrayList.get(position) != null) {
+            Message message = messageArrayList.get(position);
+            if (message.getUserId() == MessageDBInterface.PUPIL_TYPE) {
+                return MessageDBInterface.PUPIL_TYPE;
+            }
+            return MessageDBInterface.TEACHER_TYPE;
+        } else {
+            return VIEW_PROG;
         }
+    }
 
-        return position;
+    private void setMargins(RecyclerView.ViewHolder holder, int left, int top, int right, int bottom) {
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(left, top, right, bottom);
+        ((TextViewHolder) holder).messageLayout.setLayoutParams(params);
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        Message message = messageArrayList.get(position);
-        ((ViewHolder) holder).message.setText(message.getMessage());
+        if(holder instanceof TextViewHolder) {
 
-        String timestamp = getTimeStamp(message.getCreatedAt());
+            if(messageArrayList.size() == 1) {
+                setMargins(holder, 0, 24, 0, 24);
+            } else  {
+                if(position == 0) {
+                    setMargins(holder, 0, 24, 0, 0);
+                } else {
+                    if(position == messageArrayList.size() - 1) {
+                        setMargins(holder, 0, 0, 0, 24);
+                    } else {
+                        setMargins(holder, 0, 0, 0, 0);
+                    }
+                }
+            }
 
-        /*if (message.getUser().getName() != null)
-            timestamp = message.getUser().getName() + ", " + timestamp;*/
+            Message message = messageArrayList.get(position);
+            ((TextViewHolder) holder).message.setText(message.getMessage());
 
-        ((ViewHolder) holder).timestamp.setText(timestamp);
+            String timestamp = convertDate(message.getCreatedAt());
+            ((TextViewHolder) holder).timestamp.setText(timestamp);
+        }
     }
 
     @Override
@@ -97,22 +154,39 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return messageArrayList.size();
     }
 
-    public static String getTimeStamp(String dateStr) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String timestamp = "";
 
-        today = today.length() < 2 ? "0" + today : today;
+    SimpleDateFormat date_format = new SimpleDateFormat("yyyyMMdd", new Locale("ru"));
 
+    SimpleDateFormat hh_mm = new SimpleDateFormat("HH:mm", new Locale("ru"));
+
+    private String convertDate(String oldDate) {
         try {
-            Date date = format.parse(dateStr);
-            SimpleDateFormat todayFormat = new SimpleDateFormat("dd");
-            String dateToday = todayFormat.format(date);
-            format = dateToday.equals(today) ? new SimpleDateFormat("hh:mm a") : new SimpleDateFormat("dd LLL, hh:mm a");
-            String date1 = format.format(date);
-            timestamp = date1.toString();
-        } catch (ParseException e) {
-            e.printStackTrace();
+            Date date = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD_HH_MM_SS, new Locale("ru")).parse(oldDate);
+
+            if(date_format.format(date).equals(date_format.format(Calendar.getInstance().getTime()))) {
+                return hh_mm.format(date);
+            } else {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                int month = cal.get(Calendar.MONTH);
+
+                String strMonth = context.getResources().getStringArray(R.array.months_short)[month];
+                String strDate = cal.get(Calendar.DAY_OF_MONTH) <= 9 ? "0" + String.valueOf(cal.get(Calendar.DAY_OF_MONTH)) :
+                        String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
+
+                String strYear = "";
+                if(Calendar.getInstance().get(Calendar.YEAR) != cal.get(Calendar.YEAR)) {
+                    strYear = String.valueOf(cal.get(Calendar.YEAR));
+                }
+
+                String timestamp = strDate + " " + strMonth + " " +
+                        (strYear.equals("") ? "" : strYear + " " + context.getResources().getString(R.string.year)); //+ ", " + hh_mm.format(date);
+
+                return timestamp;
+            }
+        } catch (Exception e) {
+            return oldDate;
         }
-        return timestamp;
     }
+
 }

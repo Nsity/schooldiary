@@ -11,4 +11,6 @@ public class Utils {
     public static final String TEACHER = "teacher";
 
 
+    public static final String MESSAGE_PUSH = "message_push";
+
 }

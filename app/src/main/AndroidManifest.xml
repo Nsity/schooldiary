@@ -71,6 +71,8 @@
         </activity>
 
         <activity android:name=".navigation.messages.ChatRoomActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar" />
 
 

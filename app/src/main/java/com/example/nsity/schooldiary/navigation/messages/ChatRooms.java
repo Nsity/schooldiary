@@ -10,6 +10,8 @@ import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by nsity on 11.05.16.
@@ -31,27 +33,41 @@ public class ChatRooms extends ListBaseEntity {
     protected void loadFromDB() {
         arrayList.clear();
         arrayList = db.getChatRooms();
+        orderByDate();
     }
 
 
-    public void loadLastMessages(final CallBack callBack) {
+    public void orderByDate() {
+        Collections.sort(arrayList, new Comparator<ChatRoom>() {
+            @Override
+            public int compare(ChatRoom chatRoom1, ChatRoom chatRoom2) {
+                return chatRoom2.getTimestamp().compareTo(chatRoom1.getTimestamp());
+            }
+        });
+    }
+
+    public ArrayList<ChatRoom> getChatRooms() {
+        return arrayList;
+    }
+
+
+    public void update(final CallBack callBack) {
         if (!Server.isOnline(context)) {
             callBack.onFail(context.getString(R.string.internet_problem));
             return;
         }
 
-        MessageManager.getLastMessages(context, new CallBack<String>() {
+        MessageManager.getMessages(context, new CallBack() {
             @Override
-            public void onSuccess(String date) {
+            public void onSuccess() {
                 loadFromDB();
-                callBack.onSuccess(date);
+                callBack.onSuccess();
             }
 
             @Override
             public void onFail(String error) {
                 callBack.onFail(error);
             }
-
         });
     }
 }

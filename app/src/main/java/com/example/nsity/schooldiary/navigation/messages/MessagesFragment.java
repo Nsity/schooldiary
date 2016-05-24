@@ -30,6 +30,9 @@ import com.example.nsity.schooldiary.navigation.marks.Teacher;
 import com.example.nsity.schooldiary.navigation.marks.Teachers;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Utils;
+import com.example.nsity.schooldiary.system.database.tables.TeachersDBInterface;
+import com.example.nsity.schooldiary.system.gcm.GCMIntentService;
+import com.example.nsity.schooldiary.system.gcm.ServiceRegister;
 import com.example.nsity.schooldiary.system.network.CallBack;
 
 import java.util.ArrayList;
@@ -42,9 +45,8 @@ public class MessagesFragment extends Fragment {
     private ArrayList<ChatRoom> chatRoomArrayList;
     private RecyclerView recyclerView;
     private ChatRoomsAdapter mAdapter;
-    private View mProgressView;
 
-   // private SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private ChatRooms chatRooms;
 
@@ -60,34 +62,67 @@ public class MessagesFragment extends Fragment {
 
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_messages, container, false);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
-       /* swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
+
+        setView();
+
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
+
+                chatRooms.update(new CallBack() {
+                    @Override
+                    public void onSuccess() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        setView();
+                    }
+
+                    @Override
+                    public void onFail(String message) {
+                        swipeRefreshLayout.setRefreshing(false);
+                        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
                 setView();
             }
-        });*/
+        });
 
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        mProgressView = rootView.findViewById(R.id.progress);
-
-
-        chatRooms = new ChatRooms(getActivity());
-        setView();
+        if (ServiceRegister.checkPlayServices(getActivity())) {
+            registerGCM();
+        }
 
         return rootView;
     }
 
 
-    private void setView() {
-       // loadChatRooms();
+    private void registerGCM() {
+        Intent intent = new Intent(getActivity(), GCMIntentService.class);
+        intent.putExtra(GCMIntentService.KEY, GCMIntentService.REGISTER);
+        getActivity().startService(intent);
     }
 
 
+    private void setView() {
+        loadChatRooms();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        setView();
+    }
+
     private void loadChatRooms() {
-        CommonFunctions.showProgress(true, getActivity(),  recyclerView, mProgressView);
+        setRecyclerView();
+
+        /*CommonFunctions.showProgress(true, getActivity(),  recyclerView, mProgressView);
         chatRooms.loadLastMessages(new CallBack() {
             @Override
             public void onSuccess() {
@@ -115,12 +150,14 @@ public class MessagesFragment extends Fragment {
                     }
                 });
             }
-        });
+        });*/
     }
 
 
     private void setRecyclerView() {
         chatRoomArrayList = new ArrayList<>();
+        chatRooms = new ChatRooms(getActivity());
+        chatRoomArrayList.addAll(chatRooms.getChatRooms());
         mAdapter = new ChatRoomsAdapter(getActivity(), chatRoomArrayList);
 
 
@@ -136,10 +173,7 @@ public class MessagesFragment extends Fragment {
                 recyclerView, new ChatRoomsAdapter.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                ChatRoom chatRoom = chatRoomArrayList.get(position);
-                Intent intent = new Intent(getActivity(), ChatRoomActivity.class);
-
-                startActivity(intent);
+                openNewChat(new TeachersDBInterface(getActivity()).getTeacherById(chatRoomArrayList.get(position).getTeacherId()));
             }
 
             @Override
