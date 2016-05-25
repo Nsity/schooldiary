@@ -13,4 +13,6 @@ public class Utils {
 
     public static final String MESSAGE_PUSH = "message_push";
 
+    public static final String MESSAGE = "message";
+
 }

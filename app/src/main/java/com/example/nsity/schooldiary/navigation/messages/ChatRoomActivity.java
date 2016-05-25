@@ -41,14 +41,18 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
  */
 public class ChatRoomActivity extends AppCompatActivity {
 
+
+    public static final String CHAT_ROOM_RECEIVER = "chat_room_receiver";
+
     private RecyclerView recyclerView;
     private ChatRoomThreadAdapter mAdapter;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private EditText inputMessage;
     private ArrayList<Message> messageArrayList;
     private View mProgressView;
+    private Teacher teacher;
 
-   // private MaterialProgressBar sendProgressBar;
+    // private MaterialProgressBar sendProgressBar;
 
     private ChatRoom chatRoom;
 
@@ -58,10 +62,10 @@ public class ChatRoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_room);
 
         Intent intent = getIntent();
-        Teacher teacher = (Teacher)intent.getSerializableExtra(Utils.TEACHER);
+        teacher = (Teacher)intent.getSerializableExtra(Utils.TEACHER);
+
 
         chatRoom = new ChatRoom(teacher.getId(), this);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -105,27 +109,12 @@ public class ChatRoomActivity extends AppCompatActivity {
 
 
 
-       /* recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int current_page) {
-                //add progress item
-                messageArrayList.add(null);
-                mAdapter.notifyItemInserted(messageArrayList.size());
-
-
-                messageArrayList.remove(messageArrayList.size() - 1);
-                        mAdapter.notifyItemRemoved(messageArrayList.size());
-
-            }
-        });*/
 
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Utils.MESSAGE_PUSH)) {
-                    handlePushNotification(intent);
-                }
+                handlePushNotification(intent);
             }
         };
 
@@ -136,7 +125,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(Utils.MESSAGE_PUSH));
+                new IntentFilter(CHAT_ROOM_RECEIVER));
     }
 
     @Override
@@ -150,10 +139,9 @@ public class ChatRoomActivity extends AppCompatActivity {
      * recycler view and scroll it to bottom
      */
     private void handlePushNotification(Intent intent) {
-        Message message = (Message) intent.getSerializableExtra("message");
-        String chatRoomId = intent.getStringExtra("chat_room_id");
+        Message message = (Message) intent.getSerializableExtra(Utils.MESSAGE_PUSH);
 
-        if (message != null && chatRoomId != null) {
+        if (message != null && message.getUserId() == teacher.getId()) {
             messageArrayList.add(message);
             mAdapter.notifyDataSetChanged();
             if (mAdapter.getItemCount() > 1) {
@@ -237,7 +225,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
+       super.onBackPressed();
         overridePendingTransition(R.anim.s_in, R.anim.s_out);
         hideKeyboard();
     }

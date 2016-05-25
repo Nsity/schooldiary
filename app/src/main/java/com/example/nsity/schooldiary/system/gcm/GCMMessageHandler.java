@@ -9,12 +9,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
 import com.example.nsity.schooldiary.navigation.marks.Teacher;
 import com.example.nsity.schooldiary.navigation.marks.Teachers;
+import com.example.nsity.schooldiary.navigation.messages.ChatRoom;
 import com.example.nsity.schooldiary.navigation.messages.ChatRoomActivity;
 import com.example.nsity.schooldiary.navigation.messages.Message;
 import com.example.nsity.schooldiary.navigation.timetable.Time;
@@ -176,10 +178,17 @@ public class GCMMessageHandler extends GcmListenerService {
         try {
             JSONObject jsonObject = new JSONObject(body);
 
-
             String text = CommonFunctions.getFieldString(jsonObject, context.getString(R.string.message_text));
             int teacherId = CommonFunctions.getFieldInt(jsonObject, context.getString(R.string.teacher_id));
 
+
+            Message message = new Message();
+            message.setId(CommonFunctions.getFieldInt(jsonObject, context.getString(R.string.id)));
+            message.setMessage(CommonFunctions.getFieldString(jsonObject, context.getString(R.string.message_text)));
+            message.setCreatedAt(CommonFunctions.getFieldString(jsonObject, context.getString(R.string.message_date)));
+            message.setUserId(CommonFunctions.getFieldInt(jsonObject, context.getString(R.string.teacher_id)));
+            message.setType(CommonFunctions.getFieldInt(jsonObject, context.getString(R.string.message_type)));
+            message.setRead(CommonFunctions.getFieldInt(jsonObject, context.getString(R.string.message_read)));
 
             new MessageDBInterface(context).addMessage(jsonObject);
 
@@ -190,10 +199,14 @@ public class GCMMessageHandler extends GcmListenerService {
 
             Intent notificationIntent = new Intent(context, ChatRoomActivity.class);
             notificationIntent.putExtra(Utils.TEACHER, teacher);
-
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
             buildNotification(text, text, teacher.getName(), contentIntent);
+
+
+
+            Intent pushNotification = new Intent(ChatRoomActivity.CHAT_ROOM_RECEIVER);
+            pushNotification.putExtra(Utils.MESSAGE_PUSH, message);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
 
 
         } catch (JSONException e) {

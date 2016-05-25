@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -63,6 +64,30 @@ public class MessagesFragment extends Fragment {
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_messages, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+
+
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(
+                getActivity()
+        ));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+
+        recyclerView.addOnItemTouchListener(new ChatRoomsAdapter.RecyclerTouchListener(getActivity(),
+                recyclerView, new ChatRoomsAdapter.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Log.d("TAG", "click");
+                openNewChat(new TeachersDBInterface(getActivity()).getTeacherById(chatRoomArrayList.get(position).getTeacherId()));
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
 
 
         setView();
@@ -159,28 +184,7 @@ public class MessagesFragment extends Fragment {
         chatRooms = new ChatRooms(getActivity());
         chatRoomArrayList.addAll(chatRooms.getChatRooms());
         mAdapter = new ChatRoomsAdapter(getActivity(), chatRoomArrayList);
-
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(
-                getActivity()
-        ));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
-
-        recyclerView.addOnItemTouchListener(new ChatRoomsAdapter.RecyclerTouchListener(getActivity(),
-                recyclerView, new ChatRoomsAdapter.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                openNewChat(new TeachersDBInterface(getActivity()).getTeacherById(chatRoomArrayList.get(position).getTeacherId()));
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
     }
 
     @Override

@@ -34,7 +34,6 @@
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -72,8 +71,12 @@
 
         <activity android:name=".navigation.messages.ChatRoomActivity"
             android:windowSoftInputMode="adjustResize"
-            android:noHistory="true"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName="com.example.nsity.schooldiary.navigation.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.nsity.schooldiary.navigation.MainActivity" />
+        </activity>
 
 
         <receiver android:name=".navigation.timetable.notification.TimetableNotificationReceiver">
