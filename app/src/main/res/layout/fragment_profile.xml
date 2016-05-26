@@ -173,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:textSize="14sp"
-                android:text="@string/notification_mark_setting_text"
+                android:text="@string/notification_setting_text"
                 android:paddingBottom="16dp"
                 android:layout_below="@+id/notification_mark_name"
                 android:layout_alignParentLeft="true"

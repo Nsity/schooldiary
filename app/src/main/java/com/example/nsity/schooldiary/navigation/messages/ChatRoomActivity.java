@@ -12,10 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +21,6 @@ import android.widget.Toast;
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.marks.Teacher;
 import com.example.nsity.schooldiary.system.CommonFunctions;
-import com.example.nsity.schooldiary.system.Preferences;
 import com.example.nsity.schooldiary.system.Utils;
 import com.example.nsity.schooldiary.system.database.tables.MessageDBInterface;
 import com.example.nsity.schooldiary.system.network.CallBack;
@@ -32,9 +28,6 @@ import com.example.nsity.schooldiary.system.network.Server;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.logging.Handler;
-
-import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by nsity on 19.04.16.
@@ -46,7 +39,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ChatRoomThreadAdapter mAdapter;
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private BroadcastReceiver mBroadcastReceiver;
     private EditText inputMessage;
     private ArrayList<Message> messageArrayList;
     private View mProgressView;
@@ -107,11 +100,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
         recyclerView.setScrollContainer(true);
 
-
-
-
-
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 handlePushNotification(intent);
@@ -119,18 +108,20 @@ public class ChatRoomActivity extends AppCompatActivity {
         };
 
         fetchChatThread();
+
+
+        MessageManager.readConversation(teacher.getId(), this, new CallBack());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(CHAT_ROOM_RECEIVER));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(CHAT_ROOM_RECEIVER));
     }
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
         super.onPause();
     }
 
@@ -142,6 +133,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         Message message = (Message) intent.getSerializableExtra(Utils.MESSAGE_PUSH);
 
         if (message != null && message.getUserId() == teacher.getId()) {
+            MessageManager.readConversation(teacher.getId(), this, new CallBack());
             messageArrayList.add(message);
             mAdapter.notifyDataSetChanged();
             if (mAdapter.getItemCount() > 1) {
@@ -169,8 +161,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         MessageManager.createMessage(this, message, chatRoom.getTeacherId(), new CallBack<Integer>() {
             @Override
             public void onSuccess(Integer messageId) {
-               // sendProgressBar.setVisibility(View.GONE);
-
+                // sendProgressBar.setVisibility(View.GONE);
 
                 message.setId(messageId);
                 messageArrayList.add(message);
@@ -183,7 +174,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
             @Override
             public void onFail(String message) {
-              //  sendProgressBar.setVisibility(View.GONE);
+                //  sendProgressBar.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
@@ -227,24 +218,6 @@ public class ChatRoomActivity extends AppCompatActivity {
     public void onBackPressed() {
        super.onBackPressed();
         overridePendingTransition(R.anim.s_in, R.anim.s_out);
-        hideKeyboard();
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Server.getHttpClient().cancelRequests(this, true);
-        hideKeyboard();
-    }
-
-
-    private void hideKeyboard() {
-        // Check if no view has focus:
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
 }

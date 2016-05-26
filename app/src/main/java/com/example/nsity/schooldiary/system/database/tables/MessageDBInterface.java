@@ -145,7 +145,7 @@ public class MessageDBInterface extends ADBWorker {
     }
 
     public int getNewMessages(int teacherId) {
-        String selectQuery = "SELECT * AS COUNT FROM " + MESSAGE_TABLE_NAME +
+        String selectQuery = "SELECT * FROM " + MESSAGE_TABLE_NAME +
                 " WHERE " + MESSAGE_COLUMN_TEACHER_ID + " = ? AND " + MESSAGE_COLUMN_READ + " = 0 AND " + MESSAGE_COLUMN_TYPE + " = 1";
 
         Cursor cursor = getCursor(selectQuery, new String[]{ String.valueOf(teacherId) });
@@ -184,5 +184,58 @@ public class MessageDBInterface extends ADBWorker {
         cursor.close();
 
         return arrayList;
+    }
+
+
+
+    public ArrayList<ChatRoom> findChatRoomsByQuery(String query) {
+        ArrayList<ChatRoom> arrayList = new ArrayList<>();
+
+        String selectQuery = "SELECT " + MESSAGE_COLUMN_TEACHER_ID + " FROM " + MESSAGE_TABLE_NAME +
+                " WHERE " + MESSAGE_COLUMN_TEXT + " lIKE '%" + query + "%' "
+                + " GROUP BY " + MESSAGE_COLUMN_TEACHER_ID;
+
+        Cursor cursor = getCursor(selectQuery, new String[]{ });
+
+        if(cursor == null) {
+            return arrayList;
+        }
+
+        if (cursor.moveToFirst()) {
+            do {
+                int teacherId = cursor.getInt(cursor.getColumnIndex(MESSAGE_COLUMN_TEACHER_ID));
+                selectQuery = "SELECT * FROM " + MESSAGE_TABLE_NAME + " WHERE " + MESSAGE_COLUMN_TEACHER_ID + " = ? " +
+                        "ORDER BY " + MESSAGE_COLUMN_CREATED_AT + " DESC LIMIT 1";
+
+                Cursor cursor1 = getCursor(selectQuery, new String[]{String.valueOf(teacherId)});
+
+                if(cursor1 == null) {
+                    return arrayList;
+                }
+                if (cursor1.moveToFirst()) {
+                    do {
+                        ChatRoom chatRoom = new ChatRoom(cursor1.getInt(cursor1.getColumnIndex(MESSAGE_COLUMN_ID)),
+                                teacherId, cursor1.getString(cursor1.getColumnIndex(MESSAGE_COLUMN_TEXT)),
+                                cursor1.getString(cursor1.getColumnIndex(MESSAGE_COLUMN_CREATED_AT)),
+                                getNewMessages(teacherId));
+                        arrayList.add(chatRoom);
+                    } while (cursor1.moveToNext());
+                }
+
+                cursor1.close();
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return arrayList;
+    }
+
+
+    public void readConversation(int teacherId) {
+        ContentValues cv = new ContentValues();
+        cv.put(MESSAGE_COLUMN_READ, 1);
+
+        update(MESSAGE_TABLE_NAME, cv, MESSAGE_COLUMN_TEACHER_ID + "=?", new String[] {String.valueOf(teacherId)});
     }
 }

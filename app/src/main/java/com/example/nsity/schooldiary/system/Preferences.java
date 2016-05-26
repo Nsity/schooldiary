@@ -14,7 +14,7 @@ public class Preferences {
     public static final String PUPILID = "pupil_id";
     public static final String FIO = "fio";
     public static final String NOTIFICATION_LESSON_SETTING = "notification_lesson_setting";
-    public static final String NOTIFICATION_MARK_SETTING = "notification_mark_setting";
+    public static final String NOTIFICATION_SETTING = "notification_setting";
     public static final String FIRST_LOGIN = "first_login";
     public static final String GCM_TOKEN = "gcm_token";
 

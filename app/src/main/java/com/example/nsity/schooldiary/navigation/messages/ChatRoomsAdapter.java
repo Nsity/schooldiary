@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.database.tables.TeachersDBInterface;
 
 import java.text.ParseException;
@@ -17,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by nsity on 24.02.16.
@@ -25,10 +28,10 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
 
     private Context context;
     private ArrayList<ChatRoom> chatRoomArrayList;
-    private static String today;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name, message, timestamp, count;
+        public RelativeLayout chatLayout;
 
         public ViewHolder(View view) {
             super(view);
@@ -36,6 +39,7 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
             message = (TextView) view.findViewById(R.id.message);
             timestamp = (TextView) view.findViewById(R.id.timestamp);
             count = (TextView) view.findViewById(R.id.count);
+            chatLayout = (RelativeLayout) view.findViewById(R.id.chat_layout);
         }
     }
 
@@ -45,13 +49,11 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
         this.chatRoomArrayList = chatRoomArrayList;
 
         Calendar calendar = Calendar.getInstance();
-        today = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.chat_rooms_list_row, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_rooms_list_row, parent, false);
 
         return new ViewHolder(itemView);
     }
@@ -61,14 +63,21 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
         ChatRoom chatRoom = chatRoomArrayList.get(position);
         holder.name.setText(new TeachersDBInterface(context).getTeacherById(chatRoom.getTeacherId()).getName());
         holder.message.setText(chatRoom.getLastMessage());
-        if (chatRoom.getUnreadCount() > 0) {
+        /*if (chatRoom.getUnreadCount() > 0) {
             holder.count.setText(String.valueOf(chatRoom.getUnreadCount()));
             holder.count.setVisibility(View.VISIBLE);
         } else {
             holder.count.setVisibility(View.GONE);
+        }*/
+        holder.count.setVisibility(View.GONE);
+        if(chatRoom.getUnreadCount() > 0) {
+            holder.chatLayout.setBackgroundColor(context.getResources().getColor(R.color.cold_blue));
+        } else {
+            holder.chatLayout.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
         }
 
-        holder.timestamp.setText(getTimeStamp(chatRoom.getTimestamp()));
+        //holder.timestamp.setText(getTimeStamp(chatRoom.getTimestamp()));
+        holder.timestamp.setText(ChatRoomThreadAdapter.convertDate(chatRoom.getTimestamp(), context));
     }
 
     @Override
@@ -76,25 +85,24 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
         return chatRoomArrayList.size();
     }
 
-    public static String getTimeStamp(String dateStr) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+   /* private static String getTimeStamp(String dateStr) {
+        SimpleDateFormat format = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD_HH_MM_SS, new Locale("ru"));
         String timestamp = "";
 
         today = today.length() < 2 ? "0" + today : today;
 
         try {
             Date date = format.parse(dateStr);
-            SimpleDateFormat todayFormat = new SimpleDateFormat("dd");
+            SimpleDateFormat todayFormat = new SimpleDateFormat("dd", new Locale("ru"));
             String dateToday = todayFormat.format(date);
-            format = dateToday.equals(today) ? new SimpleDateFormat("hh:mm") : new SimpleDateFormat("dd LLL, hh:mm");
-            String date1 = format.format(date);
-            timestamp = date1.toString();
+            format = dateToday.equals(today) ? new SimpleDateFormat("hh:mm", new Locale("ru")) : new SimpleDateFormat("dd LLL, hh:mm", new Locale("ru"));
+            timestamp = format.format(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         return timestamp;
-    }
+    }*/
 
     public interface ClickListener {
         void onClick(View view, int position);

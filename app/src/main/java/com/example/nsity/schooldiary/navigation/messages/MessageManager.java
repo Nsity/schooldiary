@@ -165,4 +165,31 @@ public class MessageManager {
         });
     }
 
+
+    public static void readConversation(final int teacherId, final Context context, final CallBack callBack) {
+        String url = context.getString(R.string.base_url) +
+                context.getString(R.string.call_method_api_read_chat) + Preferences.get(Preferences.PUPILID, context) + "/"
+                + String.valueOf(teacherId);
+
+        new AsyncHttpResponse(context, url, null, AsyncHttpResponse.CALL_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
+            @Override
+            public void onSuccess(ResponseObject object){
+                if (!(object.getResponse() instanceof JSONObject)) {
+                    callBack.onFail(context.getString(R.string.error_response));
+                    return;
+                }
+
+                MessageDBInterface db = new MessageDBInterface(context);
+                db.readConversation(teacherId);
+
+                callBack.onSuccess();
+            }
+
+            @Override
+            public void onFailure(ResponseObject object){
+                callBack.onFail(ErrorTracker.getErrorDescription(context, String.valueOf(object.getResponse())));
+            }
+        });
+    }
+
 }

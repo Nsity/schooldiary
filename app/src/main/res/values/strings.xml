@@ -16,8 +16,8 @@
 
     <string name="today">Сегодня</string>
 
-    <string name="base_url">http://schooldiary.azurewebsites.net/</string>
-    <!--<string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>-->
+    <!--<string name="base_url">http://schooldiary.azurewebsites.net/</string>-->
+    <string name="base_url">http://192.168.0.19:8888/schooldiaryapi/</string>
     <string name="call_method_api_login">auth/login/</string>
     <string name="call_method_api_get_timetable">timetable/get/</string>
     <string name="call_method_api_get_lesson">lesson/get/</string>
@@ -30,6 +30,7 @@
     <string name="call_method_api_create_message">message/create/</string>
     <string name="call_method_api_get_messages">message/getall/</string>
     <string name="call_method_api_get_chat_messages">message/get/</string>
+    <string name="call_method_api_read_chat">message/read/</string>
 
 
     <string name="error_encode">Ошибка кодирования данных</string>
@@ -199,7 +200,7 @@
     <string name="score">учащегося</string>
     <string name="max_score">макс. по классу</string>
     <string name="notification_lesson_setting_text">О занятиях, за 5 минут до урока</string>
-    <string name="notification_mark_setting_text">О текущих и итоговых оценках</string>
+    <string name="notification_setting_text">О текущих и итоговых оценках, о новых сообщениях</string>
     <string name="collapse_key">collapse_key</string>
     <string name="message">message</string>
     <string name="choose_interlocutor">Выберите собеседника</string>
@@ -212,6 +213,7 @@
     <string name="messages">Сообщения</string>
     <string name="last_messages">ПоследниеСообщения</string>
     <string name="message_id">СообщениеИд</string>
+    <string name="not_available_teachers">Нет доступных собеседников</string>
 
 
     <string-array name="months_short">
@@ -228,4 +230,6 @@
         <item>дек.</item>
     </string-array>
 
+    <string name="new_chat">Новый чат</string>
+    <string name="search_title">Поиск</string>
 </resources>

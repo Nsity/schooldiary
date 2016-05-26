@@ -144,7 +144,7 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             Message message = messageArrayList.get(position);
             ((TextViewHolder) holder).message.setText(message.getMessage());
 
-            String timestamp = convertDate(message.getCreatedAt());
+            String timestamp = convertDate(message.getCreatedAt(), context);
             ((TextViewHolder) holder).timestamp.setText(timestamp);
         }
     }
@@ -155,11 +155,11 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
 
-    SimpleDateFormat date_format = new SimpleDateFormat("yyyyMMdd", new Locale("ru"));
+    static SimpleDateFormat date_format = new SimpleDateFormat("yyyyMMdd", new Locale("ru"));
 
-    SimpleDateFormat hh_mm = new SimpleDateFormat("HH:mm", new Locale("ru"));
+    static SimpleDateFormat hh_mm = new SimpleDateFormat("HH:mm", new Locale("ru"));
 
-    private String convertDate(String oldDate) {
+    public static String convertDate(String oldDate, Context context) {
         try {
             Date date = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD_HH_MM_SS, new Locale("ru")).parse(oldDate);
 
@@ -179,10 +179,8 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     strYear = String.valueOf(cal.get(Calendar.YEAR));
                 }
 
-                String timestamp = strDate + " " + strMonth + " " +
-                        (strYear.equals("") ? "" : strYear + " " + context.getResources().getString(R.string.year)); //+ ", " + hh_mm.format(date);
-
-                return timestamp;
+                return strDate + " " + strMonth + " " +
+                        (strYear.equals("") ? "" : strYear + " " + context.getResources().getString(R.string.year));
             }
         } catch (Exception e) {
             return oldDate;

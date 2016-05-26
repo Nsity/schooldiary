@@ -3,14 +3,12 @@ package com.example.nsity.schooldiary.navigation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,24 +18,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.homework.HomeworkFragment;
 import com.example.nsity.schooldiary.navigation.login.LoginActivity;
 import com.example.nsity.schooldiary.navigation.login.ProfileFragment;
-import com.example.nsity.schooldiary.navigation.login.UserManager;
 import com.example.nsity.schooldiary.navigation.marks.progress.ProgressFragment;
 import com.example.nsity.schooldiary.navigation.marks.subjects.SubjectsFragment;
 import com.example.nsity.schooldiary.navigation.messages.MessagesFragment;
 import com.example.nsity.schooldiary.navigation.statistics.StatisticsFragment;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableFragment;
 import com.example.nsity.schooldiary.navigation.timetable.notification.TimetableNotificationIntentService;
-import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Preferences;
-import com.example.nsity.schooldiary.system.gcm.ServiceRegister;
-import com.example.nsity.schooldiary.system.network.Server;
-import com.google.android.gcm.GCMRegistrar;
 
 
 public class MainActivity extends AppCompatActivity
@@ -88,7 +80,7 @@ public class MainActivity extends AppCompatActivity
                                         Preferences.getBoolean(Preferences.NOTIFICATION_LESSON_SETTING, false, getApplicationContext()));
                         startService(intent);
                     }
-                    if(key.equals(Preferences.NOTIFICATION_MARK_SETTING)) {
+                    if(key.equals(Preferences.NOTIFICATION_SETTING)) {
                         //TODO
                     }
                 }
@@ -106,7 +98,7 @@ public class MainActivity extends AppCompatActivity
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         Preferences.set(Preferences.NOTIFICATION_LESSON_SETTING, true, getApplicationContext());
-                                        Preferences.set(Preferences.NOTIFICATION_MARK_SETTING, true, getApplicationContext());
+                                        Preferences.set(Preferences.NOTIFICATION_SETTING, true, getApplicationContext());
                                         Preferences.set(Preferences.FIRST_LOGIN, true, getApplicationContext());
                                         alertDialog.dismiss();
                                     }

@@ -2,10 +2,17 @@ package com.example.nsity.schooldiary.navigation.messages;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.SearchManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -13,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -31,6 +40,7 @@ import com.example.nsity.schooldiary.navigation.marks.Teacher;
 import com.example.nsity.schooldiary.navigation.marks.Teachers;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Utils;
+import com.example.nsity.schooldiary.system.database.tables.MessageDBInterface;
 import com.example.nsity.schooldiary.system.database.tables.TeachersDBInterface;
 import com.example.nsity.schooldiary.system.gcm.GCMIntentService;
 import com.example.nsity.schooldiary.system.gcm.ServiceRegister;
@@ -48,8 +58,16 @@ public class MessagesFragment extends Fragment {
     private ChatRoomsAdapter mAdapter;
 
     private SwipeRefreshLayout swipeRefreshLayout;
-
     private ChatRooms chatRooms;
+
+    private BroadcastReceiver mBroadcastReceiver;
+
+    public static final String MESSAGES_RECEIVER = "messages_receiver";
+
+    private final String KEY_RECYCLER_STATE = "recycler_state";
+    private static Bundle mBundleRecyclerViewState;
+
+    private String query = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,7 +84,6 @@ public class MessagesFragment extends Fragment {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
 
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(
@@ -79,7 +96,6 @@ public class MessagesFragment extends Fragment {
                 recyclerView, new ChatRoomsAdapter.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Log.d("TAG", "click");
                 openNewChat(new TeachersDBInterface(getActivity()).getTeacherById(chatRoomArrayList.get(position).getTeacherId()));
             }
 
@@ -93,6 +109,7 @@ public class MessagesFragment extends Fragment {
         setView();
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -121,6 +138,35 @@ public class MessagesFragment extends Fragment {
             registerGCM();
         }
 
+
+        mBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Message message = (Message) intent.getSerializableExtra(Utils.MESSAGE_PUSH);
+
+                if (message != null) {
+                    for(int i = 0; i < chatRoomArrayList.size(); i++) {
+                        ChatRoom chatRoom = chatRoomArrayList.get(i);
+                        if(message.getUserId() == chatRoom.getTeacherId()) {
+
+                            int count = chatRoom.getUnreadCount();
+                            count = count + 1;
+                            chatRoom.setUnreadCount(count);
+                            chatRoom.setLastMessage(message.getMessage());
+                            chatRoom.setTimestamp(message.getCreatedAt());
+
+                            chatRoomArrayList.remove(i);
+                            chatRoomArrayList.add(0, chatRoom);
+
+                            mAdapter.notifyDataSetChanged();
+                            return;
+                        }
+                    }
+                }
+            }
+        };
+
+
         return rootView;
     }
 
@@ -133,64 +179,85 @@ public class MessagesFragment extends Fragment {
 
 
     private void setView() {
-        loadChatRooms();
+        chatRoomArrayList = new ArrayList<>();
+        if(query != null && !query.equals(""))  {
+            ArrayList<ChatRoom> searchChatRooms = new MessageDBInterface(getActivity()).findChatRoomsByQuery(query);
+            chatRoomArrayList.addAll(searchChatRooms);
+        } else {
+            chatRooms = new ChatRooms(getActivity());
+            chatRoomArrayList.addAll(chatRooms.getChatRooms());
+        }
+
+        mAdapter = new ChatRoomsAdapter(getActivity(), chatRoomArrayList);
+        recyclerView.setAdapter(mAdapter);
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, new IntentFilter(MESSAGES_RECEIVER));
         setView();
+
+        if (mBundleRecyclerViewState != null) {
+            Parcelable listState = mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+            recyclerView.getLayoutManager().onRestoreInstanceState(listState);
+        }
     }
 
-    private void loadChatRooms() {
-        setRecyclerView();
+    @Override
+    public void onPause() {
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+        super.onPause();
 
-        /*CommonFunctions.showProgress(true, getActivity(),  recyclerView, mProgressView);
-        chatRooms.loadLastMessages(new CallBack() {
-            @Override
-            public void onSuccess() {
-                CommonFunctions.showProgress(false, getActivity(),  recyclerView, mProgressView);
-                setRecyclerView();
-            }
-
-            @Override
-            public void onFail(String error) {
-                recyclerView.setVisibility(View.GONE);
-                try {
-                    Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-                final boolean show = false;
-                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                mProgressView.animate().setDuration(shortAnimTime).alpha(
-                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                    }
-                });
-            }
-        });*/
-    }
-
-
-    private void setRecyclerView() {
-        chatRoomArrayList = new ArrayList<>();
-        chatRooms = new ChatRooms(getActivity());
-        chatRoomArrayList.addAll(chatRooms.getChatRooms());
-        mAdapter = new ChatRoomsAdapter(getActivity(), chatRoomArrayList);
-        recyclerView.setAdapter(mAdapter);
+        // save RecyclerView state
+        mBundleRecyclerViewState = new Bundle();
+        Parcelable listState = recyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.messages_menu, menu);
+
+
+        SearchManager searchManager =  (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener()
+        {
+            public boolean onQueryTextChange(String newText)
+            {
+                query = newText;
+                setView();
+                return true;
+            }
+
+            public boolean onQueryTextSubmit(String newText)
+            {
+                query = newText;
+                setView();
+                return true;
+            }
+        };
+
+        searchView.setOnQueryTextListener(queryTextListener);
+
+    }
+
+
+    private void searchData(String query) {
+        if(query.equals("")) {
+            setView();
+        } else {
+            ArrayList<ChatRoom> searchChatRooms = new MessageDBInterface(getActivity()).findChatRoomsByQuery(query);
+            chatRoomArrayList = new ArrayList<>();
+            chatRoomArrayList.addAll(searchChatRooms);
+            mAdapter = new ChatRoomsAdapter(getActivity(), chatRoomArrayList);
+            recyclerView.setAdapter(mAdapter);
+        }
     }
 
 
@@ -205,16 +272,45 @@ public class MessagesFragment extends Fragment {
     }
 
 
+    private boolean isTeacherInChat(Teacher teacher) {
+        for(ChatRoom chat: chatRoomArrayList) {
+            if(teacher.getId() == chat.getTeacherId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void showDialog() {
         final Teachers teachers = new Teachers(getActivity());
-        final String[] mTeachersName = teachers.getNames();
+
+
+        final ArrayList<Teacher> teachersForDialog = new ArrayList<>();
+        for(Teacher teacher: teachers.getTeachers()) {
+            boolean flag = isTeacherInChat(teacher);
+            if(!flag) {
+                teachersForDialog.add(teacher);
+            }
+        }
+
+
+        if(teachersForDialog.size() == 0) {
+            Toast.makeText(getActivity(), R.string.not_available_teachers, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String[] names = new String[teachersForDialog.size()];
+
+        for(int i = 0; i < names.length; i++) {
+            names[i] = teachersForDialog.get(i).getName();
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.choose_interlocutor))
-                .setItems(mTeachersName, new DialogInterface.OnClickListener() {
+                .setItems(names, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
-                        openNewChat(teachers.getTeachers().get(item));
+                        openNewChat(teachersForDialog.get(item));
                     }
                 })
                 .setCancelable(true)
@@ -234,5 +330,4 @@ public class MessagesFragment extends Fragment {
         intent.putExtra(Utils.TEACHER, teacher);
         startActivity(intent);
     }
-
 }

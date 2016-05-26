@@ -59,13 +59,13 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        if(Preferences.getBoolean(Preferences.NOTIFICATION_MARK_SETTING, false, getActivity()))
+        if(Preferences.getBoolean(Preferences.NOTIFICATION_SETTING, false, getActivity()))
             notificationMarkSwitch.setChecked(true);
 
         notificationMarkSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(Switch view, boolean checked) {
-                Preferences.set(Preferences.NOTIFICATION_MARK_SETTING, checked, getActivity());
+                Preferences.set(Preferences.NOTIFICATION_SETTING, checked, getActivity());
             }
         });
 

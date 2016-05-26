@@ -10,16 +10,14 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.Html;
 
 import com.example.nsity.schooldiary.R;
 import com.example.nsity.schooldiary.navigation.lesson.LessonActivity;
 import com.example.nsity.schooldiary.navigation.marks.Teacher;
 import com.example.nsity.schooldiary.navigation.marks.Teachers;
-import com.example.nsity.schooldiary.navigation.messages.ChatRoom;
 import com.example.nsity.schooldiary.navigation.messages.ChatRoomActivity;
 import com.example.nsity.schooldiary.navigation.messages.Message;
-import com.example.nsity.schooldiary.navigation.timetable.Time;
+import com.example.nsity.schooldiary.navigation.messages.MessagesFragment;
 import com.example.nsity.schooldiary.navigation.timetable.Timetable;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableItem;
 import com.example.nsity.schooldiary.system.CommonFunctions;
@@ -32,7 +30,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Created by nsity on 21.02.16.
@@ -54,19 +51,16 @@ public class GCMMessageHandler extends GcmListenerService {
             return;
         }
 
-        if(Preferences.getBoolean(Preferences.NOTIFICATION_MARK_SETTING, false, getBaseContext())) {
-            switch (collapseKey) {
-                case LESSON_COLLAPSE_KEY:
-                    createLessonNotification(message);
-                    break;
-                case PROGRESS_COLLAPSE_KEY:
-                    createProgressNotification(message);
-                    break;
-                case MESSAGE_COLLAPSE_KEY:
-                    createMessageNotification(message);
-                    break;
-
-            }
+        switch (collapseKey) {
+            case LESSON_COLLAPSE_KEY:
+                createLessonNotification(message);
+                break;
+            case PROGRESS_COLLAPSE_KEY:
+                createProgressNotification(message);
+                break;
+            case MESSAGE_COLLAPSE_KEY:
+                createMessageNotification(message);
+                break;
         }
     }
 
@@ -81,6 +75,10 @@ public class GCMMessageHandler extends GcmListenerService {
     }
 
     private void createLessonNotification(String body) {
+        if(!Preferences.getBoolean(Preferences.NOTIFICATION_SETTING, false, getBaseContext())) {
+            return;
+        }
+
         Context context = getBaseContext();
 
         try {
@@ -99,20 +97,7 @@ public class GCMMessageHandler extends GcmListenerService {
             notificationIntent.putExtra("update", true);
 
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
             buildNotification(text, text, getString(R.string.app_name), contentIntent);
-
-           /*NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                    .setTicker(text)
-                    .setAutoCancel(true)
-                    .setContentIntent(contentIntent)
-                    .setSmallIcon(R.mipmap.ic_school_white_24dp).setContentTitle(getString(R.string.app_name))
-                    .setLargeIcon(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.school), 150, 150, true))
-                    .setContentText(text)
-                    .setDefaults(Notification.DEFAULT_ALL);
-
-            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(MESSAGE_NOTIFICATION_ID, mBuilder.build());*/
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -121,6 +106,9 @@ public class GCMMessageHandler extends GcmListenerService {
 
 
     private void buildNotification(String tickerText, String contentText, String contentTitle, PendingIntent contentIntent) {
+        if(!Preferences.getBoolean(Preferences.NOTIFICATION_SETTING, false, getBaseContext())) {
+            return;
+        }
         Context context = getBaseContext();
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
@@ -137,6 +125,8 @@ public class GCMMessageHandler extends GcmListenerService {
         mNotificationManager.notify(MESSAGE_NOTIFICATION_ID, mBuilder.build());
     }
 
+
+    //TODO
     private void createProgressNotification(String body) {
         Context context = getBaseContext();
 
@@ -197,16 +187,25 @@ public class GCMMessageHandler extends GcmListenerService {
             if(teacher == null)
                 return;
 
-            Intent notificationIntent = new Intent(context, ChatRoomActivity.class);
-            notificationIntent.putExtra(Utils.TEACHER, teacher);
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-            buildNotification(text, text, teacher.getName(), contentIntent);
+
+            if(Preferences.getBoolean(Preferences.NOTIFICATION_SETTING, false, getBaseContext())) {
+                Intent notificationIntent = new Intent(context, ChatRoomActivity.class);
+                notificationIntent.putExtra(Utils.TEACHER, teacher);
+                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                buildNotification(text, text, teacher.getName(), contentIntent);
+            }
 
 
-
+            // broadcast for one chat
             Intent pushNotification = new Intent(ChatRoomActivity.CHAT_ROOM_RECEIVER);
             pushNotification.putExtra(Utils.MESSAGE_PUSH, message);
             LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
+
+
+            //broadcasr for chats
+            Intent chatRoomsNotification = new Intent(MessagesFragment.MESSAGES_RECEIVER);
+            chatRoomsNotification.putExtra(Utils.MESSAGE_PUSH, message);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(chatRoomsNotification);
 
 
         } catch (JSONException e) {
