@@ -22,10 +22,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -47,6 +49,8 @@ import com.example.nsity.schooldiary.system.gcm.ServiceRegister;
 import com.example.nsity.schooldiary.system.network.CallBack;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by nsity on 17.04.16.
@@ -90,6 +94,7 @@ public class MessagesFragment extends Fragment {
                 getActivity()
         ));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+
 
 
         recyclerView.addOnItemTouchListener(new ChatRoomsAdapter.RecyclerTouchListener(getActivity(),
@@ -182,6 +187,12 @@ public class MessagesFragment extends Fragment {
         chatRoomArrayList = new ArrayList<>();
         if(query != null && !query.equals(""))  {
             ArrayList<ChatRoom> searchChatRooms = new MessageDBInterface(getActivity()).findChatRoomsByQuery(query);
+            Collections.sort(searchChatRooms, new Comparator<ChatRoom>() {
+                @Override
+                public int compare(ChatRoom chatRoom1, ChatRoom chatRoom2) {
+                    return chatRoom2.getTimestamp().compareTo(chatRoom1.getTimestamp());
+                }
+            });
             chatRoomArrayList.addAll(searchChatRooms);
         } else {
             chatRooms = new ChatRooms(getActivity());

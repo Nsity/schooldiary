@@ -62,7 +62,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if(toolbar != null) {
+        if(toolbar != null && getSupportActionBar() != null) {
             getSupportActionBar().setTitle(teacher.getName());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -217,7 +217,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
        super.onBackPressed();
-        overridePendingTransition(R.anim.s_in, R.anim.s_out);
+       // overridePendingTransition(R.anim.s_in, R.anim.s_out);
     }
 
 }

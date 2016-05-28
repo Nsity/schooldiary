@@ -1,4 +1,4 @@
-package com.example.nsity.schooldiary.navigation.messages;
+package com.example.nsity.schooldiary.navigation.news;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -7,11 +7,10 @@ import android.support.v7.widget.RecyclerView;
  * Created by nsity on 13.05.16.
  */
 public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScrollListener {
-    public static String TAG = EndlessRecyclerOnScrollListener.class.getSimpleName();
 
     private int previousTotal = 0; // The total number of items in the dataset after the last load
     private boolean loading = true; // True if we are still waiting for the last set of data to load.
-    private int visibleThreshold = 1; // The minimum amount of items to have below your current scroll position before loading more.
+    private int visibleThreshold = 5; // The minimum amount of items to have below your current scroll position before loading more.
     int firstVisibleItem, visibleItemCount, totalItemCount;
 
     private int current_page = 1;
@@ -43,7 +42,14 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
             onLoadMore(current_page);
             loading = true;
         }
+
     }
 
     public abstract void onLoadMore(int current_page);
+
+
+    public void setLoading(boolean loading) {
+        this.loading = loading;
+    }
+
 }

@@ -69,8 +69,15 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
 
+        <activity
+            android:name=".navigation.news.NewsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+
         <activity android:name=".navigation.messages.ChatRoomActivity"
             android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTop"
             android:parentActivityName="com.example.nsity.schooldiary.navigation.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
@@ -79,7 +86,7 @@
         </activity>
 
 
-        <receiver android:name=".navigation.timetable.notification.TimetableNotificationReceiver">
+        <receiver android:name=".navigation.timetable.notification.TimetableNotificationReceiver" android:enabled="true" >
         </receiver>
         <service android:name=".navigation.timetable.notification.TimetableNotificationIntentService"/>
         <service android:name=".navigation.timetable.notification.ShowNotificationWakefulService"/>

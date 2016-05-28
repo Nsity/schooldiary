@@ -38,8 +38,6 @@ public class GCMMessageHandler extends GcmListenerService {
     public static final int MESSAGE_NOTIFICATION_ID = 435345;
 
     public static final String LESSON_COLLAPSE_KEY = "lesson";
-    public static final String HOMEWORK_COLLAPSE_KEY = "homework";
-    public static final String PROGRESS_COLLAPSE_KEY = "progress";
     public static final String MESSAGE_COLLAPSE_KEY = "message";
 
     @Override
@@ -54,9 +52,6 @@ public class GCMMessageHandler extends GcmListenerService {
         switch (collapseKey) {
             case LESSON_COLLAPSE_KEY:
                 createLessonNotification(message);
-                break;
-            case PROGRESS_COLLAPSE_KEY:
-                createProgressNotification(message);
                 break;
             case MESSAGE_COLLAPSE_KEY:
                 createMessageNotification(message);
@@ -126,42 +121,6 @@ public class GCMMessageHandler extends GcmListenerService {
     }
 
 
-    //TODO
-    private void createProgressNotification(String body) {
-        Context context = getBaseContext();
-
-        try {
-            JSONObject jsonObject = new JSONObject(body);
-            String day = CommonFunctions.getFieldString(jsonObject, context.getString(R.string.day));
-
-            String text = CommonFunctions.getFieldString(jsonObject, context.getString(R.string.text));
-
-
-           /* Intent notificationIntent = new Intent(context, LessonActivity.class);
-            notificationIntent.putExtra(Utils.TIMETABLE_ITEM, timetableItem);
-            notificationIntent.putExtra(Utils.DAY, day);
-            notificationIntent.putExtra("update", true);
-
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);*/
-
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                    .setTicker(text)
-                    .setAutoCancel(true)
-                  //  .setContentIntent(contentIntent)
-                    .setSmallIcon(R.mipmap.ic_school_white_24dp).setContentTitle(getString(R.string.app_name))
-                    .setLargeIcon(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.school), 150, 150, true))
-                    .setContentText(text)
-                    .setDefaults(Notification.DEFAULT_ALL);
-
-            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(MESSAGE_NOTIFICATION_ID, mBuilder.build());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     private void createMessageNotification(String body) {
         Context context = getBaseContext();
 
@@ -202,7 +161,7 @@ public class GCMMessageHandler extends GcmListenerService {
             LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
 
 
-            //broadcasr for chats
+            //broadcast for chats
             Intent chatRoomsNotification = new Intent(MessagesFragment.MESSAGES_RECEIVER);
             chatRoomsNotification.putExtra(Utils.MESSAGE_PUSH, message);
             LocalBroadcastManager.getInstance(this).sendBroadcast(chatRoomsNotification);

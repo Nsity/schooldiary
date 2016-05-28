@@ -12,6 +12,7 @@ import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.Preferences;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,72 +60,38 @@ public class TimetableNotificationIntentService extends IntentService {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, i, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             Calendar calendar = Calendar.getInstance();
-           // calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.DAY_OF_WEEK, getDay(timetableItem.getDay()));
-            calendar.set(Calendar.HOUR, Integer.valueOf(getHour(timetableItem.getTime().getTimeStart())));
-            calendar.set(Calendar.MINUTE, Integer.valueOf(getMinute(timetableItem.getTime().getTimeStart())));
-            calendar.set(Calendar.SECOND, 0);
 
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            try {
+                Date date = fromTime.parse(timetableItem.getTime().getTimeStart());
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                cal.add(Calendar.MINUTE, -5);
 
-           /* long alarmTime = calendar.getTimeInMillis();
-            if (alarmTime < System.currentTimeMillis() + 500)
-                alarmTime += 24 * 60 * 60 * 1000;*/
+                String dateWithoutFiveMinutes = fromTime.format(cal.getTime());
 
-            Date now = new Date(System.currentTimeMillis());
-            if (calendar.getTime().before(now)) {
-                calendar.add(Calendar.MONTH, 1);
+                calendar.set(Calendar.HOUR, Integer.valueOf(getHour(dateWithoutFiveMinutes)));
+                calendar.set(Calendar.MINUTE, Integer.valueOf(getMinute(dateWithoutFiveMinutes)));
+                calendar.set(Calendar.SECOND, 0);
+
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+                long timeToAlarm = calendar.getTimeInMillis();
+                if (calendar.getTimeInMillis() < System.currentTimeMillis())
+                {
+                    timeToAlarm += (24 * 60 * 60 * 1000) * 7;
+                }
+
+
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeToAlarm, AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+
+
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-
-            long firstTime = calendar.getTime().getTime();
-            //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY * 7, pendingIntent);
-
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
 
             i++;
         }
-
-
-       /* int dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        int numDays = Calendar.getInstance().getActualMaximum(Calendar.DATE);
-
-        for (int i = dayOfMonth; i <= numDays; i++) {
-            int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
-            int year = Calendar.getInstance().get(Calendar.YEAR);
-
-            try {
-                Date selectedDate = fromDate.parse(String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(i));
-                int dayOfWeek = CommonFunctions.getDayOfWeek(selectedDate);
-
-                if(timetable.getTimetableOfDay(dayOfWeek) != null) {
-                    int k = 0;
-                    for (TimetableItem timetableItem : timetable.getTimetableOfDay(dayOfWeek)) {
-                        Intent intent = new Intent(this, TimetableNotificationReceiver.class);
-                        intent.putExtra(TIMETABLE_EXTRA, timetableItem);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, k, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.set(Calendar.DAY_OF_MONTH, i);
-                        calendar.set(Calendar.MONTH, month - 1);
-                        calendar.set(Calendar.YEAR, year);
-                        calendar.set(Calendar.HOUR, Integer.valueOf(getHour(timetableItem.getTime().getTimeStart())));
-                        calendar.set(Calendar.MINUTE, Integer.valueOf(getMinute(timetableItem.getTime().getTimeStart())));
-                        calendar.set(Calendar.SECOND, 0);
-
-                        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        if (android.os.Build.VERSION.SDK_INT >= 19) {
-                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                        } else {
-                            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                        }
-                        k++;
-                    }
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }*/
 
     }
 

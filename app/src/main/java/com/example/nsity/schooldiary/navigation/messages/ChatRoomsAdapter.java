@@ -1,6 +1,7 @@
 package com.example.nsity.schooldiary.navigation.messages;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name, message, timestamp, count;
         public RelativeLayout chatLayout;
+        public View circleView;
 
         public ViewHolder(View view) {
             super(view);
@@ -40,6 +42,7 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
             timestamp = (TextView) view.findViewById(R.id.timestamp);
             count = (TextView) view.findViewById(R.id.count);
             chatLayout = (RelativeLayout) view.findViewById(R.id.chat_layout);
+            circleView = view.findViewById(R.id.circle);
         }
     }
 
@@ -47,8 +50,6 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
     public ChatRoomsAdapter(Context context, ArrayList<ChatRoom> chatRoomArrayList) {
         this.context = context;
         this.chatRoomArrayList = chatRoomArrayList;
-
-        Calendar calendar = Calendar.getInstance();
     }
 
     @Override
@@ -71,12 +72,19 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
         }*/
         holder.count.setVisibility(View.GONE);
         if(chatRoom.getUnreadCount() > 0) {
+            holder.circleView.setVisibility(View.VISIBLE);
             holder.chatLayout.setBackgroundColor(context.getResources().getColor(R.color.cold_blue));
         } else {
-            holder.chatLayout.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
+            holder.circleView.setVisibility(View.GONE);
+
+            int[] attrs = new int[]{R.attr.selectableItemBackground};
+            TypedArray typedArray = context.obtainStyledAttributes(attrs);
+            int backgroundResource = typedArray.getResourceId(0, 0);
+            holder.chatLayout.setBackgroundResource(backgroundResource);
+            typedArray.recycle();
+            //holder.chatLayout.setBackgroundColor(context.getResources().getColor(android.R.attr.selectableItemBackground));
         }
 
-        //holder.timestamp.setText(getTimeStamp(chatRoom.getTimestamp()));
         holder.timestamp.setText(ChatRoomThreadAdapter.convertDate(chatRoom.getTimestamp(), context));
     }
 
@@ -84,25 +92,6 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
     public int getItemCount() {
         return chatRoomArrayList.size();
     }
-
-   /* private static String getTimeStamp(String dateStr) {
-        SimpleDateFormat format = new SimpleDateFormat(CommonFunctions.FORMAT_YYYY_MM_DD_HH_MM_SS, new Locale("ru"));
-        String timestamp = "";
-
-        today = today.length() < 2 ? "0" + today : today;
-
-        try {
-            Date date = format.parse(dateStr);
-            SimpleDateFormat todayFormat = new SimpleDateFormat("dd", new Locale("ru"));
-            String dateToday = todayFormat.format(date);
-            format = dateToday.equals(today) ? new SimpleDateFormat("hh:mm", new Locale("ru")) : new SimpleDateFormat("dd LLL, hh:mm", new Locale("ru"));
-            timestamp = format.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return timestamp;
-    }*/
 
     public interface ClickListener {
         void onClick(View view, int position);

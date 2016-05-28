@@ -15,4 +15,6 @@ public class Utils {
 
     public static final String MESSAGE = "message";
 
+    public static final String NEWS = "news";
+
 }

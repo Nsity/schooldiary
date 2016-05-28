@@ -13,6 +13,7 @@
     <string name="nav_homework">Домашние задания</string>
     <string name="nav_statistics">Статистика</string>
     <string name="nav_messages">Сообщения</string>
+    <string name="nav_news">Новости</string>
 
     <string name="today">Сегодня</string>
 
@@ -31,6 +32,7 @@
     <string name="call_method_api_get_messages">message/getall/</string>
     <string name="call_method_api_get_chat_messages">message/get/</string>
     <string name="call_method_api_read_chat">message/read/</string>
+    <string name="call_method_api_get_news">news/get/</string>
 
 
     <string name="error_encode">Ошибка кодирования данных</string>
@@ -74,6 +76,7 @@
     <string name="theme">Тема</string>
     <string name="date">Дата</string>
     <string name="day_of_week">ДеньНедели</string>
+    <string name="news">Новости</string>
 
     <string name="type">Тип</string>
     <string name="lessonId">УрокИд</string>
@@ -232,4 +235,5 @@
 
     <string name="new_chat">Новый чат</string>
     <string name="search_title">Поиск</string>
+    <string name="admin">Администратор</string>
 </resources>

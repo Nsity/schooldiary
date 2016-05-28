@@ -26,6 +26,7 @@ import com.example.nsity.schooldiary.navigation.login.ProfileFragment;
 import com.example.nsity.schooldiary.navigation.marks.progress.ProgressFragment;
 import com.example.nsity.schooldiary.navigation.marks.subjects.SubjectsFragment;
 import com.example.nsity.schooldiary.navigation.messages.MessagesFragment;
+import com.example.nsity.schooldiary.navigation.news.NewsFragment;
 import com.example.nsity.schooldiary.navigation.statistics.StatisticsFragment;
 import com.example.nsity.schooldiary.navigation.timetable.TimetableFragment;
 import com.example.nsity.schooldiary.navigation.timetable.notification.TimetableNotificationIntentService;
@@ -120,13 +121,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-            FragmentManager fm = getSupportFragmentManager();
-            if (fm.getBackStackEntryCount() == 0)
-                this.finish();
+        if (drawer != null) {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+                FragmentManager fm = getSupportFragmentManager();
+                if (fm.getBackStackEntryCount() == 0)
+                    this.finish();
+            }
         }
     }
 
@@ -161,6 +164,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_messages:
                 fragment = new MessagesFragment();
+                break;
+            case R.id.nav_news:
+                fragment = new NewsFragment();
                 break;
             case R.id.nav_statistics:
                 fragment = new StatisticsFragment();

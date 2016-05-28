@@ -3,6 +3,9 @@ package com.example.nsity.schooldiary.system;
 import android.content.Context;
 
 import com.example.nsity.schooldiary.R;
+import com.example.nsity.schooldiary.navigation.marks.Teacher;
+import com.example.nsity.schooldiary.navigation.marks.Teachers;
+import com.example.nsity.schooldiary.navigation.news.News;
 import com.example.nsity.schooldiary.navigation.statistics.Score;
 import com.example.nsity.schooldiary.navigation.marks.subjects.SubjectMark;
 import com.example.nsity.schooldiary.navigation.marks.subjects.Subjects;
@@ -307,4 +310,61 @@ public class CommonManager {
             }
         });
     }
+
+
+    public static void getNews(final Context context, final int page, final CallBack callBack) {
+        String url = context.getString(R.string.base_url) +
+                context.getString(R.string.call_method_api_get_news) + page;
+
+        new AsyncHttpResponse(context, url, null, AsyncHttpResponse.CALL_JSON_HTTP_RESPONSE, new CallBack<ResponseObject>(){
+            @Override
+            public void onSuccess(ResponseObject object){
+                if (!(object.getResponse() instanceof JSONObject)) {
+                    callBack.onFail(context.getString(R.string.error_response));
+                    return;
+                }
+
+                JSONObject response = (JSONObject)object.getResponse();
+
+                JSONObject result;
+                try {
+                    result = response.getJSONObject(context.getString(R.string.result));
+
+                    JSONArray newsArray = (JSONArray) result.get(context.getString(R.string.news));
+
+                    if (CommonFunctions.StringIsNullOrEmpty(newsArray.toString())) {
+                        callBack.onFail(context.getString(R.string.error_response));
+                        return;
+                    }
+
+                    ArrayList<News> newsArrayList = new ArrayList<>();
+
+                    for (int i = 0; i < newsArray.length(); i++) {
+                        JSONObject newsObject = newsArray.getJSONObject(i);
+
+                        News news = new News(CommonFunctions.getFieldInt(newsObject, context.getString(R.string.id)),
+                                CommonFunctions.getFieldString(newsObject, context.getString(R.string.theme)),
+                                CommonFunctions.getFieldString(newsObject, context.getString(R.string.text)),
+                                CommonFunctions.getFieldString(newsObject, context.getString(R.string.date)));
+
+                        news.setTeacher(new Teachers(context).
+                                findTeacherById(CommonFunctions.getFieldInt(newsObject, context.getString(R.string.teacher_id))));
+
+                        newsArrayList.add(news);
+                    }
+
+                    callBack.onSuccess(newsArrayList);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    callBack.onFail(context.getString(R.string.error_response));
+                }
+            }
+
+            @Override
+            public void onFailure(ResponseObject object){
+                callBack.onFail(ErrorTracker.getErrorDescription(context, object.getResponse().toString()));
+            }
+        });
+    }
+
 }

@@ -160,14 +160,6 @@ public class TimetableFragment extends Fragment implements DatePickerDialog.OnDa
                 startActivity(new Intent(getActivity(), CalendarActivity.class));
                 getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                 return false;
-            case R.id.action_next:
-                selectedDate = CommonFunctions.addDays(1, selectedDate);
-                setView();
-                return false;
-            case R.id.action_back:
-                selectedDate = CommonFunctions.addDays(-1, selectedDate);
-                setView();
-                return false;
         }
         return super.onOptionsItemSelected(item);
     }
