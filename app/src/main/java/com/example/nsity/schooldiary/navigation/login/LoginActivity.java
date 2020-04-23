@@ -4,9 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -22,10 +21,6 @@ import com.example.nsity.schooldiary.system.gcm.GCMIntentService;
 import com.example.nsity.schooldiary.system.gcm.ServiceRegister;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-
-import javax.crypto.spec.GCMParameterSpec;
 
 /**
  * Created by nsity on 15.11.15.

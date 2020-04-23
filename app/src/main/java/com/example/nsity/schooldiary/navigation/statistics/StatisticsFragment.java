@@ -1,9 +1,9 @@
 package com.example.nsity.schooldiary.navigation.statistics;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,8 +21,6 @@ import com.example.nsity.schooldiary.navigation.timetable.Periods;
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.example.nsity.schooldiary.system.network.CallBack;
 import com.example.nsity.schooldiary.system.network.Server;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -53,6 +51,11 @@ public class StatisticsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         period = new Periods(getActivity()).getCurrentPeriod();
+
+        if(period == null) {
+            return rootView;
+        }
+
         subjects = new Subjects(getActivity());
 
         mProgressView = rootView.findViewById(R.id.progress);

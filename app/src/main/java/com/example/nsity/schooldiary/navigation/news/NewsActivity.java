@@ -2,18 +2,14 @@ package com.example.nsity.schooldiary.navigation.news;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.nsity.schooldiary.R;
-import com.example.nsity.schooldiary.navigation.marks.Teacher;
 import com.example.nsity.schooldiary.system.CommonFunctions;
-import com.example.nsity.schooldiary.system.CommonManager;
 import com.example.nsity.schooldiary.system.Utils;
-
-import org.w3c.dom.Text;
 
 /**
  * Created by nsity on 28.05.16.

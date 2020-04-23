@@ -1,7 +1,7 @@
 package com.example.nsity.schooldiary.navigation.news;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by nsity on 13.05.16.

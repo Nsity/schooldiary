@@ -1,6 +1,7 @@
 package com.example.nsity.schooldiary.system.network;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.nsity.schooldiary.system.CommonFunctions;
 import com.loopj.android.http.AsyncHttpClient;
@@ -40,7 +41,7 @@ public class AsyncHttpResponse {
 
         AsyncHttpClient client = new SyncHttpClient();
         if ((callMethod == CALL_SYNCHRONIZATION_RESPONSE)) {
-            client.setTimeout(30000);
+            client.setTimeout(60000);
             client.addHeader(AsyncHttpClient.HEADER_ACCEPT_ENCODING, AsyncHttpClient.ENCODING_GZIP);
         }
 
@@ -59,6 +60,7 @@ public class AsyncHttpResponse {
 
 
     public void callJsonHttpResponse(Context context, String url, AsyncHttpClient client){
+        Log.i("TAG", url);
        client.get(context, url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
